@@ -16,6 +16,7 @@ docs/
     demo-and-submission.md Demo Day script, judge Q&A, submission checklist, disclosures
     conventions.md         build/test/CLI commands, env vars, code style, git
     test-scenarios.md      basic → edge-case walk-through with status; decides what to fix next
+    manual-test-checklist.md  hands-on checklist for the user: steps, pass criteria, findings log
   features/<feature>/      one folder per feature
     role.md                the expertise and rules for building this feature
     context.md             why it exists, where it sits, current state in code, gotchas
@@ -54,6 +55,8 @@ docs/
 | U6 | [home](features/home/) | Privacy stats and today's activity | not started |
 | U7 | [history](features/history/) | Past answers and "What was sent" | not started |
 | U8 | [redactions-module](features/redactions-module/) | Redact flow, Leak Guard log, DPO export | not started |
+| U9 | [polish](features/polish/) | App icon, brand mark, motion system, per-screen polish | built, partly verified |
+| U10 | [multi-folder](features/multi-folder/) | Index a list of folders chosen in Settings, not just one | built, mostly verified |
 
 F6 (Finder selection) was cut; see `project/decisions.md` D-007.
 

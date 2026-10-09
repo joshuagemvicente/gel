@@ -31,7 +31,7 @@ Regenerate demo data: `scripts/.venv/bin/python scripts/generate_demo_data.py` (
 | Variable | Effect |
 | --- | --- |
 | `GEL_HOME` | Overrides `Application Support/Gel` (database, policy, packs, reports) |
-| `GEL_FOLDER` | Overrides the indexed folder |
+| `GEL_FOLDER` | Overrides the indexed folders; several paths separated by `:` |
 | `GEL_CLOUD_BASE_URL`, `GEL_CLOUD_API_KEY`, `GEL_CLOUD_MODEL` | Configure and enable the cloud fallback for testing. Set them in your shell only; never commit them |
 
 ## Code style
