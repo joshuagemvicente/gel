@@ -13,7 +13,7 @@ A ~1-minute demo video is a required submission field, it is what the X post ([S
 ## Current state
 
 - Nothing recorded. The app UI isn't built yet (`Gel/Gel/GelApp.swift` is a placeholder); recording waits for the 06:00 freeze.
-- **`ffmpeg` is not installed** on the Mac. It's needed for frame extraction, cutting, speed changes, captions and export: `brew install ffmpeg` (Claude runs it after the user agrees).
+- `ffmpeg` 9.0.2 is installed (Homebrew). It has no `drawtext` or `subtitles` filter, so captions are rendered as transparent PNGs (Swift + CoreText, SF Pro) and composited with `overlay`. `media/raw`, `media/frames` and `media/out` exist and are git-ignored.
 
 ## Facts and gotchas
 

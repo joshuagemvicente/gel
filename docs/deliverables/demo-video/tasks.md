@@ -2,7 +2,7 @@
 
 Legend: `[x]` done and verified · `[~]` done, not verified · `[ ]` not started. Owner in brackets.
 
-- [ ] **T1 Tooling.** [Claude, after user OK] `brew install ffmpeg`; add `media/` to `.gitignore`; create `media/raw`, `media/frames`, `media/out`. **Verify:** `ffmpeg -version` runs; `ffmpeg -filters | grep drawtext` shows the filter (else switch to PNG captions); `git status` doesn't list `media/`.
+- [x] **T1 Tooling.** _(Oct 9 22:15: ffmpeg 9.0.2 installed; no `drawtext`/`subtitles` in the Homebrew build, so captions are PNG overlays rendered by a small Swift/CoreText script; `overlay`, `setpts`, `xfade`, `tile`, libx264 and aac confirmed; `media/` git-ignored and created.)_ [Claude, after user OK] `brew install ffmpeg`; add `media/` to `.gitignore`; create `media/raw`, `media/frames`, `media/out`. **Verify:** `ffmpeg -version` runs; `ffmpeg -filters | grep drawtext` shows the filter (else switch to PNG captions); `git status` doesn't list `media/`.
 - [ ] **T2 Shot list final.** [Claude] Update [design.md](design.md) → Shots to what's actually built at the 06:00 freeze (check each feature's `tasks.md`). **Verify:** user agrees with the list.
 - [ ] **T3 Record.** [user, ~06:00–06:30] Follow Recording setup; record S01–S06 (+S07) into `media/raw/`. **Verify:** every file exists and opens in QuickTime.
 - [ ] **T4 Review footage.** [Claude] Extract frames at 2 fps into contact sheets; check for private data and failed takes; pick the best takes and cut points. **Verify:** `cut-list.md` lists every segment with in/out times; problem takes reported to the user for re-recording.
