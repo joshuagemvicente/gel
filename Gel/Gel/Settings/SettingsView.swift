@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var testing = false
     @State private var micStatus = AVCaptureDevice.authorizationStatus(for: .audio)
     @State private var axTrusted = AXIsProcessTrusted()
+    @State private var removing: String?
 
     private let env = ProcessInfo.processInfo.environment
     private var org: String? { state.policy?.organization }
@@ -24,7 +25,7 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                ModuleHeader(title: "Settings").padding(.bottom, 6)
+                ModuleHeader(title: "Settings", subtitle: "Everything here stays on this Mac.").padding(.bottom, 6)
                 folderCard
                 packsCard
                 modelsCard
@@ -35,31 +36,105 @@ struct SettingsView: View {
             }
             .frame(maxWidth: 640, alignment: .leading)
             .padding(28)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .onAppear { refreshPermissions() }
     }
 
+    private static let sectionOrder = ["Folders", "Packs", "Models", "Cloud fallback", "Hotkeys", "Permissions", "Policy"]
+    private static let sectionSymbols = ["Folders": "folder", "Packs": "square.stack.3d.up", "Models": "cpu", "Cloud fallback": "cloud",
+                                         "Hotkeys": "command", "Permissions": "hand.raised", "Policy": "building.2"]
+
     private func section<C: View>(_ title: String, _ subtitle: String, @ViewBuilder _ content: () -> C) -> some View {
         Card {
             VStack(alignment: .leading, spacing: 10) {
-                Text(title).font(.system(size: 15, weight: .semibold))
-                Text(subtitle).font(.system(size: 12)).foregroundStyle(Theme.textSecondary)
+                HStack(spacing: 10) {
+                    IconChip(symbol: Self.sectionSymbols[title] ?? "gearshape", size: 26)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(title).font(.system(size: 15, weight: .semibold))
+                        Text(subtitle).font(.system(size: 12)).foregroundStyle(Theme.textSecondary)
+                    }
+                }
+                .padding(.bottom, 2)
                 content()
             }
         }
+        .staggeredAppear(Self.sectionOrder.firstIndex(of: title) ?? 0, rise: 8)
     }
 
     private var folderCard: some View {
-        section("Folder", "Gel reads this folder and its subfolders. Files never leave your Mac.") {
-            HStack {
-                Text(state.folderPath ?? "No folder chosen").font(.system(size: 12, design: .monospaced)).lineLimit(1).truncationMode(.middle)
-                Spacer()
-                Button("Choose…") { chooseFolder() }
-                Button("Reindex now") { Task { await state.indexNow() } }.disabled(state.folderPath == nil)
+        section("Folders", "Gel reads these folders and their subfolders. Files never leave your Mac.") {
+            let docs = Store.shared.documents()
+            if state.folderPaths.isEmpty {
+                Text("No folders yet. Add the folders Gel should read.").font(.system(size: 12)).foregroundStyle(Theme.textSecondary)
+            } else {
+                VStack(spacing: 0) {
+                    ForEach(Array(state.folderPaths.enumerated()), id: \.element) { i, path in
+                        if i > 0 { Rectangle().fill(Theme.hairline).frame(height: 1) }
+                        folderRow(path, count: docs.filter { FolderList.contains(path, $0.path) }.count)
+                    }
+                }
             }
-            Text("\(Store.shared.documents().count) files · \(Store.shared.chunkCount) passages indexed")
-                .font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+            if state.folderPathsLocked {
+                Text("Set by environment variable (GEL_FOLDER).").font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+            }
+            HStack {
+                if !state.folderPathsLocked { Button("Add folders…") { chooseFolders() } }
+                Button("Reindex now") { Task { await state.indexNow() } }.disabled(state.folderPaths.isEmpty)
+                Spacer()
+                Text("\(docs.count) files · \(Store.shared.chunkCount) passages")
+                    .font(.system(size: 11).monospacedDigit()).foregroundStyle(Theme.textSecondary)
+            }
+            ForEach(state.folderNotes, id: \.self) { note in
+                Text(note).font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+            }
+            ForEach(Array(state.unreadable.enumerated()), id: \.offset) { _, f in
+                Text("Couldn't read \(f.name): \(f.reason)").font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+            }
         }
+        .confirmationDialog("Stop reading \(removing.map { URL(fileURLWithPath: $0).lastPathComponent } ?? "")?",
+                            isPresented: Binding(get: { removing != nil }, set: { if !$0 { removing = nil } }),
+                            titleVisibility: .visible, presenting: removing) { path in
+            Button("Remove", role: .destructive) { state.removeFolder(path) }
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("Its files leave Gel's index. Nothing on your Mac is deleted.")
+        }
+    }
+
+    private func folderRow(_ path: String, count: Int) -> some View {
+        let name = URL(fileURLWithPath: path).lastPathComponent
+        let missing = state.missingFolders.contains(path)
+        return HStack(spacing: 10) {
+            Image(systemName: "folder").font(.system(size: 13)).foregroundStyle(Theme.textSecondary).frame(width: 18)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(name).font(.system(size: 13, weight: .medium))
+                Text((path as NSString).abbreviatingWithTildeInPath)
+                    .font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.textSecondary)
+                    .lineLimit(1).truncationMode(.middle)
+            }
+            Spacer(minLength: 8)
+            if missing {
+                Label("Not found", systemImage: "exclamationmark.triangle.fill")
+                    .font(.system(size: 11)).foregroundStyle(Theme.danger)
+                    .help("Your index is kept until the folder is back or you remove it.")
+            } else {
+                Text("\(count) file\(count == 1 ? "" : "s")")
+                    .font(.system(size: 11).monospacedDigit()).foregroundStyle(Theme.textSecondary)
+            }
+            if !state.folderPathsLocked {
+                Button { removing = path } label: {
+                    Image(systemName: "xmark").font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(Theme.textSecondary)
+                        .frame(width: 18, height: 18)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help("Remove \(name)")
+                .accessibilityLabel("Remove \(name)")
+            }
+        }
+        .padding(.vertical, 8)
     }
 
     private var packsCard: some View {
@@ -84,8 +159,9 @@ struct SettingsView: View {
             LabeledContent("Chat model", value: GelSettings.shared.localModel)
             LabeledContent("Embedding model", value: GelSettings.shared.embedModel)
             HStack {
-                Circle().fill(state.localStatus == .unavailable ? Theme.danger : Theme.accent).frame(width: 8, height: 8)
-                Text(state.localStatus == .unavailable ? "Ollama isn't running. Start it with `brew services start ollama`." : "Ollama is running.")
+                StatusDot(color: state.localStatus == .unavailable ? Theme.danger : Theme.accent, pulsing: state.localStatus == .checking)
+                Text(!state.missingModels.isEmpty ? "Model missing. Run: ollama pull \(state.missingModels.joined(separator: " "))"
+                     : state.localStatus == .unavailable ? "Ollama isn't running. Start it with `brew services start ollama`." : "Ollama is running.")
                     .font(.system(size: 12))
                 Spacer()
                 Button("Warm up") { Task { await ModelRouter.shared.warmUp(); state.refreshHealth() } }
@@ -191,12 +267,14 @@ struct SettingsView: View {
         }
     }
 
-    private func chooseFolder() {
+    private func chooseFolders() {
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
-        panel.allowsMultipleSelection = false
-        if panel.runModal() == .OK, let url = panel.url { state.setFolder(url) }
+        panel.allowsMultipleSelection = true
+        panel.message = "Choose one or more folders. ⌘-click to select several."
+        panel.prompt = "Add"
+        if panel.runModal() == .OK { state.addFolders(panel.urls) }
     }
 
     private func test() {

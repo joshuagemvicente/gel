@@ -6,7 +6,7 @@
 
 | Section | Controls | Notes |
 | --- | --- | --- |
-| Folder | Current folder path, **Choose…** (`NSOpenPanel`, folders only), **Reindex now**, index stats (files, chunks) | Changing the folder indexes it immediately |
+| Folders | A list of folders with **Add folders…** (multi-select), per-row remove, **Reindex now**, index stats; see [multi-folder](../multi-folder/spec.md) | Adding a folder indexes it immediately |
 | Packs | A toggle per selectable pack with its description | Required packs from the policy are on and locked |
 | Models | Local model and embedding model names, Ollama status (✓ / not running + how to start), warm-up button | Defaults from `GelSettings` |
 | Cloud fallback | Enable toggle, Base URL, API key (secure field → Keychain), Model, first-token and total timeouts, **Test connection** (`GET {base}/models` → "OK · n models" or the error text) | Enable only when URL and model are set; locked if the policy disallows cloud |

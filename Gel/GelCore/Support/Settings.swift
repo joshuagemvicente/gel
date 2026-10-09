@@ -27,16 +27,32 @@ public enum GelPaths {
 /// User-facing settings. Non-secret values live in UserDefaults; the cloud API key lives in the Keychain.
 public final class GelSettings {
     public static let shared = GelSettings()
-    private let defaults = UserDefaults(suiteName: "com.joshuagemvicente.gel") ?? .standard
-    private let env = ProcessInfo.processInfo.environment
+    private let defaults: UserDefaults
+    private let env: [String: String]
+
+    public init(defaults: UserDefaults = UserDefaults(suiteName: "com.joshuagemvicente.gel") ?? .standard,
+                env: [String: String] = ProcessInfo.processInfo.environment) {
+        self.defaults = defaults
+        self.env = env
+    }
 
     public static let defaultLocalModel = "qwen3:4b-instruct-2507-q4_K_M"
     public static let defaultEmbedModel = "bge-m3"
 
-    public var folderPath: String? {
-        get { env["GEL_FOLDER"] ?? defaults.string(forKey: "folderPath") }
-        set { defaults.set(newValue, forKey: "folderPath") }
+    /// The folders Gel reads. `GEL_FOLDER` (paths separated by ":") overrides the stored list. Before U10 a single
+    /// `folderPath` was stored; it becomes the first entry until the list is saved.
+    public var folderPaths: [String] {
+        get {
+            if folderPathsFromEnvironment, let e = env["GEL_FOLDER"] {
+                return e.split(separator: ":").map { FolderList.standardize(String($0)) }
+            }
+            if let list = defaults.stringArray(forKey: "folderPaths") { return list }
+            return defaults.string(forKey: "folderPath").map { [FolderList.standardize($0)] } ?? []
+        }
+        set { defaults.set(newValue, forKey: "folderPaths") }
     }
+
+    public var folderPathsFromEnvironment: Bool { !(env["GEL_FOLDER"] ?? "").isEmpty }
 
     public var localBaseURL: String {
         get { defaults.string(forKey: "localBaseURL") ?? "http://localhost:11434" }
@@ -44,7 +60,7 @@ public final class GelSettings {
     }
 
     public var localModel: String {
-        get { defaults.string(forKey: "localModel") ?? Self.defaultLocalModel }
+        get { env["GEL_LOCAL_MODEL"] ?? defaults.string(forKey: "localModel") ?? Self.defaultLocalModel }
         set { defaults.set(newValue, forKey: "localModel") }
     }
 

@@ -33,12 +33,27 @@ struct LibraryView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                ModuleHeader(title: "Library")
+                ModuleHeader(title: "Library", subtitle: "\(documents.count) file\(documents.count == 1 ? "" : "s") · read on this Mac")
                 Spacer()
-                if let p = state.indexProgress {
-                    Text("Indexing \(p.done + 1) of \(p.total)").font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
-                    ProgressView(value: Double(p.done), total: Double(max(p.total, 1))).frame(width: 90)
+                // Always in the layout; fades while indexing (see MainView.statusFooter).
+                let p = state.indexProgress
+                HStack(spacing: 8) {
+                    Text(p.map { "Reading \(min($0.done + 1, $0.total)) of \($0.total)" } ?? "")
+                        .font(.system(size: 11).monospacedDigit()).foregroundStyle(Theme.textSecondary)
+                    GelProgressBar(value: Double(p?.done ?? 0), total: Double(p?.total ?? 1), animated: false).frame(width: 90)
                 }
+                .opacity(p == nil ? 0 : 1)
+                .animation(Motion.smooth, value: p == nil)
+            }
+            if !state.missingFolders.isEmpty {
+                let names = state.missingFolders.sorted().map { URL(fileURLWithPath: $0).lastPathComponent }.joined(separator: ", ")
+                Label("Not found: \(names). Reconnect the drive or check Settings → Folders. Your index is kept.", systemImage: "exclamationmark.triangle")
+                    .font(.system(size: 12)).foregroundStyle(Theme.danger)
+            }
+            if !state.unreadable.isEmpty {
+                Label("\(state.unreadable.count) file\(state.unreadable.count == 1 ? "" : "s") couldn't be read", systemImage: "doc.badge.ellipsis")
+                    .font(.system(size: 12)).foregroundStyle(Theme.textSecondary)
+                    .help(state.unreadable.map { "\($0.name): \($0.reason)" }.joined(separator: "\n"))
             }
             HStack {
                 Picker("", selection: $filter) { ForEach(LibraryFilter.allCases) { Text($0.rawValue).tag($0) } }
@@ -49,7 +64,7 @@ struct LibraryView: View {
             if documents.isEmpty {
                 EmptyStateView(symbol: "books.vertical", title: "No files yet", hint: "Choose a folder in Settings and Gel will read it on this Mac.")
                     .overlay(alignment: .bottom) {
-                        Button("Open Settings") { state.selectedModule = .settings }.padding(.bottom, 80)
+                        Button("Open Settings") { state.selectedModule = .settings }.buttonStyle(.gelPrimary).padding(.bottom, 80)
                     }
             } else {
                 HStack(spacing: 14) {
@@ -72,7 +87,7 @@ struct LibraryView: View {
             List(filtered, selection: $selection) { doc in
                 HStack(spacing: 8) {
                     Image(systemName: doc.kind == .image ? "photo" : (doc.kind == .docx ? "doc.text" : "doc.richtext"))
-                        .foregroundStyle(Theme.textSecondary).frame(width: 16)
+                        .foregroundStyle(selection.contains(doc.id) ? Theme.accent : Theme.textSecondary).frame(width: 16)
                     Text(doc.name).lineLimit(1).truncationMode(.middle).font(.system(size: 12.5))
                     Spacer()
                     if doc.hasOCR { Text("OCR").font(.system(size: 9.5, weight: .semibold)).foregroundStyle(Theme.textSecondary) }
@@ -98,27 +113,42 @@ struct LibraryView: View {
                 Text(selection.isEmpty ? "Select files to redact" : "Redact \(selection.count) file\(selection.count == 1 ? "" : "s")")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent).tint(Theme.accent)
+            .buttonStyle(.gelPrimary)
             .disabled(selection.isEmpty)
+            .animation(Motion.snappy, value: selection.count)
             .padding(10)
         }
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Theme.hairline))
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Theme.hairline))
     }
 
     @ViewBuilder private var viewer: some View {
         if let doc = shown {
-            VStack(spacing: 6) {
+            VStack(spacing: 8) {
                 DocumentViewer(document: doc, citation: highlight)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Theme.hairline))
-                Text(highlight.map { "\(doc.name) · page \($0.page + 1) of \(doc.pageCount)" } ?? doc.name)
-                    .font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Theme.hairline))
+                    .id(doc.id)
+                    .transition(.opacity)
+                HStack(spacing: 8) {
+                    Text(doc.name).font(.system(size: 11)).foregroundStyle(Theme.textSecondary).lineLimit(1).truncationMode(.middle)
+                    if let c = highlight {
+                        Label("Cited passage · page \(c.page + 1) of \(doc.pageCount)", systemImage: "quote.opening")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(Theme.accent)
+                            .padding(.horizontal, 8).padding(.vertical, 3)
+                            .background(Theme.accentSoft, in: Capsule())
+                            .transition(.popIn)
+                    }
+                }
+                .animation(Motion.pop, value: highlight)
             }
+            .animation(Motion.fade, value: doc.id)
         } else {
             EmptyStateView(symbol: "doc.text.magnifyingglass", title: "Select a file",
                            hint: "Or click a citation in the launcher to open the exact page.")
-                .background(Theme.card, in: RoundedRectangle(cornerRadius: 12))
+                .background(Theme.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Theme.hairline))
         }
     }
 
@@ -182,7 +212,7 @@ struct DocumentViewer: NSViewRepresentable {
             let view = PDFView()
             view.autoScales = true
             view.displayMode = .singlePageContinuous
-            view.backgroundColor = NSColor(hex: 0xEFECE6)
+            view.backgroundColor = Theme.viewerBackground
             let pdf: PDFDocument?
             if document.kind == .image {
                 let doc = PDFDocument()

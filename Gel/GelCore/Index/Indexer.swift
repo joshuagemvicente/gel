@@ -1,4 +1,5 @@
 import Foundation
+import PDFKit
 
 /// Calls Ollama's embedding endpoint. Vectors are L2-normalized so the store can use a plain dot product.
 public final class Embedder {
@@ -31,6 +32,20 @@ public final class Embedder {
     }
 }
 
+public struct IndexResult {
+    public var indexed: Int
+    /// Files that couldn't be read (password-protected, corrupt…), with a short reason.
+    public var failures: [(name: String, reason: String)]
+}
+
+public enum IndexError: Error, LocalizedError {
+    case folderMissing(String)
+    public var errorDescription: String? {
+        if case .folderMissing(let p) = self { return "Folder not found: \(p)" }
+        return nil
+    }
+}
+
 public struct IndexProgress: Equatable {
     public var done: Int
     public var total: Int
@@ -38,7 +53,7 @@ public struct IndexProgress: Equatable {
     public var isRunning: Bool { done < total }
 }
 
-/// Indexes one folder: extracts text (OCR for scans), chunks it, embeds the chunks and saves everything locally.
+/// Indexes the chosen folders: extracts text (OCR for scans), chunks it, embeds the chunks and saves everything locally.
 public final class Indexer {
     public let store: Store
     public let embedder: Embedder
@@ -51,10 +66,17 @@ public final class Indexer {
     public static func supportedFiles(in folder: URL) -> [URL] {
         guard let e = FileManager.default.enumerator(at: folder, includingPropertiesForKeys: [.contentModificationDateKey],
                                                      options: [.skipsHiddenFiles]) else { return [] }
+        // The enumerator resolves symlinks in the folder's own path (/tmp → /private/tmp). Rebase what it returns onto
+        // the folder as listed, so document paths stay under it and pruning matches.
+        let given = FolderList.standardize(folder.path)
+        let real = realpath(given, nil).map { p in defer { free(p) }; return String(cString: p) } ?? given
         var urls: [URL] = []
-        for case let url as URL in e where DocKind.from(url: url) != nil {
+        for case var url as URL in e where DocKind.from(url: url) != nil {
             // Skip Gel's own redacted outputs so they don't get re-indexed.
             if url.pathComponents.contains("Redacted") { continue }
+            if real != given, url.path.hasPrefix(real + "/") {
+                url = URL(fileURLWithPath: given + url.path.dropFirst(real.count))
+            }
             urls.append(url)
         }
         return urls.sorted { $0.path < $1.path }
@@ -72,23 +94,61 @@ public final class Indexer {
         }
     }
 
-    /// Removes index entries for files that no longer exist in the folder.
-    public func pruneMissing(in folder: URL) {
-        let present = Set(Self.supportedFiles(in: folder).map(\.path))
-        for doc in store.documents() where doc.path.hasPrefix(folder.path) && !present.contains(doc.path) {
+    public static func folderExists(_ folder: URL) -> Bool {
+        var isDir: ObjCBool = false
+        return FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDir) && isDir.boolValue
+            && FileManager.default.isReadableFile(atPath: folder.path)
+    }
+
+    /// Removes documents that live outside every listed folder (after a folder is removed from the list).
+    public func pruneOutside(_ folders: [URL]) {
+        let paths = folders.map { FolderList.standardize($0.path) }
+        for doc in store.documents() where !paths.contains(where: { FolderList.contains($0, doc.path) }) {
             try? store.removeDocument(id: doc.id)
         }
     }
 
-    public func index(folder: URL, progress: ((IndexProgress) -> Void)? = nil) async throws -> Int {
-        pruneMissing(in: folder)
-        let files = pending(in: folder)
+    /// Removes index entries for files that no longer exist in the folder. Never runs when the folder itself is
+    /// missing (unplugged drive, renamed folder), so a temporary outage can't wipe the index.
+    public func pruneMissing(in folder: URL) {
+        guard Self.folderExists(folder) else { return }
+        let present = Set(Self.supportedFiles(in: folder).map(\.path))
+        let root = FolderList.standardize(folder.path)
+        for doc in store.documents() where FolderList.contains(root, doc.path) && !present.contains(doc.path) {
+            try? store.removeDocument(id: doc.id)
+        }
+    }
+
+    @discardableResult
+    public func index(folder: URL, progress: ((IndexProgress) -> Void)? = nil) async throws -> IndexResult {
+        guard Self.folderExists(folder) else { throw IndexError.folderMissing(folder.path) }
+        return await index(folders: [folder], progress: progress)
+    }
+
+    /// Indexes every reachable folder in one pass, so progress counts files across all of them. A missing folder is
+    /// skipped and nothing under it is pruned (E2).
+    @discardableResult
+    public func index(folders: [URL], progress: ((IndexProgress) -> Void)? = nil) async -> IndexResult {
+        let reachable = folders.filter { Self.folderExists($0) }
+        for folder in reachable { pruneMissing(in: folder) }
+        let files = reachable.flatMap { pending(in: $0) }
+        var failures: [(name: String, reason: String)] = []
         for (i, url) in files.enumerated() {
             progress?(IndexProgress(done: i, total: files.count, current: url.lastPathComponent))
-            do { try await index(file: url) } catch { NSLog("Gel: failed to index \(url.lastPathComponent): \(error)") }
+            do { try await index(file: url) } catch {
+                NSLog("Gel: failed to index \(url.lastPathComponent): \(error)")
+                failures.append((url.lastPathComponent, Self.reason(for: error, url: url)))
+            }
         }
         progress?(IndexProgress(done: files.count, total: files.count, current: ""))
-        return files.count
+        return IndexResult(indexed: files.count - failures.count, failures: failures)
+    }
+
+    static func reason(for error: Error, url: URL) -> String {
+        if url.pathExtension.lowercased() == "pdf", let pdf = PDFDocument(url: url), pdf.isLocked { return "password-protected" }
+        if error is TextExtraction.ExtractionError { return "unreadable or corrupt" }
+        if error is LLMError || (error as NSError).domain == NSURLErrorDomain { return "embedding failed (is Ollama running?)" }
+        return "couldn't be read"
     }
 
     public func index(file url: URL) async throws {

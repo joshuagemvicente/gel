@@ -36,6 +36,9 @@ The shared look and feel for every Gel window. Other UI features reference this 
 | `accent` (deep green) | #1F7A4D | #3FB27A |
 | `accentSoft` | accent at 12% | accent at 18% |
 | `danger` | #B3402E | #E0705C |
+| `dangerSoft` | danger at 12% | danger at 18% |
+| `accentFill` (behind white text) | #1F7A4D | #217F51 |
+| `hover` | text at 5% | text at 6% |
 
 - Radii: cards 12 pt, chips/badges 999 (capsule), inputs 10 pt.
 - Spacing scale: 4, 8, 12, 16, 24, 32.
@@ -50,7 +53,10 @@ The shared look and feel for every Gel window. Other UI features reference this 
 | `CitationChip(citation)` | Capsule button `1 · Resume_REYES p.2` |
 | `StatCard(value, label)` | Serif number + caption label |
 | `LockedLabel(org)` | Lock glyph + "Managed by <org>" in textSecondary |
-| `EmptyState(symbol, title, hint)` | Centered, quiet |
+| `EmptyState(symbol, title, hint)` | Centered, quiet; symbol in a 56 pt accent-soft circle |
+| `IconChip(symbol)`, `SectionLabel`, `GelProgressBar`, `KeyHint` | Added by [polish](../polish/design.md) |
+| `GelButtonStyle` (`.gelPrimary` / `.gelSecondary`) | Brand buttons; accent fill stays when the window isn't key |
+| `GelMark` / `GelDrop` | Brand mark (Brand.swift); same path as the app icon (`GelDropPath.swift`) |
 
 ## Menu bar
 
@@ -59,6 +65,7 @@ The shared look and feel for every Gel window. Other UI features reference this 
 
 ## Motion and accessibility
 
-- 150–250 ms ease-out transitions; none when Reduce Motion is on.
+- Motion tokens `Motion.snappy` / `.smooth` / `.pop` (critically damped springs; `pop` for arrivals only) and the stagger helper live in `Theme.swift`; values and per-surface rules in [polish/design.md](../polish/design.md). Reduce Motion turns every one into a 150 ms cross-fade.
+- No continuous animation in the main window, and no window-frame animation while SwiftUI animates ([D-047](../../project/decisions.md)).
 - Every control has an accessibility label; badges read "Answered on this Mac" / "Answered by cloud fallback".
 - Minimum hit target 28 pt; text contrast ≥ 4.5:1 against its background.

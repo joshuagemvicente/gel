@@ -4,7 +4,7 @@
 
 ## Behaviour
 
-- **Scope:** one folder chosen at first launch (Settings → HR Files folder). Subfolders included. Files under any folder named `Redacted` are skipped (Gel's own outputs). Hidden files skipped.
+- **Scope:** the folders listed in Settings → Folders ([multi-folder](../multi-folder/spec.md); was one folder before U10). Subfolders included. Files under any folder named `Redacted` are skipped (Gel's own outputs). Hidden files skipped.
 - **File types:** PDF (`.pdf`), images (`.jpg .jpeg .png .heic .tif .tiff`), Word (`.docx`), text (`.txt .md`).
 - **Text:** PDF pages with ≥ 20 non-space characters use the PDFKit text layer. Other PDF pages are rendered at 2× and read with Vision OCR (`.accurate`, language correction on, `en-US` plus any `fil*` language Vision supports). Images are OCR'd. DOCX via `NSAttributedString(.officeOpenXML)` as one page.
 - **OCR geometry:** each OCR line keeps its normalized bounding box (bottom-left origin) and its start offset in the page text, so citations and redactions can be drawn on scans.
@@ -19,6 +19,10 @@
 - **Missing folder:** if the chosen folder doesn't exist or can't be read (drive unplugged, renamed), the rescan is skipped and nothing is pruned; the app shows "Folder not found" until it's back or changed.
 - **Changing folders:** documents outside the newly chosen folder are removed from the index.
 - **Unreadable files:** files that fail to extract (password-protected, corrupt) are collected with a short reason; the Library and Settings show "n files couldn't be read" with the list.
+
+## Scans with a tiny text layer (Q1)
+
+A PDF page with fewer than **200** non-space text-layer characters (e.g. a "Scanned with CamScanner" stamp on a photo) is **also** OCR'd. Its page text is the text layer, a newline, then the OCR text; OCR line offsets start after the text layer, so citations still highlight the right lines.
 
 ## Acceptance criteria
 

@@ -12,3 +12,5 @@ Status: `[x]` done and verified · `[~]` built, not verified · `[ ]` not starte
   **Verify:** CSV + PDF written and revealed; a script confirms no ground-truth values or file names inside.
 
 Done when: all [spec.md](spec.md) acceptance criteria are observed passing.
+- [ ] **T5 R4 engine: preview API.** `Redactor.renderPages(url:findings:keep:) -> [RenderedPage]` (original image, redacted image, boxes with value + kept flag, page size) shared with `redactFile`, so After == the saved file. Owner: engine session. **Verify:** unit/CLI check — the saved PDF page image equals the preview's redacted image for the same inputs.
+- [ ] **T6 R4 UI: Before | After review.** Header copy, file tabs, side-by-side pages with outlines/kept tags, page arrows, findings list with live toggles and jump-to, live button counts. Owner: UI-polish session. **Verify:** redact 3 resumes → untick one name → Before shows it dashed "kept", After shows it visible, button reads "Black out N−1 items · Save 3 copies"; the saved file matches After.

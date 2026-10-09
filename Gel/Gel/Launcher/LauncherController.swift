@@ -46,8 +46,9 @@ final class LauncherController: NSObject, NSWindowDelegate {
         model.prepareForShow()
         fitToContent()
         panel.alphaValue = 0
+        // Q7: a non-activating panel takes keyboard focus without activating Gel, so the main window stays put
+        // and focus returns to the previous app (e.g. Chrome) when the launcher closes.
         panel.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? 0 : 0.15
             panel.animator().alphaValue = 1
@@ -95,6 +96,7 @@ final class LauncherController: NSObject, NSWindowDelegate {
         guard abs(frame.height - height) > 0.5 else { return }
         frame.origin.y += frame.height - height
         frame.size.height = height
+        // Instant on purpose: animating the frame while SwiftUI animations run loops AppKit's constraint pass (D-047).
         panel.setFrame(frame, display: true, animate: false)
     }
 
@@ -112,6 +114,8 @@ final class LauncherModel: ObservableObject {
     @Published var focusTick = 0
     var close: (() -> Void)?
     private var task: Task<Void, Never>?
+    /// E1: each question gets its own run id; tokens from an older run are dropped.
+    private var runId = 0
     let voice = VoiceRecorder.shared
 
     func prepareForShow() {
@@ -145,6 +149,8 @@ final class LauncherModel: ObservableObject {
             return
         }
         task?.cancel()
+        runId += 1
+        let run = runId
         answer = nil
         answerText = ""
         phase = .waiting
@@ -152,17 +158,22 @@ final class LauncherModel: ObservableObject {
             do {
                 let result = try await QueryEngine.shared.ask(q) { token in
                     Task { @MainActor in
+                        guard run == self.runId else { return }
                         self.answerText += token
                         if self.phase == .waiting { self.phase = .streaming }
                     }
                 }
+                guard run == runId else { return }
                 // Replace the streamed text with the cleaned final answer.
                 answer = result
                 answerText = result.text
                 phase = .done
                 NotificationCenter.default.post(name: .gelActivityChanged, object: nil)
                 AppState.shared.refreshHealth()
+            } catch is CancellationError {
+                return
             } catch {
+                guard run == runId else { return }
                 phase = .error((error as? LocalizedError)?.errorDescription ?? error.localizedDescription)
             }
         }

@@ -12,7 +12,7 @@ Status: `[x]` done and verified · `[~]` built, not verified · `[ ]` not starte
   **Verify:** copy a PDF into the indexed folder while the app runs → `Store.shared.documents()` count rises within 10 s (Library shows it).
 - [x] **T5 Theme and shared components.** Color tokens (asset colors or a `Theme` enum with light/dark), `Card`, `ProviderBadge`, `CitationChip`, `StatCard`, `LockedLabel`, `EmptyState`.
   **Verify:** a SwiftUI preview or debug screen renders each component in light and dark mode.
-- [ ] **T6 App icon.** A generic droplet icon in the accent green (asset catalog `AppIcon`; add the catalog to `project.yml`).
+- [~] **T6 App icon.** Built by polish T2 (Gel drop on a warm squircle, `scripts/make_icon`). Originally: a generic droplet icon in the accent green (asset catalog `AppIcon`; add the catalog to `project.yml`).
   **Verify:** Dock shows the icon after a clean build.
 
 Done when: all [spec.md](spec.md) acceptance criteria are observed passing.

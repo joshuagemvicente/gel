@@ -54,7 +54,7 @@ final class AppState: ObservableObject {
     @Published var localStatus: LocalStatus = .checking
     @Published var policy: TeamPolicy?
     @Published var activePacks: [String] = GelSettings.shared.activePacks
-    @Published var folderPath: String? = GelSettings.shared.folderPath
+    @Published var folderPaths: [String] = GelSettings.shared.folderPaths
     @Published var leakGuardPaused = false
     /// Set when a citation should be opened in the Library viewer.
     @Published var pendingCitation: Citation?
@@ -62,6 +62,14 @@ final class AppState: ObservableObject {
     @Published var pendingHistoryId: Int64?
     @Published var showOnboarding = !GelSettings.shared.onboardingDone
     @Published var documentsVersion = 0
+    /// Listed folders that are missing or unreadable (E2); their part of the index is kept untouched.
+    @Published var missingFolders: Set<String> = []
+    /// Notes from the last add, e.g. "Already included in HR Files."
+    @Published var folderNotes: [String] = []
+    /// Files that couldn't be read in the last indexing pass (E8).
+    @Published var unreadable: [(name: String, reason: String)] = []
+    /// Required Ollama models that aren't installed (Q5); shown as "Model missing — run ollama pull …".
+    @Published var missingModels: [String] = []
     @Published var activityVersion = 0
 
     private var rescanTimer: Timer?
@@ -74,6 +82,7 @@ final class AppState: ObservableObject {
 
     func start() {
         reloadPolicy()
+        Indexer().pruneOutside(folderURLs)
         startRescan()
         Task { await ModelRouter.shared.warmUp() }
         refreshHealth()
@@ -96,9 +105,11 @@ final class AppState: ObservableObject {
 
     func refreshHealth() {
         Task {
-            let healthy = await ModelRouter.shared.localIsHealthy()
+            let missing = await ModelRouter.shared.missingLocalModels()
+            let healthy = missing?.isEmpty == true
             let cooldown = ModelRouter.shared.isInCloudCooldown
             await MainActor.run {
+                missingModels = missing ?? []
                 if cooldown { localStatus = .cloudActive }
                 else { localStatus = healthy ? .healthy : .unavailable }
             }
@@ -123,10 +134,37 @@ final class AppState: ObservableObject {
 
     // MARK: - Folder and indexing
 
-    func setFolder(_ url: URL) {
-        settings.folderPath = url.path
-        folderPath = url.path
+    var folderPathsLocked: Bool { settings.folderPathsFromEnvironment }
+    private var folderURLs: [URL] { folderPaths.map { URL(fileURLWithPath: $0) } }
+
+    /// Adds folders (duplicates and nested folders are folded in by `FolderList`) and indexes what's new.
+    func addFolders(_ urls: [URL]) {
+        guard !folderPathsLocked else { return }
+        let (list, notes) = FolderList.adding(urls.map(\.path), to: folderPaths)
+        folderNotes = notes.map { note in
+            let name = { (p: String) in URL(fileURLWithPath: p).lastPathComponent }
+            switch note {
+            case .alreadyIncluded(_, let parent): return "Already included in \(name(parent))."
+            case .replaced(let parent, let n): return "\(name(parent)) now includes \(n) folder\(n == 1 ? "" : "s") you'd added."
+            }
+        }
+        guard list != folderPaths else { return }
+        settings.folderPaths = list
+        folderPaths = list
+        documentsVersion += 1
         Task { await indexNow() }
+    }
+
+    /// Stops reading a folder: its documents leave the index. Files on disk are untouched.
+    func removeFolder(_ path: String) {
+        guard !folderPathsLocked else { return }
+        folderPaths.removeAll { $0 == path }
+        settings.folderPaths = folderPaths
+        missingFolders.remove(path)
+        folderNotes = []
+        unreadable = []
+        Indexer().pruneOutside(folderURLs)
+        documentsVersion += 1
     }
 
     private func startRescan() {
@@ -137,22 +175,26 @@ final class AppState: ObservableObject {
     }
 
     func indexNow(onlyIfPending: Bool = false) async {
-        guard !isIndexing, let path = folderPath else { return }
-        let folder = URL(fileURLWithPath: path)
+        guard !isIndexing, !folderPaths.isEmpty else { return }
+        // E2: a missing folder (unplugged drive, renamed) is skipped and never prunes the index.
+        let missing = Set(folderPaths.filter { !Indexer.folderExists(URL(fileURLWithPath: $0)) })
+        if missing != missingFolders { missingFolders = missing }
+        let reachable = folderURLs.filter { !missing.contains($0.path) }
         let indexer = Indexer()
-        if onlyIfPending && indexer.pending(in: folder).isEmpty { return }
+        if onlyIfPending && reachable.allSatisfy({ indexer.pending(in: $0).isEmpty }) { return }
         isIndexing = true
         defer { isIndexing = false }
-        do {
-            _ = try await indexer.index(folder: folder) { progress in
-                Task { @MainActor in
-                    AppState.shared.indexProgress = progress.isRunning ? progress : nil
-                }
+        let result = await indexer.index(folders: reachable) { progress in
+            Task { @MainActor in
+                // Publish only real changes (one per file), so bound UI doesn't re-layout on every tick.
+                let next: IndexProgress? = progress.isRunning ? progress : nil
+                if AppState.shared.indexProgress != next { AppState.shared.indexProgress = next }
             }
-        } catch {
-            NSLog("Gel: indexing failed: \(error)")
         }
-        indexProgress = nil
+        if !result.failures.isEmpty || !onlyIfPending { unreadable = result.failures }
+        // A folder removed while this pass ran may have had files re-added; drop them.
+        indexer.pruneOutside(folderURLs)
+        if indexProgress != nil { indexProgress = nil }
         documentsVersion += 1
     }
 

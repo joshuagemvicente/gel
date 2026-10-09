@@ -1,13 +1,16 @@
 import Foundation
 import GelCore
+import ImageIO
 
 // gelcli — exercise Gel's core from the terminal.
-//   gelcli index <folder>
+//   gelcli index <folder> [<folder>…]
 //   gelcli search "<question>"
 //   gelcli ask "<question>"
 //   gelcli detect [--full] [--packs hr,personal] (<text> | --file <path>)
 //   gelcli redact <file>
 //   gelcli stats
+//   gelcli preview <file> <outdir>   write Before/After PNGs of the redaction review (nothing saved next to the file)
+//   gelcli payload "<question>" [--gt ground_truth.json]   what the cloud fallback would receive (nothing is sent)
 //   gelcli check <ground_truth.json>   recall of fast redaction per data type (text-layer files + scans)
 
 let args = Array(CommandLine.arguments.dropFirst())
@@ -26,14 +29,16 @@ let packs = value(after: "--packs")?.components(separatedBy: ",") ?? GelSettings
 func run() async throws {
     switch command {
     case "index":
-        guard args.count > 1 else { print("gelcli index <folder>"); return }
-        let folder = URL(fileURLWithPath: args[1]).standardizedFileURL
+        guard args.count > 1 else { print("gelcli index <folder> [<folder>…]"); return }
+        let folders = args.dropFirst().map { URL(fileURLWithPath: $0).standardizedFileURL }
+        for f in folders where !Indexer.folderExists(f) { throw IndexError.folderMissing(f.path) }
         let start = Date()
-        let n = try await Indexer().index(folder: folder) { p in
+        let result = await Indexer().index(folders: folders) { p in
             if !p.current.isEmpty { print("[\(p.done + 1)/\(p.total)] \(p.current)") }
         }
-        print(String(format: "Indexed %d file(s) in %.1f s · %d documents, %d chunks", n, Date().timeIntervalSince(start),
+        print(String(format: "Indexed %d file(s) in %.1f s · %d documents, %d chunks", result.indexed, Date().timeIntervalSince(start),
                      Store.shared.documents().count, Store.shared.chunkCount))
+        for f in result.failures { print("  couldn't read \(f.name): \(f.reason)") }
 
     case "search":
         let q = args.dropFirst().joined(separator: " ")
@@ -147,6 +152,50 @@ func run() async throws {
                 print("\n\(type) misses:"); e.misses.prefix(8).forEach { print("  \($0)") }
             }
         }
+
+    case "payload":
+        let q = args.dropFirst().filter { !$0.hasPrefix("--") && $0 != value(after: "--gt") }.joined(separator: " ")
+        let payload = try await QueryEngine.shared.previewCloudPayload(q)
+        print(payload)
+        if let gt = value(after: "--gt"),
+           let obj = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: gt))) as? [String: Any],
+           let entities = obj["entities"] as? [[String: Any]] {
+            let leaked = Set(entities.compactMap { e -> String? in
+                guard let v = e["value"] as? String, v.count >= 4, payload.localizedCaseInsensitiveContains(v) else { return nil }
+                return "\(e["type"] as? String ?? "?"): \(v)"
+            })
+            print("\n--- ground-truth values present in the payload: \(leaked.count)")
+            leaked.sorted().forEach { print("  " + $0) }
+        }
+
+    case "preview":
+        guard args.count > 2 else { print("gelcli preview <file> <outdir>"); return }
+        let url = URL(fileURLWithPath: args[1]).standardizedFileURL
+        let outDir = URL(fileURLWithPath: args[2], isDirectory: true)
+        try FileManager.default.createDirectory(at: outDir, withIntermediateDirectories: true)
+        guard let kind = DocKind.from(url: url) else { print("unsupported"); return }
+        let text = try TextExtraction.extract(url: url, kind: kind).map(\.text).joined(separator: "\n")
+        let findings = PIIDetector.shared.detectFast(text, packs: packs)
+        let keep: Set<String> = Set(args.contains("--keep-first") ? [findings.first?.text.lowercased() ?? ""] : [])
+        let start = Date()
+        let pages = try Redactor.renderPages(url, findings: findings, keep: keep)
+        print(String(format: "%d page(s), %d findings, rendered in %.1f s", pages.count, findings.count, Date().timeIntervalSince(start)))
+        for p in pages {
+            for (name, img) in [("before", p.original), ("after", p.redacted)] {
+                let dest = outDir.appendingPathComponent("p\(p.index + 1)-\(name).png")
+                if let d = CGImageDestinationCreateWithURL(dest as CFURL, "public.png" as CFString, 1, nil) {
+                    CGImageDestinationAddImage(d, img, nil); CGImageDestinationFinalize(d)
+                }
+            }
+            if args.contains("--boxes") {
+                for b in p.boxes { print(String(format: "    y=%.3f x=%.3f w=%.3f  %@", b.rect.minY, b.rect.minX, b.rect.width, b.value)) }
+            }
+            let kept = p.boxes.filter(\.kept).count
+            print("  page \(p.index + 1): \(p.boxes.count) boxes (\(kept) kept), \(p.original.width)×\(p.original.height) px")
+        }
+        let located = Set(pages.flatMap { $0.boxes.map { $0.value.lowercased() } })
+        let unlocated = Set(findings.map { $0.text.lowercased() }).subtracting(located)
+        if !unlocated.isEmpty { print("  not on a page: \(unlocated.sorted().joined(separator: ", "))") }
 
     case "stats":
         let t = DPOReport.totals()

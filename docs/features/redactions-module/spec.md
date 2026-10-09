@@ -14,6 +14,20 @@
 - **Leak Guard log:** from `leak_caught` and `leak_item` events: time, app, summary of categories and counts. No content.
 - **Export report:** date range (default last 30 days) → `DPOReport.export` → reveal the CSV and PDF in Finder (policy-dpo-report spec).
 
+## Review screen: Before | After (R4, supersedes the list-only review)
+
+The review step must make the outcome obvious before anything is written.
+
+- **Header (plain outcome):** "Gel will black out **15 of 17** items in 3 files." Subline: "Untick anything you want to keep visible. Your original files are never changed; redacted copies are saved to a Redacted folder." AI line: "Checked on this Mac by patterns, name detection and the local AI." (or "…via the cloud fallback (redacted text)" / "AI check unavailable — review the list manually").
+- **File switcher** (when several files): one tab per file with its count ("Resume_REYES · 6").
+- **Side by side, same page, same scale:**
+  - **Before** = the original page. Every finding is outlined: solid red tint = will be blacked out; dashed grey outline + small "kept" tag = unticked.
+  - **After** = exactly what the saved copy will look like, rendered by the same code that writes it (black boxes flattened).
+  - Page arrows when the file has more than one page; both sides stay on the same page.
+- **Findings list underneath:** grouped by category with counts and a group checkbox; each row = value · label · page. Everything starts **ticked**. Toggling a row updates both pages immediately. Clicking a row jumps both pages to it and pulses its box.
+- **Button:** "Black out 15 items · Save 3 copies" (counts live). Cancel writes nothing.
+- **Sheet size:** at least 1040 × 720 so each page is readable.
+
 ## Acceptance criteria
 
 - [ ] Redacting 3 demo resumes produces 3 `_REDACTED.pdf` files listed here.

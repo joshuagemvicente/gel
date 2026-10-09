@@ -41,7 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     #if DEBUG
-    /// Test-only hooks (D-038): `gel.debug.ask` {q} and `gel.debug.chip` {n}. Not compiled into Release.
+    /// Test-only hooks (D-038): `gel.debug.ask` {q}, `gel.debug.chip` {n}, `gel.debug.module` {name}, `gel.debug.appearance` {light|dark}, `gel.debug.leak` {blocked?}, `gel.debug.addFolders` {paths separated by ":"} (D-052). Not compiled into Release.
     private func installDebugHooks() {
         let center = DistributedNotificationCenter.default()
         center.addObserver(forName: Notification.Name("gel.debug.ask"), object: nil, queue: .main) { [weak self] note in
@@ -50,6 +50,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 self?.launcher.show()
                 self?.launcher.model.query = q
                 self?.launcher.model.run()
+            }
+        }
+        center.addObserver(forName: Notification.Name("gel.debug.module"), object: nil, queue: .main) { note in
+            let name = (note.object as? String) ?? "home"
+            Task { @MainActor in if let m = Module(rawValue: name) { AppState.shared.open(module: m) } }
+        }
+        center.addObserver(forName: Notification.Name("gel.debug.appearance"), object: nil, queue: .main) { note in
+            let name = (note.object as? String) ?? ""
+            Task { @MainActor in NSApp.appearance = name == "light" ? NSAppearance(named: .aqua) : (name == "dark" ? NSAppearance(named: .darkAqua) : nil) }
+        }
+        center.addObserver(forName: Notification.Name("gel.debug.leak"), object: nil, queue: .main) { [weak self] note in
+            let blocked = (note.object as? String) == "blocked"
+            Task { @MainActor in self?.leakGuard.debugShow(blocked: blocked) }
+        }
+        center.addObserver(forName: Notification.Name("gel.debug.addFolders"), object: nil, queue: .main) { note in
+            let paths = ((note.object as? String) ?? "").split(separator: ":").map { URL(fileURLWithPath: String($0)) }
+            Task { @MainActor in AppState.shared.addFolders(paths) }
+        }
+        center.addObserver(forName: Notification.Name("gel.debug.redact"), object: nil, queue: .main) { note in
+            // {paths joined by "|"}: opens the redact review in its own window (no Library selection needed).
+            let urls = ((note.object as? String) ?? "").split(separator: "|").map { URL(fileURLWithPath: String($0)) }
+            Task { @MainActor in
+                let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1120, height: 860), styleMask: [.titled, .closable, .resizable],
+                                 backing: .buffered, defer: false)
+                w.title = "Redact (debug)"
+                w.isReleasedWhenClosed = false
+                w.contentView = NSHostingView(rootView: RedactSheet(urls: urls).tint(Theme.accent))
+                w.center()
+                w.makeKeyAndOrderFront(nil)
+                NSApp.activate(ignoringOtherApps: true)
             }
         }
         center.addObserver(forName: Notification.Name("gel.debug.chip"), object: nil, queue: .main) { [weak self] note in
@@ -71,9 +101,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                                   backing: .buffered, defer: false)
             window.title = "Gel"
             window.titlebarAppearsTransparent = true
+            window.titleVisibility = .hidden
             window.isReleasedWhenClosed = false
             window.minSize = NSSize(width: 980, height: 640)
-            window.contentView = NSHostingView(rootView: MainView().environmentObject(AppState.shared))
+            let hosting = NSHostingView(rootView: MainView().environmentObject(AppState.shared))
+            // The window is user-sized. Without this, SwiftUI size changes during module transitions feed back into the
+            // window's Auto Layout pass until AppKit traps ("more Update Constraints passes than views").
+            hosting.sizingOptions = []
+            window.contentView = hosting
             window.center()
             window.setFrameAutosaveName("GelMainWindow")
             mainWindow = window
@@ -86,8 +121,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private func setUpStatusItem() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        item.button?.image = NSImage(systemSymbolName: "drop", accessibilityDescription: "Gel")
-        item.button?.image?.isTemplate = true
+        item.button?.image = BrandImage.menuBar
         let menu = NSMenu()
         menu.delegate = self
         item.menu = menu
@@ -98,7 +132,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let state = AppState.shared
         state.refreshHealth()
         menu.removeAllItems()
-        let status = NSMenuItem(title: state.localStatus.menuTitle, action: nil, keyEquivalent: "")
+        let statusTitle = state.missingModels.isEmpty ? state.localStatus.menuTitle
+            : "Model missing — run: ollama pull \(state.missingModels.joined(separator: " "))"
+        let status = NSMenuItem(title: statusTitle, action: nil, keyEquivalent: "")
         status.isEnabled = false
         menu.addItem(status)
         menu.addItem(.separator())
@@ -127,14 +163,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func updateStatusIcon() {
-        let symbol: String
+        let symbol: String?
         switch AppState.shared.localStatus {
         case .cloudActive: symbol = "cloud"
-        case .unavailable: symbol = GelSettings.shared.cloudConfig == nil ? "exclamationmark.triangle" : "drop"
-        default: symbol = "drop"
+        case .unavailable: symbol = GelSettings.shared.cloudConfig == nil ? "exclamationmark.triangle" : nil
+        default: symbol = nil
         }
-        statusItem?.button?.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "Gel")
-        statusItem?.button?.image?.isTemplate = true
+        if let symbol {
+            statusItem?.button?.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "Gel")
+            statusItem?.button?.image?.isTemplate = true
+        } else {
+            statusItem?.button?.image = BrandImage.menuBar
+        }
     }
 
     @objc private func openLauncher() { launcher.show() }

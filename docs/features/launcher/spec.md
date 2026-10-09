@@ -16,6 +16,10 @@
 
 Each run has its own id. Starting a new question cancels the previous run **including its model stream**, and any token that still arrives for an old run is dropped, so two answers never mix.
 
+## Focus (Q7)
+
+Showing the launcher never brings Gel's main window forward, and closing it (Esc, outside click) returns focus to the app that was active before (e.g. Chrome), so a demo can continue in the browser.
+
 ## Acceptance criteria
 
 - [ ] ⌥Space opens the launcher at top-center from any app in under 200 ms; Esc closes it.

@@ -27,7 +27,7 @@ struct HistoryView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                ModuleHeader(title: "History")
+                ModuleHeader(title: "History", subtitle: answers.isEmpty ? "Every answer keeps its sources" : "\(answers.count) question\(answers.count == 1 ? "" : "s") · every answer keeps its sources")
                 Spacer()
                 TextField("Search questions", text: $search).textFieldStyle(.roundedBorder).frame(width: 240)
             }
@@ -39,13 +39,17 @@ struct HistoryView: View {
                         ForEach(groups, id: \.0) { title, items in
                             Section(title) {
                                 ForEach(items) { a in
-                                    HStack {
-                                        Text(a.date, style: .time).font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+                                    HStack(spacing: 8) {
+                                        Text(a.date, style: .time).font(.system(size: 11).monospacedDigit()).foregroundStyle(Theme.textSecondary)
+                                            .frame(width: 58, alignment: .leading)
                                         Text(a.question).lineLimit(1).font(.system(size: 12.5))
                                         Spacer()
-                                        Text(a.provider == .local ? "Local" : "Cloud").font(.system(size: 10))
+                                        Image(systemName: a.provider == .local ? "cpu" : "cloud")
+                                            .font(.system(size: 10, weight: .semibold))
                                             .foregroundStyle(a.provider == .local ? Theme.accent : Theme.textSecondary)
+                                            .help(a.provider == .local ? "Answered on this Mac" : "Answered by cloud fallback")
                                     }
+                                    .padding(.vertical, 3)
                                     .tag(a.id)
                                 }
                             }
@@ -53,8 +57,10 @@ struct HistoryView: View {
                     }
                     .frame(width: 360)
                     .scrollContentBackground(.hidden)
-                    .background(Theme.card, in: RoundedRectangle(cornerRadius: 12))
-                    detail
+                    .background(Theme.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Theme.hairline))
+                    ZStack { detail.id(selected).transition(.rise(6)) }
+                        .animation(Motion.smooth, value: selected)
                 }
             }
         }
@@ -67,30 +73,49 @@ struct HistoryView: View {
         if let a = answers.first(where: { $0.id == selected }) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text(a.question).font(.system(size: 16, weight: .semibold))
-                    Text((try? AttributedString(markdown: a.text, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))) ?? AttributedString(a.text))
-                        .font(.system(size: 13.5)).textSelection(.enabled)
-                    if !a.citations.isEmpty {
-                        FlowLayout { ForEach(a.citations) { c in CitationChip(citation: c) { state.open(citation: c) } } }
+                    HStack(spacing: 8) {
+                        Text(a.date.formatted(date: .abbreviated, time: .shortened)).font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+                        Spacer()
+                        ProviderBadge(provider: a.provider, model: a.model)
                     }
-                    ProviderBadge(provider: a.provider, model: a.model)
-                    if let sent = a.sentPayload {
-                        DisclosureGroup("What was sent") {
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text("This is exactly what left your Mac. Personal data was replaced with placeholders.")
-                                    .font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
-                                Text(sent).font(.system(size: 11, design: .monospaced)).textSelection(.enabled)
+                    Text(a.question).font(.system(size: 18, weight: .semibold)).tracking(-0.2)
+                    Text((try? AttributedString(markdown: a.text, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))) ?? AttributedString(a.text))
+                        .font(.system(size: 13.5)).lineSpacing(2).textSelection(.enabled)
+                    if !a.citations.isEmpty {
+                        SectionLabel(text: "Sources").padding(.top, 4)
+                        FlowLayout {
+                            ForEach(Array(a.citations.enumerated()), id: \.element.id) { i, c in
+                                CitationChip(citation: c) { state.open(citation: c) }.staggeredAppear(i)
                             }
                         }
                     }
+                    if let sent = a.sentPayload {
+                        DisclosureGroup {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Label("This is exactly what left your Mac. Personal data was replaced with placeholders.", systemImage: "lock.open")
+                                    .font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+                                Text(sent).font(.system(size: 11, design: .monospaced)).textSelection(.enabled)
+                                    .padding(10)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Theme.canvas, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                    .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(Theme.hairline))
+                            }
+                            .padding(.top, 6)
+                        } label: {
+                            Label("What was sent", systemImage: "cloud").font(.system(size: 12.5, weight: .medium))
+                        }
+                        .padding(.top, 4)
+                    }
                 }
-                .padding(20)
+                .padding(24)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: 12))
+            .background(Theme.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Theme.hairline))
         } else {
             EmptyStateView(symbol: "text.bubble", title: "Select a question", hint: "Answers keep their sources and show where they ran.")
-                .background(Theme.card, in: RoundedRectangle(cornerRadius: 12))
+                .background(Theme.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Theme.hairline))
         }
     }
 

@@ -11,7 +11,11 @@ final class LeakGuardMonitor: ObservableObject {
         var app: String
         var blocked: Bool
         var organization: String?
+        var id = UUID()
     }
+
+    /// The overlay dismisses itself after this long; its countdown bar drains over the same time.
+    static let autoHide: TimeInterval = 12
 
     @Published var alert: Alert?
 
@@ -102,15 +106,21 @@ final class LeakGuardMonitor: ObservableObject {
 
     // MARK: - Overlay
 
+    private var generation = 0
+    /// Drives the slide inside SwiftUI. The panel frame never animates (D-047).
+    @Published var presented = false
+
+    /// Slides in from the right; `hide()` leaves the same way (fade only under Reduce Motion).
     private func show(_ a: Alert) {
         alert = a
+        generation += 1
         if panel == nil {
             let p = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 380, height: 120),
                             styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
             p.level = .statusBar
             p.isOpaque = false
             p.backgroundColor = .clear
-            p.hasShadow = true
+            p.hasShadow = false // the card draws its own shadow so it can slide inside the panel
             p.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
             let host = NSHostingView(rootView: LeakOverlay(monitor: self))
             host.sizingOptions = [.preferredContentSize]
@@ -119,18 +129,37 @@ final class LeakGuardMonitor: ObservableObject {
         }
         if let screen = NSScreen.main, let panel {
             let f = screen.visibleFrame
-            panel.setFrameTopLeftPoint(NSPoint(x: f.maxX - 400, y: f.maxY - 12))
+            // LeakOverlay pads the card by 20 pt for its shadow.
+            panel.setFrameTopLeftPoint(NSPoint(x: f.maxX - 400 - 20, y: f.maxY - 12 + 20))
             panel.orderFrontRegardless()
+        }
+        if !presented {
+            DispatchQueue.main.async { withAnimation(Motion.smooth) { self.presented = true } }
         }
         hideWork?.cancel()
         let work = DispatchWorkItem { [weak self] in self?.hide() }
         hideWork = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 12, execute: work)
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.autoHide, execute: work)
     }
 
+    #if DEBUG
+    /// Test-only (D-038): shows a sample overlay without touching the clipboard or logging an event.
+    func debugShow(blocked: Bool) {
+        show(Alert(summary: "2 names, 1 TIN, 1 phone number", app: "Chrome", blocked: blocked, organization: blocked ? "Bayanihan Outsourcing" : nil))
+    }
+    #endif
+
     func hide() {
-        panel?.orderOut(nil)
-        alert = nil
+        hideWork?.cancel()
+        guard let panel, panel.isVisible else { alert = nil; presented = false; return }
+        let gen = generation
+        withAnimation(Motion.reduce ? Motion.fade : .easeIn(duration: 0.2)) { presented = false }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) { [weak self] in
+            // A newer alert may have arrived while this one was leaving.
+            guard let self, self.generation == gen, !self.presented else { return }
+            panel.orderOut(nil)
+            self.alert = nil
+        }
     }
 }
 
@@ -139,28 +168,83 @@ struct LeakOverlay: View {
 
     var body: some View {
         if let a = monitor.alert {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 8) {
-                    Image(systemName: "lock.shield.fill").foregroundStyle(Theme.accent)
-                    Text(a.app.isEmpty ? "Gel" : "Gel caught a leak in \(a.app)").font(.system(size: 12, weight: .semibold))
+            LeakCard(alert: a, monitor: monitor).id(a.id)
+                .shadow(color: .black.opacity(0.22), radius: 14, y: 6)
+                .offset(x: monitor.presented || Motion.reduce ? 0 : 40)
+                .opacity(monitor.presented ? 1 : 0)
+                .padding(20)
+        }
+    }
+}
+
+private struct LeakCard: View {
+    let alert: LeakGuardMonitor.Alert
+    let monitor: LeakGuardMonitor
+    @State private var remaining: CGFloat = 1
+    @State private var appeared = false
+
+    private var isInfo: Bool { alert.app.isEmpty }
+    private var tint: Color { isInfo ? Theme.accent : Theme.danger }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            IconChip(symbol: isInfo ? "checkmark.shield.fill" : "exclamationmark.shield.fill",
+                     tint: tint, background: isInfo ? Theme.accentSoft : Theme.dangerSoft, size: 32)
+                .symbolEffect(.bounce, value: appeared)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 4) {
+                    Text(isInfo ? "Gel" : "Gel caught a leak").font(.system(size: 13, weight: .semibold))
+                    if !isInfo { Text("· \(alert.app)").font(.system(size: 13)).foregroundStyle(Theme.textSecondary) }
+                    Spacer(minLength: 8)
+                    Button { monitor.hide() } label: {
+                        Image(systemName: "xmark").font(.system(size: 9, weight: .bold))
+                            .foregroundStyle(Theme.textSecondary)
+                            .frame(width: 18, height: 18)
+                            .hoverHighlight(radius: 9)
+                    }
+                    .buttonStyle(PressableStyle())
+                    .accessibilityLabel("Dismiss")
                 }
-                Text(a.app.isEmpty ? a.summary : "This would leak: \(a.summary)")
-                    .font(.system(size: 13)).fixedSize(horizontal: false, vertical: true)
-                if !a.app.isEmpty {
-                    HStack {
-                        Button("Paste redacted  ⌥⌘V") { monitor.safePaste() }.buttonStyle(.borderedProminent).tint(Theme.accent)
-                        if a.blocked {
-                            Text("Blocked by \(a.organization ?? "your organization")").font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+                Text(isInfo ? alert.summary : "This would leak: \(alert.summary)")
+                    .font(.system(size: 12.5)).foregroundStyle(Theme.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+                if !isInfo {
+                    HStack(spacing: 8) {
+                        Button { monitor.safePaste() } label: {
+                            HStack(spacing: 6) {
+                                Text("Paste redacted")
+                                Text("⌥⌘V").font(.system(size: 11, weight: .medium)).opacity(0.75)
+                            }
+                        }
+                        .buttonStyle(.gelPrimary)
+                        if alert.blocked {
+                            Label("Blocked by \(alert.organization ?? "your organization")", systemImage: "lock.fill")
+                                .font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
                         } else {
-                            Button("Ignore") { monitor.hide() }
+                            Button("Ignore") { monitor.hide() }.buttonStyle(.gelSecondary)
                         }
                     }
+                    .padding(.top, 6)
                 }
             }
-            .padding(16)
-            .frame(width: 380, alignment: .leading)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: 14))
-            .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Theme.hairline))
+        }
+        .padding(.horizontal, 14).padding(.top, 14).padding(.bottom, 16)
+        .frame(width: 380, alignment: .leading)
+        .background(Theme.card)
+        .overlay(alignment: .leading) { Rectangle().fill(tint).frame(width: 3) }
+        .overlay(alignment: .bottomLeading) {
+            GeometryReader { geo in
+                Rectangle().fill(tint.opacity(0.45)).frame(width: geo.size.width * remaining)
+            }
+            .frame(height: 2)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Theme.hairline))
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(isInfo ? alert.summary : "Gel caught a leak in \(alert.app). This would leak: \(alert.summary)")
+        .onAppear {
+            appeared = true
+            withAnimation(.linear(duration: LeakGuardMonitor.autoHide)) { remaining = 0 }
         }
     }
 }

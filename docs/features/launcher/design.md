@@ -27,7 +27,7 @@
 | Transcribing | "Transcribing…" in textSecondary |
 | Waiting | Answer area with a 2-line shimmer |
 | Streaming / done | Answer text, then chips + badge |
-| Not found | The exact "Hindi ko nakita sa files. (I couldn't find it in your files.)" in textSecondary, no chips |
+| Not found | The exact "I couldn't find that in your files." in textSecondary, no chips |
 | Error | One line in danger color + action: "Local model unavailable · Retry", "Nothing indexed yet · Choose a folder" |
 
 ## Copy
