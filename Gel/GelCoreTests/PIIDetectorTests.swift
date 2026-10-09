@@ -76,3 +76,56 @@ final class PIIDetectorTests: XCTestCase {
         XCTAssertEqual((chunks.last!.start + chunks.last!.length), (text as NSString).length)
     }
 }
+
+final class CloudGateTests: XCTestCase {
+    func testMappingAndRehydrate() throws {
+        let raw = "Applicant Kristine Joy Reyes, SSS 25-6708763-7, expected salary ₱45,000.00"
+        let r = try Redactor.cloudSafeWithMapping(raw, packs: ["hr"])
+        XCTAssertFalse(r.text.contains("25-6708763-7"))
+        XCTAssertFalse(r.text.contains("₱45,000.00"))
+        // A cloud answer using the placeholders is shown with the real values locally.
+        let cloudAnswer = "The SSS number is [SSS_1] and the salary is [SALARY_1]."
+        let shown = Redactor.rehydrate(cloudAnswer, mapping: r.mapping)
+        XCTAssertTrue(shown.contains("25-6708763-7"))
+        XCTAssertTrue(shown.contains("₱45,000.00"))
+    }
+
+    func testRehydratePrefersLongestToken() {
+        let shown = Redactor.rehydrate("[NAME_12] and [NAME_1]", mapping: ["[NAME_1]": "Ana", "[NAME_12]": "Ben"])
+        XCTAssertEqual(shown, "Ben and Ana")
+    }
+
+    func testGateFailureMeansNoRequest() {
+        struct Boom: Error {}
+        XCTAssertThrowsError(try ModelRouter.redact([.user("SSS 25-6708763-7")], with: { _ in throw Boom() })) { error in
+            guard case LLMError.redactionFailed = error else { return XCTFail("expected redactionFailed") }
+        }
+    }
+
+    func testBroadQuestionDetection() {
+        XCTAssertTrue(QueryEngine.isBroad("Ilan ang empleyado sa Operations?"))
+        XCTAssertFalse(QueryEngine.isBroad("Sino sa applicants ang may 5+ years sa payroll?"))
+    }
+}
+
+final class QuestionKindTests: XCTestCase {
+    func testRankingDetectionAndCount() {
+        let q = "I want you to find five employment resumes that has the best HR resume."
+        XCTAssertEqual(QueryEngine.kind(of: q), .ranking)
+        XCTAssertEqual(QueryEngine.requestedCount(q), 5)
+        XCTAssertEqual(QueryEngine.kind(of: "Sino ang pinakamagaling sa payroll?"), .ranking)
+        XCTAssertEqual(QueryEngine.kind(of: "Sino sa applicants ang may 5+ years sa payroll?"), .fact)
+        XCTAssertEqual(QueryEngine.requestedCount("Hanapin ang lima na pinakamagaling"), 5)
+    }
+
+    func testFilipinoDetection() {
+        XCTAssertTrue(QueryEngine.isFilipino("Ano ang paboritong pagkain ni Reyes?"))
+        XCTAssertFalse(QueryEngine.isFilipino("Who has payroll experience?"))
+    }
+
+    func testNotFoundBothLanguages() {
+        XCTAssertTrue(QueryEngine.isNotFound("Hindi ko nakita sa files."))
+        XCTAssertTrue(QueryEngine.isNotFound("I couldn't find that in your files."))
+        XCTAssertFalse(QueryEngine.isNotFound("Patricia Anne Cruz [1]"))
+    }
+}

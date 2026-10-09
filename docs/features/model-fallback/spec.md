@@ -51,6 +51,17 @@ The redaction gate returns its placeholder → value mapping (kept in memory on 
 
 `https://dialagram.me/router/v1` (OpenAI-compatible, `Authorization: Bearer`; unauthenticated `GET /models` → 401). The API key is entered in Settings and stored in the Keychain only.
 
+## Strict cloud gate (Q2)
+
+Text sent to the cloud is held to a stricter standard than local use:
+
+- Cloud prompts label sources `Source n` with **no file names** (file names often contain people's names). Citations still map to the local files.
+- The gate runs the fast layers **plus** a strict name pass: any run of 2–4 Capitalized or ALL-CAPS words (or "SURNAME, First") that isn't a known heading/label is replaced with `[NAME_n]`. It over-redacts on purpose.
+
+## Health means the models are installed (Q5)
+
+Local is healthy only if Ollama answers **and** `GET /api/tags` lists both the chat and embedding models. Otherwise the status reads "Model missing — run `ollama pull <model>`".
+
 ## Acceptance criteria
 
 - [ ] With Ollama stopped and a cloud endpoint set, a question is answered with a Cloud badge in under 10 s.

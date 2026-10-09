@@ -6,7 +6,7 @@
 public final class QueryEngine {
     public static let shared: QueryEngine
     public init(store: Store = .shared, embedder: Embedder = Embedder(), router: ModelRouter = .shared)
-    public static let notFound: String     // "Hindi ko nakita sa files. (I couldn't find it in your files.)"
+    public static let notFound: String     // "I couldn't find that in your files."
 
     public func search(_ question: String, limit: Int = 8, perDoc: Int = 2) async throws -> [SearchHit]
     public static func systemPrompt() -> String

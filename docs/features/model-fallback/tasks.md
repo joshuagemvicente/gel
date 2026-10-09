@@ -12,4 +12,6 @@ Legend: `[x]` done and verified · `[~]` built, not verified · `[ ]` not starte
 - [ ] **T8 Secret hygiene.** **Verify:** `grep -r "<the key>" ~/Library/Preferences "$GEL_HOME" Gel/ docs/` finds nothing; `security find-generic-password -s com.joshuagemvicente.gel -a cloudAPIKey` finds it.
 
 Done when: all [spec.md](spec.md) acceptance criteria observed passing.
-- [ ] **T9 E5 local placeholder swap.** `Redactor.cloudSafeWithMapping`; router returns the mapping; answer rehydrated locally. **Verify:** cloud answer shows real names; `sentPayload` shows placeholders.
+- [~] **T9 E5 local placeholder swap.** `Redactor.cloudSafeWithMapping`; router returns the mapping; answer rehydrated locally. **Verify:** cloud answer shows real names; `sentPayload` shows placeholders.
+- [x] **T10 Q2 strict cloud gate.** No file names in cloud prompts; strict name pass. **Verify:** cloud payload for the demo question contains none of the `ground_truth.json` names (script).
+- [~] **T11 Q5 model-installed health.** **Verify:** with `GEL_LOCAL_MODEL` pointed at a missing model, status shows "Model missing".

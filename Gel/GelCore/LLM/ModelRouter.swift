@@ -43,7 +43,27 @@ public final class ModelRouter {
 
     // MARK: - Health
 
+    /// Required local models that Ollama doesn't have installed (empty = all present). Nil if Ollama is unreachable.
+    public func missingLocalModels() async -> [String]? {
+        guard let url = URL(string: settings.localBaseURL + "/api/tags") else { return nil }
+        var r = URLRequest(url: url)
+        r.timeoutInterval = 2
+        guard let (data, response) = try? await URLSession.shared.data(for: r),
+              (response as? HTTPURLResponse)?.statusCode == 200,
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let models = obj["models"] as? [[String: Any]] else { return nil }
+        let names = Set(models.compactMap { $0["name"] as? String } + models.compactMap { $0["model"] as? String })
+        func installed(_ m: String) -> Bool { names.contains(m) || names.contains(m + ":latest") }
+        return [settings.localModel, settings.embedModel].filter { !installed($0) }
+    }
+
+    /// Healthy = Ollama answers and both the chat and embedding models are installed (Q5).
     public func localIsHealthy() async -> Bool {
+        guard let missing = await missingLocalModels() else { return false }
+        return missing.isEmpty
+    }
+
+    public func ollamaReachable() async -> Bool {
         guard let url = URL(string: settings.localBaseURL + "/api/version") else { return false }
         var r = URLRequest(url: url)
         r.timeoutInterval = 2

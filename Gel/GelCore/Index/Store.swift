@@ -206,6 +206,12 @@ public final class Store {
               start: Int(sqlite3_column_int(s, 3)), length: Int(sqlite3_column_int(s, 4)), text: Self.text(s, 5))
     }
 
+    /// The first chunk of a document (top of page 1: usually the name, title and summary).
+    public func firstChunk(docId: Int64) -> Chunk? {
+        query("SELECT id, doc_id, page, start, length, text FROM chunks WHERE doc_id=? ORDER BY page, start LIMIT 1",
+              [.int(docId)], mapChunk).first
+    }
+
     public var chunkCount: Int {
         query("SELECT COUNT(*) FROM chunks") { Int(sqlite3_column_int($0, 0)) }.first ?? 0
     }
