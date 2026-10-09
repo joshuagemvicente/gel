@@ -1,61 +1,58 @@
-# S3 · Demo video — Spec
+# S3 · Demo video — Spec (v2, narrated)
 
-**Goal:** one ~60-second **motion-graphics** video (captions only, no voice, no music) that demos Gel's core features for the AppBuildersPH submission and X post. Animated typography, callouts and transitions frame **real captures of the running macOS app**; nothing is mocked up. The website is not shown: the product is the Swift app.
+**Goal:** one ~60-second narrated motion-graphics video that demos Gel's core features with **screen recordings of the running macOS app**, for the AppBuildersPH submission and the X post. v1 failed review ([review-v1.md](review-v1.md)): no product footage, no offline proof, no voice, silent.
 
 ## Approach
 
-- **Motion graphics shell:** rendered programmatically with Remotion (React + headless Chromium → H.264 via ffmpeg) from `video/` in the repo. Brand tokens come from `docs/features/app-shell/design.md` and `polish/design.md` (warm canvas, deep green accent, the Gel drop, SF Pro, New York for stat numbers).
-- **Real captures inside the shell:** every feature beat shows a screenshot or short clip of the actual app on this Mac, placed in a window frame with animated callouts. Captures live in git-ignored `media/captures/` and are copied into `video/public/captures/` (git-ignored) at render time.
-- **Honest content:** the only numbers shown are measured ones from `docs/project/decisions.md` (D-030, D-036, D-065). Any sped-up clip carries a visible speed tag. Voice is shown only if the capture shows it; the baseline is the typed question.
+- **Shell:** Remotion (`video/`). Brand tokens from `docs/features/app-shell/design.md`. Typography and graphics only frame the footage; app UI is never recreated.
+- **Footage:** short `.mov` recordings of the real app (list below), played at 1× or with a visible speed tag. Stills only where nothing moves.
+- **Narration:** one voice-over track following the script in [design.md](design.md), generated on this Mac with macOS `say`, voice Samantha (compact), 178 wpm (`video/scripts/make-vo.sh`; user choice, Oct 10). The spoken Taglish question is the user's own voice, recorded live into Gel's launcher (it is the voice feature working).
+- **Subtitles:** the narration, burned in and synced phrase by phrase, so the video works muted on X. Replaces v1's separate captions.
+- **Sound:** narration plus the app's own UI sounds if present. No music.
+- **Honest content:** only measured numbers (D-030, D-036, D-065). Sped-up footage carries its factor. Nothing claimed in narration that isn't on screen.
+- **Not shown:** the website.
 
-## Who does what
+## Beats (≈60 s)
 
-| Step | Claude | User |
-| --- | --- | --- |
-| Storyboard, captions, timing | writes [design.md](design.md) | confirms |
-| Captures | writes the capture list; captures them if asked (launching the built app) | or captures them into `media/captures/` |
-| Build | Remotion project, all scenes, render v1 | — |
-| Review | fixes notes, renders v2 | watches, approves |
-
-## Must-show beats (in this order, ~60 s total)
-
-| # | Time | Beat | Shows |
+| # | Time | Beat | Footage |
 | --- | --- | --- | --- |
-| 1 | 0–5 s | Hook | The problem: HR files carry government IDs and salaries, and they get pasted into cloud AI |
-| 2 | 5–10 s | Meet Gel | Drop mark, name, tagline; Wi-Fi switched off (everything that follows runs on the Mac) |
-| 3 | 10–24 s | Ask | Launcher: the Taglish question, the answer with citation chips and the **Local · Qwen3 4B** badge |
-| 4 | 24–32 s | Verify | Library viewer: the cited resume page with the passage highlighted |
-| 5 | 32–42 s | Redact | Redact sheet Before \| After: burned-in boxes over IDs; originals untouched |
-| 6 | 42–52 s | Leak Guard | Copy an employee record → chatgpt.com → overlay names what would leak → ⌥⌘V pastes placeholders |
-| 7 | 52–56 s | Local stack | WhisperKit · Apple Vision · BGE-M3 · Qwen3 4B · SQLite, all on the Mac; cloud fallback off by default and redacted-only |
-| 8 | 56–60 s | End card | Gel · "Private AI for your files. Runs on your Mac." · Team 12M · `github.com/joshuagemvicente/gel` · #AppBuildersPH |
+| 1 | 0–6 s | Problem + who it's for | Full-frame motion graphic: an HR record's IDs drift into a cloud; "HR & payroll teams · Data Privacy Act" |
+| 2 | 6–11 s | Meet Gel, go offline | Mark + name; then **R1** real menu bar turning Wi-Fi off |
+| 3 | 11–24 s | Ask by voice | **R2** ⌥Space, hold right ⌥, the spoken question, answer streaming (2× tag where sped), chips, Local badge |
+| 4 | 24–31 s | Verify | **R3** click the Reyes chip → viewer opens highlighted (match cut from the chip) |
+| 5 | 31–40 s | Redact | **R4** Library → Redact → Before \| After review |
+| 6 | 40–52 s | Leak Guard | **R5** copy the employee record → chatgpt.com → overlay → ⌥⌘V placeholders |
+| 7 | 52–57 s | Why local | Stack pills + one measured number + the cloud rule, 5–6 s |
+| 8 | 57–60 s | End card | Gel · tagline · Team 12M · repo · #AppBuildersPH |
 
-A beat whose feature isn't working at capture time is dropped and the rest re-timed; it is never faked.
+A beat whose feature fails at recording time is dropped and re-timed, never faked.
 
-## Captures (`media/captures/`, PNG at native resolution, or `.mov` for clips)
+## Recordings (`media/captures/`)
 
-| File | What | Beat |
+| File | Record | Length |
 | --- | --- | --- |
-| `C1-launcher.png` (+ optional `C1-launcher.mov` of the answer streaming) | ⌥Space launcher after answering *"Sino sa applicants ang may 5+ years sa payroll?"*: chips + Local badge visible | 3 |
-| `C2-viewer.png` | Library viewer on the cited resume page, passage highlighted, "Cited passage · page n of m" pill | 4 |
-| `C3-redact.png` | Redact sheet in Before \| After review with boxes over IDs | 5 |
-| `C4-overlay.png` (+ optional `C4-overlay.mov`) | Leak overlay over chatgpt.com in Chrome (logged out), "This would leak: …" | 6 |
-| `C5-pasted.png` | chatgpt.com input after ⌥⌘V showing placeholders | 6 |
-| `C0-home.png` (optional) | Main window Home with stat cards | 2 background |
+| `R1-wifi.mov` | Menu bar: Control Center → Wi-Fi off → close | ~4 s |
+| `R2-ask.mov` | ⌥Space → hold right ⌥ → say the question → release → until the Local badge | real time |
+| `R3-verify.mov` | Click the Reyes chip → viewer opens on the highlighted passage | ~4 s |
+| `R4-redact.mov` | Select three resumes → Redact → Before \| After review appears | real time |
+| `R5-leak.mov` | Open the sample record, ⌘A ⌘C → switch to chatgpt.com → overlay → ⌥⌘V | real time |
+| `video/public/vo/*.wav` | Narration, nine lines, generated by `npm run vo` | ~42 s |
 
-Rules for every capture: synthetic `demo-data/` only, Do Not Disturb on, Dock and desktop icons hidden, no account names or avatars, light appearance.
+**Who records:** Claude records one continuous screen + microphone session with ffmpeg (`media/captures/session.mkv`) while the user drives the app, then cuts R1–R5 from it (user choice, Oct 10). Recording rules from [captures.md](captures.md) still apply: synthetic data, Do Not Disturb, Dock hidden, logged-out Chrome, Library filtered to demo files.
 
 ## Output
 
-- Source: `video/` (Remotion project, committed; `node_modules/`, `out/`, `public/captures/` git-ignored).
-- Final: `media/out/gel-demo-v<N>.mp4`: 1920×1080, 30 fps, H.264 (High, yuv420p, `+faststart`), silent AAC track, 55–65 s, < 100 MB.
+`media/out/gel-demo-v<N>.mp4`: 1920×1080, 30 fps, H.264 High yuv420p `+faststart`, AAC 48 kHz 160 kbps, 58–65 s (v2 timeline: 61 s), < 100 MB, narration at −16 LUFS integrated, true peak ≤ −1 dBTP.
 
 ## Acceptance criteria
 
-- [ ] Duration 55–65 s; beats 1–8 present unless a feature was dropped (logged in `docs/project/decisions.md`).
-- [ ] Every app visual is a real capture from `media/captures/`; no recreated UI; the website never appears.
-- [ ] No number on screen that isn't in `decisions.md`; every sped-up clip shows its speed tag.
-- [ ] No personal or secret data visible (checked on a frame contact sheet of the export).
-- [ ] Captions ≥ 42 px at 1080p, each on screen ≥ 1.5 s, readable with sound off.
-- [ ] `ffprobe` confirms H.264/AAC, 1920×1080, 30 fps; the file plays in QuickTime and the browser.
-- [ ] The user has approved the final version.
+- [ ] Every app moment is a recording of the real app; no placeholder slot is left; the website never appears.
+- [ ] Wi-Fi visibly turns off in the real menu bar before the first answer.
+- [ ] The question is spoken and transcribed on screen by Gel.
+- [ ] Narration covers every beat; subtitles match it word for word and are on screen ≥ 1.2 s each.
+- [ ] The target user and the why-local reason are each said once.
+- [ ] Callouts sit on the element they name (checked on export frames).
+- [ ] No number that isn't in `decisions.md`; every sped-up span shows its factor.
+- [ ] No personal or secret data visible (contact sheet of the export).
+- [ ] `ffprobe` and `ebur128` confirm the Output line.
+- [ ] The user approves the final version.

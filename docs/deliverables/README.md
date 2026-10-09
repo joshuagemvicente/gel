@@ -15,7 +15,7 @@ docs/deliverables/<deliverable>/
 
 Each deliverable's finished content goes in the file its `spec.md` names (for example `submission-form/answers.md`).
 
-**Public vs private (user decision, Oct 9):** every spec file is public in the repo. The *outputs* of S4–S7 (`script.md`, `qa.md`, `runsheet.md`, `qa-test-plan.md`, `peoples-choice.md`, `closing-screen.html`) are git-ignored and stay on this Mac. S1–S3 outputs (`answers.md`, `post.md`, `cut-list.md`) are committed. Video files live in git-ignored `media/`. The demo video is **captions only: no voiceover, no music.** Its source lives in `video/` (committed; renders and captures git-ignored).
+**Public vs private (user decision, Oct 9):** every spec file is public in the repo. The *outputs* of S4–S7 (`script.md`, `qa.md`, `runsheet.md`, `qa-test-plan.md`, `peoples-choice.md`, `closing-screen.html`) are git-ignored and stay on this Mac. S1–S3 outputs (`answers.md`, `post.md`, `cut-list.md`) are committed. Video files live in git-ignored `media/`. The demo video is **narrated (local macOS voice) with burned-in subtitles, no music** (changed from captions-only on Oct 10, D-071). Its source lives in `video/` (committed; renders and captures git-ignored).
 
 ## Deliverables
 

@@ -1,0 +1,25 @@
+{
+  "name": "gel-demo-video",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Remotion motion-graphics demo video for Gel (docs/deliverables/demo-video)",
+  "scripts": {
+    "sync": "node scripts/sync-captures.mjs",
+    "studio": "npm run sync && remotion studio src/index.ts",
+    "render": "npm run sync && bash scripts/render.sh",
+    "still": "remotion still src/index.ts GelDemo",
+    "vo": "bash scripts/make-vo.sh"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.534",
+    "@remotion/transitions": "^4.0.534",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "remotion": "4.0.534"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.10",
+    "@types/react-dom": "19.1.7",
+    "typescript": "5.9.2"
+  }
+}

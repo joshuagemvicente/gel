@@ -10,7 +10,24 @@ Motion-graphics cut, 1920×1080, 30 fps, ~60 s. Captions only. Brand per [app-sh
 - **Capture frame:** captures sit in a rounded (14 px) window frame with a soft shadow, scaled to ~78% width, slight 1.00→1.04 drift (Ken Burns) over the beat. Callouts: 2 px accent rounded rect over the element + a short accent leader line + 28 px label; they pop in (scale 0.9→1, 35 ms stagger).
 - **Motion:** springs only (response 0.28 snappy / 0.42 smooth / 0.35 pop at damping 0.72 for arrivals), matching the app's motion tokens. Hard cuts between beats, 8-frame cross-fade into the end card. No element animates longer than 450 ms except progress-style bars.
 
-## Scenes
+## Narration script (v2)
+
+About 125 words at ~150 wpm. *Italic* = the user's own voice inside the recording.
+
+| Time | Voice-over | On screen |
+| --- | --- | --- |
+| 0–6 s | "HR teams handle government IDs, salaries and addresses every day. And those files keep getting pasted into cloud AI." | Hook graphic; small label "HR & payroll teams · Data Privacy Act" |
+| 6–11 s | "This is Gel: private AI for your Mac. First, Wi-Fi off." | Mark + name, then R1 |
+| 11–24 s | "Press Option-Space and ask in Taglish." *"Sino sa applicants ang may 5+ years sa payroll?"* "Gel answers with its sources, right on this Mac." | R2; callouts: transcript, chips, Local badge |
+| 24–31 s | "Click a source and the exact passage opens, highlighted." | R3 |
+| 31–40 s | "Sharing files? Gel burns in redactions, even on scans. Originals stay untouched." | R4 |
+| 40–52 s | "Copy an employee record into ChatGPT. Gel catches it, and Option-Command-V pastes placeholders instead." | R5 |
+| 52–57 s | "Speech, OCR, search and answers run locally. The cloud only sees redacted text, and only if you allow it." | Stack pills, "25.5 s to index 58 files on an M2", cloud rule |
+| 57–60 s | "Gel. Private AI for your files." | End card |
+
+Subtitles: the same words, one phrase at a time (≤ 7 words), bottom-centre, 46 px semibold on a 85% card-coloured pill, clear of the footage.
+
+## Scenes (v1, superseded by the table above)
 
 | # | Frames (30 fps) | Scene | Motion | Caption |
 | --- | --- | --- | --- | --- |
