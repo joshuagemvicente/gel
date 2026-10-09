@@ -8,17 +8,17 @@ import { metaLine, release } from "@/lib/release"
 
 function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
-    <li className="relative grid grid-cols-[28px_1fr] gap-x-4 pb-12 last:pb-0 sm:gap-x-6">
+    <li className="relative grid grid-cols-[24px_1fr] gap-x-4 pb-14 last:pb-0 sm:gap-x-6">
       <span
-        className="absolute top-8 bottom-0 left-[13.5px] w-px bg-border in-[li:last-child]:hidden"
+        className="absolute top-8 bottom-0 left-[11.5px] w-px bg-border in-[li:last-child]:hidden"
         aria-hidden
       />
-      <span className="flex size-7 items-center justify-center rounded-full border bg-card font-mono text-xs font-medium">
+      <span className="mt-0.5 flex size-6 items-center justify-center rounded-full border bg-popover font-mono text-xs text-body">
         {n}
       </span>
       <Reveal className="min-w-0">
-        <h3 className="text-h3 leading-7">{title}</h3>
-        <div className="mt-3 space-y-4 text-[15px] leading-6 text-pretty text-muted-foreground">{children}</div>
+        <h3 className="text-h3">{title}</h3>
+        <div className="mt-3 space-y-4 text-small text-pretty text-body">{children}</div>
       </Reveal>
     </li>
   )
@@ -28,16 +28,16 @@ export function Install() {
   return (
     <Section
       id="install"
-      band
+      aside
       eyebrow="Install"
       title="Four steps to a working install."
       intro="The longest step is downloading the two local models. After setup, typed questions, OCR and redaction run on your Mac."
     >
-      <ol className="max-w-3xl">
+      <ol>
         <Step n={1} title="Download and check it">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <DownloadButton />
-            <span className="font-mono text-xs">{metaLine}</span>
+            <span className="font-mono text-xs tracking-[-0.013em] text-muted-foreground">{metaLine}</span>
           </div>
           <p>Compare the file&apos;s SHA-256 with this one before you open it:</p>
           <CommandSnippet label="SHA-256" code={release.sha256} prompt={false} wrap />
@@ -56,7 +56,7 @@ export function Install() {
             width={1360}
             height={1016}
             sizes="(min-width: 768px) 640px, 100vw"
-            className="w-full max-w-[640px] rounded-xl border shadow-float"
+            className="w-full max-w-[640px] rounded-xl border"
           />
         </Step>
         <Step n={3} title="Open it the first time">
@@ -75,16 +75,20 @@ export function Install() {
         <Step n={4} title="Install Ollama and the models">
           <p>
             Gel runs its models through{" "}
-            <a href="https://ollama.com" className="text-accent-foreground underline-offset-4 hover:underline">
+            <a href="https://ollama.com" className="text-foreground underline underline-offset-4 hover:text-body">
               Ollama
             </a>
             . The model weights aren&apos;t in the DMG.
           </p>
           <InstallTerminal />
           <p>
-            Open Gel, choose <strong className="font-medium text-foreground">Work: HR</strong>, and select{" "}
-            <span className="font-mono text-[13px] text-foreground">Documents/Gel Sample Files/HR Files</span>. When
-            indexing finishes, press ⌥Space and ask{" "}
+            To try the sample files, open Gel, choose <strong className="font-medium text-foreground">Work: HR</strong>, and select{" "}
+            <span className="font-mono text-[13px] tracking-[-0.013em] text-foreground">Documents/Gel Sample Files/HR Files</span>. When
+            indexing finishes, open the <strong className="font-medium text-foreground">Library</strong>, select three
+            résumés and click <strong className="font-medium text-foreground">Redact 3 files</strong>.
+          </p>
+          <p>
+            To try questions, press <span className="font-mono text-[13px]">⌥Space</span> and ask{" "}
             <span className="text-foreground">&ldquo;Sino sa applicants ang may 5+ years sa payroll?&rdquo;</span>
           </p>
         </Step>

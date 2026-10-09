@@ -26,8 +26,8 @@ export function CommandSnippet({
   className?: string
 }) {
   return (
-    <Snippet defaultValue="only" className={cn("rounded-lg bg-card", className)}>
-      <SnippetHeader className="bg-band py-0.5 pl-3">
+    <Snippet defaultValue="only" className={cn("rounded-md bg-card", className)}>
+      <SnippetHeader className="bg-popover py-0.5 pl-3">
         <span className="font-mono text-xs text-muted-foreground">{label}</span>
         <SnippetCopyButton
           value={code}
@@ -39,7 +39,7 @@ export function CommandSnippet({
       <SnippetTabsContent
         value="only"
         className={cn(
-          "bg-card px-3.5 py-3 font-mono text-[13px] leading-6 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset",
+          "bg-card px-3.5 py-3 font-mono text-[13px] leading-6 tracking-[-0.013em] text-body focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset",
           wrap && "break-all whitespace-pre-wrap",
         )}
       >

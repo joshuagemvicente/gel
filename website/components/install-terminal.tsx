@@ -73,8 +73,8 @@ export function InstallTerminal() {
   }
 
   return (
-    <div ref={ref} className="overflow-hidden rounded-xl border bg-card">
-      <div className="flex items-center justify-between gap-2 border-b bg-band px-2 py-1">
+    <div ref={ref} className="overflow-hidden rounded-md border bg-card">
+      <div className="flex items-center justify-between gap-2 border-b bg-popover px-2 py-1.5">
         <div role="tablist" aria-label="Setup commands" className="flex gap-1">
           {TABS.map((t, i) => (
             <button
@@ -84,8 +84,8 @@ export function InstallTerminal() {
               aria-selected={tab === i}
               onClick={() => setTab(i)}
               className={cn(
-                "rounded-md px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
-                tab === i && "bg-card text-foreground shadow-xs",
+                "rounded-full px-3 py-1 text-xs text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                tab === i && "bg-accent text-foreground",
               )}
             >
               {t.label}
@@ -105,7 +105,7 @@ export function InstallTerminal() {
       <pre
         role="tabpanel"
         aria-label={TABS[tab].label}
-        className="min-h-36 overflow-x-auto px-4 py-3.5 font-mono text-[13px] leading-6"
+        className="min-h-36 overflow-x-auto px-4 py-3.5 font-mono text-[13px] leading-6 tracking-[-0.013em] text-body"
       >
         {/* Screen readers get the full text at once; the typing is visual only. */}
         <span className="sr-only">{lines.map(text).join("\n")}</span>
@@ -120,7 +120,7 @@ export function InstallTerminal() {
               <span key={i} className="block">
                 {"cmd" in l ? (
                   <>
-                    <span className="text-accent-foreground select-none">$ </span>
+                    <span className="text-muted-foreground select-none">$ </span>
                     {shown}
                   </>
                 ) : (
@@ -131,7 +131,7 @@ export function InstallTerminal() {
             )
           })}
           {budget >= total && (
-            <span className="block text-accent-foreground">
+            <span className="block text-body">
               ✓ <span className="text-muted-foreground">{tab === 0 ? "Then pull the models." : "Then open Gel."}</span>
             </span>
           )}
