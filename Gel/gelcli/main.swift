@@ -6,8 +6,8 @@ import ImageIO
 //   gelcli index <folder> [<folder>…]
 //   gelcli search "<question>"
 //   gelcli ask "<question>"
-//   gelcli detect [--full] [--packs hr,personal] (<text> | --file <path>)
-//   gelcli redact <file>
+//   gelcli detect [--full] [--dummy] [--packs hr,personal] (<text> | --file <path>)
+//   gelcli redact <file> [--dummy] [--add "<value or instruction>"]
 //   gelcli stats
 //   gelcli preview <file> <outdir>   write Before/After PNGs of the redaction review (nothing saved next to the file)
 //   gelcli payload "<question>" [--gt ground_truth.json]   what the cloud fallback would receive (nothing is sent)
@@ -85,16 +85,27 @@ func run() async throws {
         print(String(format: "%d finding(s) in %.0f ms — %@", findings.count, Date().timeIntervalSince(start) * 1000,
                      PIIDetector.summary(findings)))
         for f in findings { print("  L\(f.layer) \(f.type.padding(toLength: 16, withPad: " ", startingAt: 0)) \(f.text)") }
-        print("\nRedacted:\n" + Redactor.redactText(text, findings: findings).text)
+        let mode: RedactionMode = args.contains("--dummy") ? .dummy : .blackout
+        print("\n\(mode == .dummy ? "Dummy data" : "Redacted"):\n" + Redactor.redactText(text, findings: findings, mode: mode).text)
 
     case "redact":
-        guard args.count > 1 else { print("gelcli redact <file>"); return }
+        guard args.count > 1 else { print("gelcli redact <file> [--dummy] [--add <value or instruction>]"); return }
         let url = URL(fileURLWithPath: args[1]).standardizedFileURL
         guard let kind = DocKind.from(url: url) else { print("unsupported file"); return }
         let text = try TextExtraction.extract(url: url, kind: kind).map(\.text).joined(separator: "\n")
         let r = await PIIDetector.shared.detectFull(text, packs: packs)
-        let out = try Redactor.redactFile(url, findings: r.findings)
-        print("\(r.findings.count) finding(s): \(PIIDetector.summary(r.findings))")
+        var findings = r.findings
+        // --add: the review sheet's "Add something Gel missed" (literal matches, then the local model).
+        if let query = value(after: "--add") {
+            let literal = PIIDetector.customFindings(query, in: text)
+            let prompted = await PIIDetector.shared.promptFindings(query, in: text)
+            print("--add \"\(query)\": \(literal.count) exact match(es), model: \(prompted.map { "\($0.count) item(s)" } ?? "unavailable")")
+            for f in literal + (prompted ?? []) { print("  + \(f.type) \(f.text)") }
+            findings = PIIDetector.merge(findings + literal + (prompted ?? []))
+        }
+        let mode: RedactionMode = args.contains("--dummy") ? .dummy : .blackout
+        let out = try Redactor.redactFile(url, findings: findings, mode: mode, replacements: DummyData.replacements(for: findings))
+        print("\(findings.count) finding(s), \(mode.recordLabel): \(PIIDetector.summary(findings))")
         print("→ \(out.output.path)")
 
     case "check":

@@ -3,28 +3,45 @@ import PDFKit
 import AppKit
 import Vision
 
+/// What a redaction writes in place of a value (R5, D-073). The cloud gate always uses placeholders.
+public enum RedactionMode: String, Codable, CaseIterable, Sendable {
+    /// Black boxes on pages, `[SSS_1]` placeholders in text.
+    case blackout
+    /// Type-aware fakes from `DummyData`, drawn into white boxes on pages.
+    case dummy
+
+    public var label: String { self == .blackout ? "Black out" : "Replace with dummy data" }
+    /// For the Redactions list and records.
+    public var recordLabel: String { self == .blackout ? "blacked out" : "dummy data" }
+}
+
 public enum Redactor {
 
     public struct TextResult {
         public var text: String
-        /// Placeholder → original value. Stays in memory on this Mac; never sent anywhere.
+        /// Placeholder (or fake) → original value. Stays in memory on this Mac; never sent anywhere.
         public var mapping: [String: String]
         public var counts: [String: Int]
     }
 
     /// Replaces each finding with a consistent placeholder, e.g. every occurrence of one SSS number → [SSS_1].
-    public static func redactText(_ text: String, findings: [Finding]) -> TextResult {
+    /// In `.dummy` mode each value becomes its fake from `replacements` (lowercased value → fake); values without
+    /// one get a fresh fake, so the result is still consistent within this text.
+    public static func redactText(_ text: String, findings: [Finding], mode: RedactionMode = .blackout,
+                                  replacements: [String: String] = [:]) -> TextResult {
         let ns = NSMutableString(string: text)
         var valueToken: [String: String] = [:]
         var perType: [String: Int] = [:]
         var mapping: [String: String] = [:]
         var counts: [String: Int] = [:]
+        let fakes = mode == .dummy ? DummyData.replacements(for: findings, existing: replacements) : [:]
         // Assign numbers in reading order, then replace from the end so ranges stay valid.
         for f in findings.sorted(by: { $0.range.location < $1.range.location }) {
             let key = f.type + "|" + f.text.lowercased()
             if valueToken[key] == nil {
                 perType[f.type, default: 0] += 1
-                let token = "[\(f.type)_\(perType[f.type]!)]"
+                let token = mode == .dummy ? (fakes[f.text.lowercased()] ?? "[\(f.type)_\(perType[f.type]!)]")
+                    : "[\(f.type)_\(perType[f.type]!)]"
                 valueToken[key] = token
                 mapping[token] = f.text
             }
@@ -85,7 +102,10 @@ public enum Redactor {
     /// Redacts a file. PDFs and scans become an image-only PDF with black boxes flattened into each page, so the
     /// original text can't be recovered. DOCX/TXT become a text file with placeholders.
     /// `keep` lets the user un-tick findings in the preview (matched by text, case-insensitive).
-    public static func redactFile(_ url: URL, findings: [Finding], keep: Set<String> = []) throws -> FileResult {
+    /// `.dummy` mode draws fakes instead (white box + text on pages, fake values in text); pass the same
+    /// `replacements` the preview used so the saved copy equals what was shown.
+    public static func redactFile(_ url: URL, findings: [Finding], keep: Set<String> = [], mode: RedactionMode = .blackout,
+                                  replacements: [String: String] = [:]) throws -> FileResult {
         let active = findings.filter { !keep.contains($0.text.lowercased()) }
         let values = Array(Set(active.map(\.text))).sorted { $0.count > $1.count }
         let counts = Dictionary(grouping: active, by: \.category).mapValues(\.count)
@@ -106,14 +126,14 @@ public enum Redactor {
                     return g
                 }
             }
-            let result = redactText(text, findings: PIIDetector.merge(located))
+            let result = redactText(text, findings: PIIDetector.merge(located), mode: mode, replacements: replacements)
             let out = outputURL(for: url, ext: "txt")
             try result.text.write(to: out, atomically: true, encoding: .utf8)
             return FileResult(output: out, counts: counts)
 
         case .image, .pdf:
             // Same renderer as the review screen's "After" page, so the saved copy is exactly what was previewed.
-            let pages = try renderPages(url, findings: findings, keep: keep)
+            let pages = try renderPages(url, findings: findings, keep: keep, mode: mode, replacements: replacements)
             let out = PDFDocument()
             for p in pages {
                 if let page = PDFPage(image: NSImage(cgImage: p.redacted, size: NSSize(width: p.size.width, height: p.size.height))) {
@@ -150,9 +170,11 @@ public enum Redactor {
 
     /// Renders every page of a PDF or image with boxes for **all** findings (`kept` marks the unticked ones) and the
     /// redacted image with only the ticked ones blacked out. DOCX/TXT have no pages: returns [].
-    public static func renderPages(_ url: URL, findings: [Finding], keep: Set<String> = []) throws -> [RenderedPage] {
+    public static func renderPages(_ url: URL, findings: [Finding], keep: Set<String> = [], mode: RedactionMode = .blackout,
+                                   replacements: [String: String] = [:]) throws -> [RenderedPage] {
         guard let kind = DocKind.from(url: url) else { throw TextExtraction.ExtractionError.unreadable(url.lastPathComponent) }
         let values = Array(Set(findings.map(\.text))).sorted { $0.count > $1.count }
+        let replacements = mode == .dummy ? DummyData.replacements(for: findings, existing: replacements) : replacements
         var info: [String: Finding] = [:]
         for f in findings where info[f.text.lowercased()] == nil { info[f.text.lowercased()] = f }
         func page(_ index: Int, image: CGImage, size: CGSize, pixelBoxes: [(CGRect, String)]) -> RenderedPage {
@@ -167,7 +189,9 @@ public enum Redactor {
                                    value: v, category: f?.category ?? "other", label: f?.label ?? "personal detail",
                                    kept: keep.contains(v.lowercased())))
             }
-            return RenderedPage(index: index, size: size, original: image, redacted: redactedImage(original: image, boxes: boxes, keep: keep), boxes: boxes)
+            return RenderedPage(index: index, size: size, original: image,
+                                redacted: redactedImage(original: image, boxes: boxes, keep: keep, mode: mode, replacements: replacements),
+                                boxes: boxes)
         }
         switch kind {
         case .docx, .text:
@@ -213,19 +237,40 @@ public enum Redactor {
         }
     }
 
-    /// The "After" image for a page: black boxes on every box whose value isn't in `keep`. Fast (no OCR), so the
-    /// review screen can call it on every toggle.
-    public static func redactedImage(original: CGImage, boxes: [RenderedPage.Box], keep: Set<String>) -> CGImage {
+    /// The "After" image for a page: black boxes on every box whose value isn't in `keep`, or in `.dummy` mode a
+    /// white box with the value's fake drawn in. Fast (no OCR), so the review screen can call it on every toggle.
+    /// A value with several boxes on the page (a name wrapped over two lines) gets its fake split across them in
+    /// reading order.
+    public static func redactedImage(original: CGImage, boxes: [RenderedPage.Box], keep: Set<String>,
+                                     mode: RedactionMode = .blackout, replacements: [String: String] = [:]) -> CGImage {
         let w = CGFloat(original.width), h = CGFloat(original.height)
-        let rects = boxes.filter { !keep.contains($0.value.lowercased()) }.map {
-            CGRect(x: $0.rect.minX * w, y: (1 - $0.rect.maxY) * h, width: $0.rect.width * w, height: $0.rect.height * h)
+        let active = boxes.filter { !keep.contains($0.value.lowercased()) }
+        func pixelRect(_ b: RenderedPage.Box) -> CGRect {
+            CGRect(x: b.rect.minX * w, y: (1 - b.rect.maxY) * h, width: b.rect.width * w, height: b.rect.height * h)
         }
-        return draw(boxes: rects, on: original)
+        guard mode == .dummy else { return draw(boxes: active.map { (pixelRect($0), nil) }, on: original) }
+        var out: [(rect: CGRect, text: String?)] = []
+        for (key, group) in Dictionary(grouping: active, by: { $0.value.lowercased() }) {
+            // Top-to-bottom, then left-to-right: the box's top-left origin makes that minY, then minX.
+            let ordered = group.sorted { ($0.rect.minY, $0.rect.minX) < ($1.rect.minY, $1.rect.minX) }
+            guard let fake = replacements[key] else { out += ordered.map { (pixelRect($0), nil) }; continue }
+            if ordered.count == 1 {
+                out.append((pixelRect(ordered[0]), fake))
+            } else {
+                let words = fake.split(separator: " ").map(String.init)
+                let per = max(1, Int((Double(words.count) / Double(ordered.count)).rounded(.up)))
+                for (i, box) in ordered.enumerated() {
+                    let slice = words.dropFirst(i * per).prefix(per)
+                    out.append((pixelRect(box), slice.joined(separator: " ")))
+                }
+            }
+        }
+        return draw(boxes: out, on: original)
     }
 
     /// OCR the image, box every occurrence of each value (word-precise via Vision), and flatten black boxes.
     static func burn(image: CGImage, values: [String]) throws -> CGImage {
-        draw(boxes: try ocrBoxes(image: image, values: values).map(\.0), on: image)
+        draw(boxes: try ocrBoxes(image: image, values: values).map { ($0.0, nil) }, on: image)
     }
 
     /// Pixel-space boxes (bottom-left origin) for every occurrence of each value, word-precise via Vision.
@@ -253,14 +298,55 @@ public enum Redactor {
         return rects
     }
 
-    static func draw(boxes: [CGRect], on image: CGImage) -> CGImage {
+    /// Flattens boxes into the image: a black box when `text` is nil, otherwise a white box with `text` drawn in a
+    /// system font fitted to the box height (shrunk, then truncated with an ellipsis, when it is too wide).
+    static func draw(boxes: [(rect: CGRect, text: String?)], on image: CGImage) -> CGImage {
         let w = image.width, h = image.height
         guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
                                   space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
         else { return image }
         ctx.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
-        ctx.setFillColor(NSColor.black.cgColor)
-        for r in boxes { ctx.fill(r.insetBy(dx: -3, dy: -3)) }
+        for (rect, text) in boxes {
+            let box = rect.insetBy(dx: -3, dy: -3)
+            guard let text else {
+                ctx.setFillColor(NSColor.black.cgColor)
+                ctx.fill(box)
+                continue
+            }
+            ctx.setFillColor(NSColor.white.cgColor)
+            ctx.fill(box)
+            guard !text.isEmpty else { continue }
+            drawText(text, in: rect, on: ctx)
+        }
         return ctx.makeImage() ?? image
+    }
+
+    private static func drawText(_ text: String, in rect: CGRect, on ctx: CGContext) {
+        let maxWidth = max(rect.width - 4, 4)
+        var size = max(rect.height * 0.72, 6)
+        func line(_ size: CGFloat) -> CTLine {
+            let font = CTFontCreateWithName("Helvetica" as CFString, size, nil)
+            let attributed = NSAttributedString(string: text, attributes: [
+                .font: font, .foregroundColor: NSColor.black.cgColor,
+            ])
+            return CTLineCreateWithAttributedString(attributed)
+        }
+        var ctLine = line(size)
+        var width = CGFloat(CTLineGetTypographicBounds(ctLine, nil, nil, nil))
+        if width > maxWidth {
+            size = max(size * maxWidth / width, rect.height * 0.4)
+            ctLine = line(size)
+            width = CGFloat(CTLineGetTypographicBounds(ctLine, nil, nil, nil))
+            if width > maxWidth, let truncated = CTLineCreateTruncatedLine(ctLine, Double(maxWidth), .end, nil) {
+                ctLine = truncated
+            }
+        }
+        var ascent: CGFloat = 0, descent: CGFloat = 0
+        _ = CTLineGetTypographicBounds(ctLine, &ascent, &descent, nil)
+        ctx.saveGState()
+        ctx.textMatrix = .identity
+        ctx.textPosition = CGPoint(x: rect.minX + 2, y: rect.midY - (ascent - descent) / 2)
+        CTLineDraw(ctLine, ctx)
+        ctx.restoreGState()
     }
 }

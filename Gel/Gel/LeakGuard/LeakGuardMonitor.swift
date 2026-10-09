@@ -66,7 +66,7 @@ final class LeakGuardMonitor: ObservableObject {
         let blocked = policy?.blocks(findings) ?? false
         if blocked, let text = clipText {
             // Block mode: the redacted text replaces the clipboard so a plain ⌘V can't paste the raw data.
-            setClipboard(Redactor.redactText(text, findings: findings).text)
+            setClipboard(Redactor.redactText(text, findings: findings, mode: Self.pasteMode).text)
         }
         Store.shared.logEvent(kind: "leak_caught", app: appName)
         for (category, n) in Dictionary(grouping: findings, by: \.category).mapValues(\.count) {
@@ -76,11 +76,14 @@ final class LeakGuardMonitor: ObservableObject {
         show(Alert(summary: PIIDetector.summary(findings), app: appName, blocked: blocked, organization: policy?.organization))
     }
 
+    /// Placeholders, or dummy data when the Settings toggle is on (R5).
+    private static var pasteMode: RedactionMode { GelSettings.shared.leakGuardPasteDummy ? .dummy : .blackout }
+
     /// ⌥⌘V: put the redacted text on the clipboard and paste it into the frontmost app.
     func safePaste() {
         guard let text = clipText ?? NSPasteboard.general.string(forType: .string) else { return }
         let f = findings.isEmpty ? PIIDetector.shared.detectFast(text) : findings
-        setClipboard(Redactor.redactText(text, findings: f).text)
+        setClipboard(Redactor.redactText(text, findings: f, mode: Self.pasteMode).text)
         hide()
         if AXIsProcessTrusted() {
             let src = CGEventSource(stateID: .combinedSessionState)

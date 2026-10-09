@@ -1,0 +1,4 @@
+// Debug signing for the Gel app and gelcli (D-070). With a stable local identity, macOS keeps trusting the
+// Keychain item across rebuilds; without one, the optional include is skipped and builds stay ad-hoc ("-").
+// LocalSigning.xcconfig is git-ignored and holds one line: CODE_SIGN_IDENTITY = Gel Development
+#include? "LocalSigning.xcconfig"

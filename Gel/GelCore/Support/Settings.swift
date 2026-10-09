@@ -107,6 +107,13 @@ public final class GelSettings {
         set { defaults.set(newValue, forKey: "activePacks") }
     }
 
+    /// Leak Guard's safe paste (⌥⌘V) and block mode put dummy data on the clipboard instead of placeholders (R5).
+    /// Off by default.
+    public var leakGuardPasteDummy: Bool {
+        get { defaults.bool(forKey: "leakGuardPasteDummy") }
+        set { defaults.set(newValue, forKey: "leakGuardPasteDummy") }
+    }
+
     /// Mute the Mac's sound output while hold-to-talk records (voice spec addendum). On by default.
     public var muteWhileTalking: Bool {
         get { defaults.object(forKey: "muteWhileTalking") as? Bool ?? true }

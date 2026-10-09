@@ -29,7 +29,8 @@ struct RedactionsView: View {
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text("\(URL(fileURLWithPath: r.source).lastPathComponent) → \(URL(fileURLWithPath: r.output).lastPathComponent)")
                                             .font(.system(size: 12.5)).lineLimit(1).truncationMode(.middle)
-                                        Text(r.counts.sorted { $0.value > $1.value }.map { "\($0.value) \($0.key)" }.joined(separator: ", "))
+                                        Text((RedactionMode(rawValue: r.mode) ?? .blackout).recordLabel + " · "
+                                             + r.counts.sorted { $0.value > $1.value }.map { "\($0.value) \($0.key)" }.joined(separator: ", "))
                                             .font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
                                     }
                                     Spacer()
@@ -120,9 +121,14 @@ struct RedactSheet: View {
         var url: URL
         var findings: [Finding]
         var provider: ProviderKind?
+        /// Extracted text, kept for "Add something Gel missed" (R6).
+        var text: String
+        /// Lowercased value → fake, fixed when the scan finishes so After and the saved copy agree (R5).
+        var replacements: [String: String]
     }
 
     @State private var scans: [FileScan] = []
+    @State private var mode: RedactionMode = .blackout
     @State private var current = ""
     @State private var unticked = Set<String>()
     @State private var outputs: [URL] = []
@@ -147,7 +153,9 @@ struct RedactSheet: View {
         case 0: return AttributedString("Scanning \(urls.count) file\(urls.count == 1 ? "" : "s")")
         case 1, 2:
             guard summary.ready else { return AttributedString("Preparing the preview…") }
-            return (try? AttributedString(markdown: "Gel will black out **\(summary.blackOut) of \(summary.total)** items in \(fileWord).")) ?? AttributedString("")
+            let verb = mode == .dummy ? "replace" : "black out"
+            let tail = mode == .dummy ? " with dummy data" : ""
+            return (try? AttributedString(markdown: "Gel will \(verb) **\(summary.blackOut) of \(summary.total)** items in \(fileWord)\(tail).")) ?? AttributedString("")
         default: return AttributedString("Redaction complete")
         }
     }
@@ -170,8 +178,9 @@ struct RedactSheet: View {
                 switch phase {
                 case 0: scanningList.transition(.opacity)
                 case 1, 2:
-                    RedactReview(files: scans.map { .init(url: $0.url, findings: $0.findings) },
-                                 unticked: $unticked, summary: $summary, disabled: phase == 2)
+                    RedactReview(files: scans.map { .init(url: $0.url, findings: $0.findings, replacements: $0.replacements) },
+                                 unticked: $unticked, summary: $summary, mode: $mode, disabled: phase == 2,
+                                 onAdd: addMissed)
                 default: doneView.transition(.rise(6))
                 }
             }
@@ -185,7 +194,7 @@ struct RedactSheet: View {
                     .buttonStyle(phase == 3 ? .gelPrimary : .gelSecondary)
                     .keyboardShortcut(phase == 3 ? .defaultAction : .cancelAction)
                 if phase == 1 {
-                    Button("Black out \(itemWord) · Save \(copyWord)") { write() }
+                    Button("\(mode == .dummy ? "Replace" : "Black out") \(itemWord) · Save \(copyWord)") { write() }
                         .buttonStyle(.gelPrimary)
                         .keyboardShortcut(.defaultAction)
                         .disabled(!summary.ready || scans.isEmpty)
@@ -270,10 +279,33 @@ struct RedactSheet: View {
                       let pages = try? TextExtraction.extract(url: url, kind: kind) else { continue }
                 let text = pages.map(\.text).joined(separator: "\n")
                 let result = await PIIDetector.shared.detectFull(text)
-                scans.append(FileScan(url: url, findings: result.findings, provider: result.llmProvider))
+                scans.append(FileScan(url: url, findings: result.findings, provider: result.llmProvider, text: text,
+                                      replacements: DummyData.replacements(for: result.findings)))
             }
             phase = 1
         }
+    }
+
+    /// R6: literal matches first, then the local model, on every file in the sheet. Never the cloud.
+    private func addMissed(_ query: String) async -> RedactReview.AddOutcome {
+        var added = 0
+        var unavailable = false
+        for i in scans.indices {
+            let s = scans[i]
+            let literal = PIIDetector.customFindings(query, in: s.text)
+            let prompted = await PIIDetector.shared.promptFindings(query, in: s.text)
+            if prompted == nil { unavailable = true }
+            let before = Set(s.findings.map { $0.text.lowercased() })
+            let merged = PIIDetector.merge(s.findings + literal + (prompted ?? []))
+            added += Set(merged.map { $0.text.lowercased() }).subtracting(before).count
+            let replacements = DummyData.replacements(for: merged, existing: s.replacements)
+            await MainActor.run {
+                guard i < scans.count else { return }
+                scans[i].findings = merged
+                scans[i].replacements = replacements
+            }
+        }
+        return RedactReview.AddOutcome(added: added, modelUnavailable: unavailable)
     }
 
     private func write() {
@@ -281,9 +313,9 @@ struct RedactSheet: View {
         Task {
             for s in scans {
                 do {
-                    let r = try Redactor.redactFile(s.url, findings: s.findings, keep: unticked)
+                    let r = try Redactor.redactFile(s.url, findings: s.findings, keep: unticked, mode: mode, replacements: s.replacements)
                     outputs.append(r.output)
-                    Store.shared.saveRedaction(source: s.url.path, output: r.output.path, counts: r.counts)
+                    Store.shared.saveRedaction(source: s.url.path, output: r.output.path, counts: r.counts, mode: mode.rawValue)
                     Store.shared.logEvent(kind: "redaction")
                     for (category, n) in r.counts { Store.shared.logEvent(kind: "redaction_item", category: category, count: n) }
                 } catch {

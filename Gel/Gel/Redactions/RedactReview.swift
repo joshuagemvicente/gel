@@ -8,7 +8,15 @@ struct RedactReview: View {
     struct FileItem: Identifiable, Equatable {
         var url: URL
         var findings: [Finding]
+        /// Lowercased value → fake for dummy mode (R5); the sheet owns it so preview and saved copy agree.
+        var replacements: [String: String] = [:]
         var id: URL { url }
+    }
+
+    /// What "Add something Gel missed" did (R6).
+    struct AddOutcome {
+        var added: Int
+        var modelUnavailable: Bool
     }
 
     /// One unique value (case-insensitive) — the unit the user ticks and the unit the counts use.
@@ -31,7 +39,10 @@ struct RedactReview: View {
     let files: [FileItem]
     @Binding var unticked: Set<String>
     @Binding var summary: Summary
+    @Binding var mode: RedactionMode
     var disabled = false
+    /// Runs the user's value or instruction over every file and returns what it added (R6). Nil hides the field.
+    var onAdd: ((String) async -> AddOutcome)? = nil
 
     private enum Preview {
         case loading
@@ -45,6 +56,9 @@ struct RedactReview: View {
     @State private var page = 0
     @State private var pulse: String?
     @State private var afterGeneration = 0
+    @State private var query = ""
+    @State private var adding = false
+    @State private var addNote: String?
 
     // MARK: - Derived
 
@@ -108,6 +122,7 @@ struct RedactReview: View {
         VStack(alignment: .leading, spacing: 10) {
             if files.count > 1 { fileTabs }
             pages
+            controls
             Rectangle().fill(Theme.hairline).frame(height: 1)
             findingsList.frame(height: 190)
         }
@@ -118,6 +133,14 @@ struct RedactReview: View {
         }
         .onChange(of: selected) { _, _ in page = 0 }
         .onChange(of: unticked) { _, _ in refreshAfter(); updateSummary() }
+        .onChange(of: mode) { _, _ in refreshAfter() }
+        // Findings added by the user (R6): re-render the files whose list changed.
+        .onChange(of: files) { old, new in
+            for f in new where old.first(where: { $0.url == f.url })?.findings != f.findings {
+                previews[f.url] = nil
+                loadPreview(for: f.url)
+            }
+        }
         .onChange(of: allLoaded) { _, _ in updateSummary() }
     }
 
@@ -143,6 +166,56 @@ struct RedactReview: View {
                 }
             }
         }
+    }
+
+    // MARK: - Mode and "Add something Gel missed" (R5, R6)
+
+    private var controls: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 12) {
+                Picker("", selection: $mode) {
+                    ForEach(RedactionMode.allCases, id: \.self) { Text($0.label).tag($0) }
+                }
+                .pickerStyle(.segmented).labelsHidden().fixedSize()
+                .disabled(disabled)
+                .help("Black boxes, or realistic fake values drawn in their place. Fakes are random and never derived from the original.")
+                Spacer(minLength: 16)
+                if onAdd != nil {
+                    TextField("Add something Gel missed: a value, or what to look for", text: $query)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 440)
+                        .onSubmit(find)
+                        .disabled(disabled || adding)
+                    Button("Find") { find() }
+                        .buttonStyle(.gelSecondary)
+                        .disabled(disabled || adding || query.trimmingCharacters(in: .whitespaces).isEmpty)
+                    if adding { ProgressView().controlSize(.small) }
+                }
+            }
+            if let addNote { Text(addNote).font(.system(size: 11)).foregroundStyle(Theme.textSecondary) }
+        }
+    }
+
+    private func find() {
+        let q = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !q.isEmpty, !adding, let onAdd else { return }
+        adding = true
+        addNote = "Looking on this Mac…"
+        Task {
+            let outcome = await onAdd(q)
+            await MainActor.run {
+                adding = false
+                var note = outcome.added == 0 ? "Nothing matched “\(q)”."
+                    : "Added \(outcome.added) item\(outcome.added == 1 ? "" : "s") for “\(q)”. They're ticked below; untick any you want to keep."
+                if outcome.modelUnavailable { note += " The local AI is unavailable, so only exact matches were added." }
+                addNote = note
+                if outcome.added > 0 { query = "" }
+            }
+        }
+    }
+
+    private func replacements(for url: URL) -> [String: String] {
+        files.first { $0.url == url }?.replacements ?? [:]
     }
 
     // MARK: - Pages
@@ -314,7 +387,7 @@ struct RedactReview: View {
                 Text(item.value).font(.system(size: 12, design: .monospaced)).lineLimit(1).foregroundStyle(Theme.textSecondary)
                 Text(item.label).font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
                 Spacer()
-                Text("Not on a page — nothing to black out").font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+                Text("Not on a page — nothing to \(mode == .dummy ? "replace" : "black out")").font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
             }
             .padding(.leading, 18).padding(.trailing, 6).frame(height: 24)
             .opacity(0.7)
@@ -381,15 +454,19 @@ struct RedactReview: View {
         guard let url, previews[url] == nil, let file = files.first(where: { $0.url == url }) else { return }
         previews[url] = .loading
         let keep = unticked
+        let mode = mode
+        let fakes = file.replacements
         Task.detached(priority: .userInitiated) {
             let state: Preview
             do {
-                let rendered = try Redactor.renderPages(url, findings: file.findings, keep: [])
+                let rendered = try Redactor.renderPages(url, findings: file.findings, keep: [], mode: mode, replacements: fakes)
                 if rendered.isEmpty, let kind = DocKind.from(url: url), kind == .docx || kind == .text {
                     state = .unavailable
                 } else {
                     var after: [Int: CGImage] = [:]
-                    for p in rendered { after[p.index] = Redactor.redactedImage(original: p.original, boxes: p.boxes, keep: keep) }
+                    for p in rendered {
+                        after[p.index] = Redactor.redactedImage(original: p.original, boxes: p.boxes, keep: keep, mode: mode, replacements: fakes)
+                    }
                     state = .ready(pages: rendered, after: after)
                 }
             } catch {
@@ -404,15 +481,18 @@ struct RedactReview: View {
         afterGeneration += 1
         let generation = afterGeneration
         let keep = unticked
-        let loaded: [(URL, [Redactor.RenderedPage])] = previews.compactMap { url, state in
-            if case .ready(let rendered, _) = state { return (url, rendered) } else { return nil }
+        let mode = mode
+        let loaded: [(URL, [Redactor.RenderedPage], [String: String])] = previews.compactMap { url, state in
+            if case .ready(let rendered, _) = state { return (url, rendered, replacements(for: url)) } else { return nil }
         }
         Task.detached(priority: .userInitiated) {
             try? await Task.sleep(nanoseconds: 60_000_000)
             var results: [URL: [Int: CGImage]] = [:]
-            for (url, rendered) in loaded {
+            for (url, rendered, fakes) in loaded {
                 var after: [Int: CGImage] = [:]
-                for p in rendered { after[p.index] = Redactor.redactedImage(original: p.original, boxes: p.boxes, keep: keep) }
+                for p in rendered {
+                    after[p.index] = Redactor.redactedImage(original: p.original, boxes: p.boxes, keep: keep, mode: mode, replacements: fakes)
+                }
                 results[url] = after
             }
             let rendered = results

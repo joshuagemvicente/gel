@@ -24,6 +24,8 @@ $CLI redact "../demo-data/HR Files/Scans/<file>.jpg"
 $CLI stats
 ```
 
+Debug signing (D-070): Debug builds of Gel and gelcli sign with the local "Gel Development" identity when `Gel/LocalSigning.xcconfig` exists (git-ignored, one line: `CODE_SIGN_IDENTITY = Gel Development`). That keeps the Keychain's "Always Allow" valid across rebuilds. On a Mac without the identity, delete or skip that file and builds stay ad-hoc.
+
 Regenerate demo data: `scripts/.venv/bin/python scripts/generate_demo_data.py` (from the repo root).
 
 ## Environment variables

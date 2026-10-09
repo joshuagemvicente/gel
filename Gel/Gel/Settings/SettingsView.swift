@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var axTrusted = AXIsProcessTrusted()
     @State private var removing: String?
     @State private var muteWhileTalking = GelSettings.shared.muteWhileTalking
+    @State private var pasteDummy = GelSettings.shared.leakGuardPasteDummy
 
     private let env = ProcessInfo.processInfo.environment
     private var org: String? { state.policy?.organization }
@@ -221,6 +222,14 @@ struct SettingsView: View {
         section("Hotkeys", "Open the launcher and paste safely from anywhere.") {
             KeyboardShortcuts.Recorder("Launcher", name: .toggleLauncher)
             KeyboardShortcuts.Recorder("Safe paste (redacted)", name: .safePaste)
+            Toggle(isOn: $pasteDummy) {
+                VStack(alignment: .leading) {
+                    Text("Paste dummy data instead of placeholders").font(.system(size: 13))
+                    Text("Safe paste swaps each value for a realistic fake (random, never derived from the original) instead of [SSS_1].")
+                        .font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+                }
+            }
+            .onChange(of: pasteDummy) { _, v in GelSettings.shared.leakGuardPasteDummy = v }
             Toggle(isOn: $muteWhileTalking) {
                 VStack(alignment: .leading) {
                     Text("Mute other sounds while I talk").font(.system(size: 13))

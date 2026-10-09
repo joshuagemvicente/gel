@@ -43,6 +43,8 @@ public final class Store {
             app TEXT, provider TEXT);
         CREATE TABLE IF NOT EXISTS redactions(id INTEGER PRIMARY KEY, ts REAL, source TEXT, output TEXT, counts TEXT);
         """)
+        // Added for R5 (D-073); fails harmlessly on a database that already has it.
+        try? exec("ALTER TABLE redactions ADD COLUMN mode TEXT")
     }
 
     deinit { sqlite3_close(db) }
@@ -317,19 +319,23 @@ public final class Store {
         public var source: String
         public var output: String
         public var counts: [String: Int]
+        /// `RedactionMode.rawValue`; rows from before R5 read as black-out.
+        public var mode: String = RedactionMode.blackout.rawValue
     }
 
-    public func saveRedaction(source: String, output: String, counts: [String: Int]) {
+    public func saveRedaction(source: String, output: String, counts: [String: Int], mode: String = RedactionMode.blackout.rawValue) {
         let json = (try? JSONEncoder().encode(counts)).flatMap { String(data: $0, encoding: .utf8) } ?? "{}"
-        _ = try? run("INSERT INTO redactions(ts, source, output, counts) VALUES(?,?,?,?)",
-                     [.double(Date().timeIntervalSince1970), .text(source), .text(output), .text(json)])
+        _ = try? run("INSERT INTO redactions(ts, source, output, counts, mode) VALUES(?,?,?,?,?)",
+                     [.double(Date().timeIntervalSince1970), .text(source), .text(output), .text(json), .text(mode)])
     }
 
     public func redactions() -> [RedactionRecord] {
-        query("SELECT id, ts, source, output, counts FROM redactions ORDER BY ts DESC") { s in
-            RedactionRecord(id: sqlite3_column_int64(s, 0), date: Date(timeIntervalSince1970: sqlite3_column_double(s, 1)),
-                            source: Self.text(s, 2), output: Self.text(s, 3),
-                            counts: (try? JSONDecoder().decode([String: Int].self, from: Data(Self.text(s, 4).utf8))) ?? [:])
+        query("SELECT id, ts, source, output, counts, mode FROM redactions ORDER BY ts DESC") { s in
+            let mode = Self.text(s, 5)
+            return RedactionRecord(id: sqlite3_column_int64(s, 0), date: Date(timeIntervalSince1970: sqlite3_column_double(s, 1)),
+                                   source: Self.text(s, 2), output: Self.text(s, 3),
+                                   counts: (try? JSONDecoder().decode([String: Int].self, from: Data(Self.text(s, 4).utf8))) ?? [:],
+                                   mode: mode.isEmpty ? RedactionMode.blackout.rawValue : mode)
         }
     }
 }
