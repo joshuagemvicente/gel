@@ -28,6 +28,7 @@ Each deliverable's finished content goes in the file its `spec.md` names (for ex
 | S5 | [judge-qa](judge-qa/) | Likely judge questions with short answers | Writes questions and answers | Practices them | spec drafted |
 | S6 | [demo-day-runsheet](demo-day-runsheet/) | Run sheet, Wi-Fi-off checklist, manual QA test plan | Writes the sheets and test cases | Runs every test by hand, records results | spec drafted |
 | S7 | [peoples-choice](peoples-choice/) | Audience-vote plan: the ask, closing screen, hallway demo | Writes the copy and builds the closing screen | Delivers the ask, runs hallway demos | spec drafted |
+| S8 | [demo-download](demo-download/) | Local downloadable macOS app ZIP with synthetic files and setup steps | Builds, verifies and packages the app | Installs models and runs the manual demo | ZIP verified; manual UI checks pending |
 
 LinkedIn is out of scope: the user posts on X only.
 
@@ -38,7 +39,7 @@ LinkedIn is out of scope: the user posts on X only.
 3. **Honest numbers.** Speeds, counts and timings come from `docs/project/decisions.md` measurements on the M2. None measured → no number. Sped-up video is labelled. Fake benchmarks can disqualify the team.
 4. **Synthetic data only on screen.** Only `demo-data/` files appear; no real names, accounts, emails, API keys, notifications or browser profiles in any recording or screen.
 5. **No commits after 10:00 AM, Oct 10.** Code freezes at the deadline. Anything changed after 10:00 (pitch edits, Q&A notes, QA results) stays uncommitted.
-6. **Consistent facts.** Team **12M** (registered as "abububwebwe"), solo: Joshua Gem Vicente. Project **Gel**. Repo `github.com/joshuagemvicente/app-hackathon`. Model names exactly as in `docs/project/demo-and-submission.md` → Disclosures.
+6. **Consistent facts.** Team **12M** (registered as "abububwebwe"), solo: Joshua Gem Vicente. Project **Gel**. Repo `github.com/joshuagemvicente/gel`. Model names exactly as in `docs/project/demo-and-submission.md` → Disclosures.
 
 ## Order and timeline (Sat Oct 10, PHT)
 

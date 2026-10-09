@@ -36,7 +36,7 @@ Do two takes of S03 and S06; the best one is used.
 ## Title and end cards
 
 - No title card (the hook caption sits over S01 instead), to save seconds.
-- End card, 4 s: warm off-white background, "Gel" large, "Private AI for your files. Runs on your Mac." below, then `Team 12M · github.com/joshuagemvicente/app-hackathon · #AppBuildersPH` in small text. Colors from `docs/features/app-shell/design.md`.
+- End card, 4 s: warm off-white background, "Gel" large, "Private AI for your files. Runs on your Mac." below, then `Team 12M · github.com/joshuagemvicente/gel · #AppBuildersPH` in small text. Colors from `docs/features/app-shell/design.md`.
 
 ## Transitions
 

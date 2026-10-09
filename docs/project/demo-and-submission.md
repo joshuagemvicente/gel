@@ -28,7 +28,7 @@ Team name: **12M**. Submit on https://cerebralvalley.ai/e/appbuildersph-hackatho
 
 - [ ] Project name: Gel · short description (one line from `docs/project/product.md`)
 - [ ] Team members (solo)
-- [ ] Public GitHub repo (`joshuagemvicente/app-hackathon` — currently **private**, make public before 10:00 AM) with setup steps for judges
+- [ ] Public GitHub repo (`joshuagemvicente/gel` — currently **private**, make public before 10:00 AM) with setup steps for judges
 - [ ] Demo video (~1 min) and X/LinkedIn post tagging Devin/Cognition with #AppBuildersPH
 - [ ] What runs locally / what needs internet (table below)
 - [ ] Disclosures (below) and the why-local answer (`docs/project/product.md`)

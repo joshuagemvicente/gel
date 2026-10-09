@@ -11,7 +11,7 @@ One section per form field, in the form's order, each with the field name as the
 | Project name | `Gel` |
 | Short description | One or two sentences: what it is, who it's for, the local angle. Derived from `product.md` → One line. Within the form's limit. |
 | Team name / members | `12M` · Joshua Gem Vicente (solo), exactly as on the official list |
-| GitHub repository | `https://github.com/joshuagemvicente/app-hackathon` (public) |
+| GitHub repository | `https://github.com/joshuagemvicente/gel` (public for submission) |
 | Demo video | The S3 file or URL, per the form's field type |
 | X video URL | The URL the user sends back after posting S2 |
 | What runs locally | Bullet list of the local AI tasks actually built (STT, OCR, embeddings, search, LLM answers, detection, redaction, Leak Guard) |

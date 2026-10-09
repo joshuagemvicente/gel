@@ -17,7 +17,7 @@ Built Gel in 24 hours: ask your HR files a question in Taglish, with Wi-Fi off, 
 It also catches government ID numbers before they're pasted into ChatGPT. All AI runs on the Mac.
 
 #AppBuildersPH @cognition
-https://github.com/joshuagemvicente/app-hackathon
+https://github.com/joshuagemvicente/gel
 ```
 
 ## Short variant (228 / 280): use it if X says the main post is too long
@@ -26,7 +26,7 @@ https://github.com/joshuagemvicente/app-hackathon
 Gel: ask your files questions in Taglish with Wi-Fi off, get answers that cite the page, and catch ID numbers before they reach ChatGPT. All AI runs on the Mac.
 
 Built in 24h for #AppBuildersPH @cognition
-https://github.com/joshuagemvicente/app-hackathon
+https://github.com/joshuagemvicente/gel
 ```
 
 ## Alt text for the video

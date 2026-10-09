@@ -170,7 +170,9 @@ Gel always uses the local model first. Gel has one OpenAI-compatible client with
 
 ## Setup for judges
 
-Gel isn't deployed as a hosted app. These steps rebuild it from this repository.
+Gel isn't deployed as a hosted app. A verified local demo package is available at `dist/Gel-Demo-macOS-arm64.zip` on the demo machine; it isn't committed or hosted. It contains the Release app, synthetic samples and `START-HERE.md`. See the [demo download guide](docs/deliverables/demo-download/start-here.md) for model setup and known limitations. The app is ad-hoc signed, not notarized, and requires Apple Silicon and macOS 15+.
+
+The steps below rebuild Gel from this repository instead.
 
 ### Requirements
 

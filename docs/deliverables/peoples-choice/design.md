@@ -11,7 +11,7 @@
 │      ✓ Works offline   ✓ Cites every answer   ✓ Stops leaks   │  ← three proof points, only if built
 │                                                              │
 │            People's Choice: vote for 12M                      │  ← the ask, accent color
-│      github.com/joshuagemvicente/app-hackathon · #AppBuildersPH │  ← small footer
+│      github.com/joshuagemvicente/gel · #AppBuildersPH           │  ← small footer
 └──────────────────────────────────────────────────────────────┘
 ```
 

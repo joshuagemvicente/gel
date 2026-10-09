@@ -7,7 +7,7 @@ Status: **draft v1, Oct 9 ~22:10.** Written against the briefing's field list. T
 ## Pre-submit checklist
 
 - [ ] T1: the live form's fields are copied into the Fields section below, and every field has an answer
-- [ ] Repo is **public**: https://github.com/joshuagemvicente/app-hackathon opens in a logged-out window
+- [ ] Repo is **public**: https://github.com/joshuagemvicente/gel opens in a logged-out window
 - [ ] X post is live and its URL is filled in below (S2)
 - [ ] The demo video link (or file) plays logged-out (S3)
 - [ ] Truth pass done (T5): every feature named below is verified in its `tasks.md`
@@ -46,7 +46,7 @@ Joshua Gem Vicente (solo)
 ## GitHub repository
 
 ```
-https://github.com/joshuagemvicente/app-hackathon
+https://github.com/joshuagemvicente/gel
 ```
 
 ## Demo video
