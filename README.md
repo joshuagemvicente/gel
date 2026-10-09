@@ -10,7 +10,7 @@ Built for the **AppBuildersPH Hackathon 2026** (theme: Local AI), October 9–10
 | --- | --- |
 | **Project name** | Gel |
 | **Short description** | A native macOS app that answers questions about your files with on-device AI, cites the exact page, redacts Philippine personal data, and stops it from being pasted into ChatGPT. |
-| **Team** | 12M · Joshua Gem Vicente ([@joshuagemvicente](https://github.com/joshuagemvicente)), solo <!-- TODO: match the names on appbuildersph.com/hackathon --> |
+| **Team** | 12M (registered as "abububwebwe") · Joshua Gem Vicente ([@joshuagemvicente](https://github.com/joshuagemvicente)), solo <!-- TODO: match the names on appbuildersph.com/hackathon --> |
 | **Demo video (~1 min)** | TBD |
 | **X / LinkedIn post** | TBD (tags Devin / Cognition, includes #AppBuildersPH) |
 | **Platform** | macOS 15+, Apple Silicon |
