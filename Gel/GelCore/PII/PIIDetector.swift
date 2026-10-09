@@ -426,7 +426,8 @@ public final class PIIDetector {
             findings[i].text = cut
             findings[i].range = NSRange(location: outer.location, length: (cut as NSString).length)
         }
-        findings.removeAll { $0.range.length < 3 }
+        // Tiny spans are noise, except what the user added on purpose (R6: "O+" as a blood type).
+        findings.removeAll { $0.range.length < 3 && $0.layer != 4 }
         let generic: Set<String> = ["PHONE", "AMOUNT", "NAME", "OTHER"]
         let sorted = findings.sorted { a, b in
             if a.range.length != b.range.length { return a.range.length > b.range.length }
@@ -444,7 +445,8 @@ public final class PIIDetector {
     /// "3 government ID numbers, 1 salary, 1 address" — counts by category, for the leak overlay and reports.
     public static func summary(_ findings: [Finding]) -> String {
         let counts = Dictionary(grouping: findings, by: \.category).mapValues(\.count)
-        let order = ["government ID", "salary", "bank account", "card", "money", "address", "date of birth", "health", "contact", "name", "other"]
+        let order = ["government ID", "salary", "bank account", "card", "money", "address", "date of birth", "health", "contact", "name",
+                     addedCategory, "other"]
         let parts = counts.sorted { (order.firstIndex(of: $0.key) ?? 99) < (order.firstIndex(of: $1.key) ?? 99) }.map { key, n -> String in
             let noun: String
             switch key {
@@ -458,6 +460,7 @@ public final class PIIDetector {
             case "contact": noun = n == 1 ? "contact detail" : "contact details"
             case "name": noun = n == 1 ? "name" : "names"
             case "health": noun = "health detail" + (n == 1 ? "" : "s")
+            case addedCategory: noun = n == 1 ? "item you added" : "items you added"
             default: noun = "personal detail" + (n == 1 ? "" : "s")
             }
             return "\(n) \(noun)"

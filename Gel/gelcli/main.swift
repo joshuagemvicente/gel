@@ -194,7 +194,9 @@ func run() async throws {
         let findings = PIIDetector.shared.detectFast(text, packs: packs)
         let keep: Set<String> = Set(args.contains("--keep-first") ? [findings.first?.text.lowercased() ?? ""] : [])
         let start = Date()
-        let pages = try Redactor.renderPages(url, findings: findings, keep: keep)
+        let previewMode: RedactionMode = args.contains("--dummy") ? .dummy : .blackout
+        let pages = try Redactor.renderPages(url, findings: findings, keep: keep, mode: previewMode,
+                                             replacements: DummyData.replacements(for: findings))
         print(String(format: "%d page(s), %d findings, rendered in %.1f s", pages.count, findings.count, Date().timeIntervalSince(start)))
         for p in pages {
             for (name, img) in [("before", p.original), ("after", p.redacted)] {

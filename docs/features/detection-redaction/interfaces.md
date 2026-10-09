@@ -52,3 +52,31 @@ public enum Redactor {
 ## Callers
 
 `gelcli detect|redact`; [leak-guard](../leak-guard/interfaces.md) (`detectFast`, `summary`, `redactText`); [redactions-module](../redactions-module/spec.md) (`detectFull`, `redactFile`); [query-citations](../query-citations/interfaces.md) (`cloudSafe`).
+
+## Added for R5 / R6 (D-073)
+
+```swift
+public enum RedactionMode: String, Codable, CaseIterable { case blackout, dummy; var label: String; var recordLabel: String }
+
+public enum DummyData {
+    public static func replacements(for findings: [Finding], existing: [String: String] = [:]) -> [String: String] // lowercased value → fake
+    public static func fake<R: RandomNumberGenerator>(for finding: Finding, using rng: inout R) -> String
+}
+
+extension Redactor {
+    public static func cloudGate(_ text: String) throws -> TextResult          // every pack, strict names, bare dates (D-072)
+    public static func redactText(_ text: String, findings: [Finding], mode: RedactionMode = .blackout, replacements: [String: String] = [:]) -> TextResult
+    public static func redactFile(_ url: URL, findings: [Finding], keep: Set<String> = [], mode: RedactionMode = .blackout, replacements: [String: String] = [:]) throws -> FileResult
+    public static func renderPages(_ url: URL, findings: [Finding], keep: Set<String> = [], mode: RedactionMode = .blackout, replacements: [String: String] = [:]) throws -> [RenderedPage]
+    public static func redactedImage(original: CGImage, boxes: [RenderedPage.Box], keep: Set<String>, mode: RedactionMode = .blackout, replacements: [String: String] = [:]) -> CGImage
+}
+
+extension PIIDetector {
+    public static let addedCategory = "added by you"
+    public static func customFindings(_ value: String, in text: String) -> [Finding]           // literal, offline
+    public func promptFindings(_ instruction: String, in text: String) async -> [Finding]?      // local model only; nil = unavailable
+}
+
+// Store: redactions.mode TEXT; RedactionRecord.mode; saveRedaction(source:output:counts:mode:)
+// GelSettings.leakGuardPasteDummy: Bool (default false)
+```

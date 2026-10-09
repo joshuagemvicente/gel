@@ -29,3 +29,21 @@ Three sections stacked:
 3. **Report**: date range pickers (default last 30 days) + **Export report** (accent) → reveals the CSV and PDF.
 
 Empty states: "No redactions yet. Select files in Library and click Redact." / "No leaks caught yet."
+
+## Review sheet additions (R5, R6)
+
+```
+Before                                   After
+[ page ]                                 [ page: white boxes with fake text ]
+
+[ Black out | Replace with dummy data ]        [ Add something Gel missed: a value, or what to look for ] [Find] ◌
+Added 2 items for “Bayanihan Outsourcing”. They're ticked below; untick any you want to keep.
+──────────────────────────────────────────────────────────────────────────────────────────────
+ADDED BY YOU · 2 of 2        GOVERNMENT ID · 4 of 4        NAME · 3 of 3 …
+```
+
+- The picker sits left of the field on one row between the pages and the findings list; the note (11 pt secondary) sits under the row and is empty until the first Find.
+- Header and button verbs follow the mode: "black out" / "replace … with dummy data", "Black out N items" / "Replace N items".
+- Rows without a box read "Not on a page — nothing to replace" in dummy mode.
+- Redactions list rows: "dummy data · 4 government ID, 1 salary" or "blacked out · …".
+- Settings › Hotkeys: toggle "Paste dummy data instead of placeholders" with the caption "Safe paste swaps each value for a realistic fake (random, never derived from the original) instead of [SSS_1]."

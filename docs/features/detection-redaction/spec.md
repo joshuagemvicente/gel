@@ -47,3 +47,11 @@ Core pack adds `SURNAME, Given M.` / `Surname, Given` patterns (common in Philip
 - [ ] Searching a redacted PDF's text with PDFKit returns nothing (image-only output), and none of the source's ground-truth values appear in OCR of the redacted output.
 - [ ] Redacting a 5-page scan takes under 10 s without the LLM pass, under 30 s with it.
 - [ ] With Ollama stopped and no cloud configured, `detectFull` still returns layer 1–2 findings (no crash, no hang beyond the timeout).
+
+## Redaction modes (R5, D-073)
+
+`RedactionMode` selects what replaces a value: `.blackout` (black boxes, `[SSS_1]` placeholders) or `.dummy` (type-aware fakes from `DummyData`, drawn into white boxes on pages). The mode is a parameter of `redactText`, `redactFile`, `renderPages` and `redactedImage`; callers that want preview and output to agree build one replacement map with `DummyData.replacements(for:)` and pass it to both. The cloud gate ignores modes and always emits placeholders.
+
+## Findings added by the user (R6, D-073)
+
+`PIIDetector.customFindings(value, in:)` returns every literal, case-insensitive occurrence as `CUSTOM` findings (layer 4, category "added by you"). `PIIDetector.promptFindings(instruction, in:)` asks the local model only, in 2,500-character pieces, and returns nil when it is unavailable. Both feed the normal `merge`, so overlaps with detected findings resolve the usual way.

@@ -25,3 +25,7 @@ Default list adds chat apps where people paste work data: Slack (`com.tinyspeck.
 - [ ] ⌥⌘V pastes placeholder text into chatgpt.com's input; none of the raw IDs are pasted.
 - [ ] The clean (non-PII) sample triggers no overlay.
 - [ ] No network requests are made by this feature; clipboard text never appears in the database.
+
+## Dummy data on paste (R5, D-073)
+
+Settings › Hotkeys → **Paste dummy data instead of placeholders** (`GelSettings.leakGuardPasteDummy`, default off). When on, safe paste and block mode call `Redactor.redactText(…, mode: .dummy)`, so the clipboard carries type-aware fakes instead of `[SSS_1]`. Detection and the overlay are unchanged.

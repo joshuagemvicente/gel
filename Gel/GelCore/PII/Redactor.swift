@@ -251,17 +251,29 @@ public enum Redactor {
         guard mode == .dummy else { return draw(boxes: active.map { (pixelRect($0), nil) }, on: original) }
         var out: [(rect: CGRect, text: String?)] = []
         for (key, group) in Dictionary(grouping: active, by: { $0.value.lowercased() }) {
-            // Top-to-bottom, then left-to-right: the box's top-left origin makes that minY, then minX.
-            let ordered = group.sorted { ($0.rect.minY, $0.rect.minX) < ($1.rect.minY, $1.rect.minX) }
-            guard let fake = replacements[key] else { out += ordered.map { (pixelRect($0), nil) }; continue }
+            guard let fake = replacements[key] else { out += group.map { (pixelRect($0), nil) }; continue }
+            // The text layer and OCR usually box the same words with slightly different edges: merge boxes that
+            // overlap, so one occurrence gets one white box and one fake (not a second box over the text).
+            var merged: [CGRect] = []
+            for b in group.map(pixelRect) {
+                if let i = merged.firstIndex(where: { r in
+                    let x = r.intersection(b)
+                    return x.width > 0.5 * min(r.width, b.width) && x.height > 0.5 * min(r.height, b.height)
+                }) {
+                    merged[i] = merged[i].union(b)
+                } else {
+                    merged.append(b)
+                }
+            }
+            // Reading order in pixel space (bottom-left origin): top-to-bottom, then left-to-right.
+            let ordered = merged.sorted { ($0.maxY, -$0.minX) > ($1.maxY, -$1.minX) }
             if ordered.count == 1 {
-                out.append((pixelRect(ordered[0]), fake))
+                out.append((ordered[0], fake))
             } else {
                 let words = fake.split(separator: " ").map(String.init)
                 let per = max(1, Int((Double(words.count) / Double(ordered.count)).rounded(.up)))
-                for (i, box) in ordered.enumerated() {
-                    let slice = words.dropFirst(i * per).prefix(per)
-                    out.append((pixelRect(box), slice.joined(separator: " ")))
+                for (i, rect) in ordered.enumerated() {
+                    out.append((rect, words.dropFirst(i * per).prefix(per).joined(separator: " ")))
                 }
             }
         }
@@ -306,17 +318,13 @@ public enum Redactor {
                                   space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
         else { return image }
         ctx.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
+        // Fills first, text last, so a neighbouring box can never paint over a fake already drawn.
         for (rect, text) in boxes {
-            let box = rect.insetBy(dx: -3, dy: -3)
-            guard let text else {
-                ctx.setFillColor(NSColor.black.cgColor)
-                ctx.fill(box)
-                continue
-            }
-            ctx.setFillColor(NSColor.white.cgColor)
-            ctx.fill(box)
-            guard !text.isEmpty else { continue }
-            drawText(text, in: rect, on: ctx)
+            ctx.setFillColor(text == nil ? NSColor.black.cgColor : NSColor.white.cgColor)
+            ctx.fill(rect.insetBy(dx: -3, dy: -3))
+        }
+        for (rect, text) in boxes {
+            if let text, !text.isEmpty { drawText(text, in: rect, on: ctx) }
         }
         return ctx.makeImage() ?? image
     }
