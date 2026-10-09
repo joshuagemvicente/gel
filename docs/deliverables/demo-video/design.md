@@ -1,43 +1,30 @@
 # S3 · Demo video — Design
 
-## Recording setup (user, before S01)
+Motion-graphics cut, 1920×1080, 30 fps, ~60 s. Captions only. Brand per [app-shell/design.md](../../features/app-shell/design.md).
 
-- Display at its default "looks like" resolution; recording at native resolution, downscaled to 1080p in the edit.
-- Do Not Disturb on; Dock hidden (⌥⌘D); desktop icons hidden; only Gel, Chrome (chatgpt.com, logged out or a neutral profile) and Finder open.
-- Gel indexed on `demo-data/HR Files`, pack HR, sample policy loaded, Ollama warmed with one throwaway question.
-- Cursor visible; move it slowly and pause 1 s before and after each click (clean cut points).
+## Look
 
-## Shots (one `.mov` each)
+- **Canvas:** warm off-white `#F7F5F0` for product beats; warm charcoal `#1E1D1B` for the hook and the end card. Text `#1F1D1A` / `#F2EFE9`; secondary `#6F6A61`; accent `#1F7A4D` (`#3FB27A` on dark); danger `#B3402E`.
+- **Type:** SF Pro Display (system). Captions 56 px semibold, tracking −0.5, max 2 lines, ≤ 8 words per line, bottom-left on a 16 px padded `card`-coloured box when over a capture. Stat numbers in New York (serif) 96 px.
+- **Brand mark:** the Gel drop path from `GelDropPath.swift` (same path as the app icon), vertical gradient `#4FC48A → #1F7A4D`, specular highlight. Drops in with a critically damped spring.
+- **Capture frame:** captures sit in a rounded (14 px) window frame with a soft shadow, scaled to ~78% width, slight 1.00→1.04 drift (Ken Burns) over the beat. Callouts: 2 px accent rounded rect over the element + a short accent leader line + 28 px label; they pop in (scale 0.9→1, 35 ms stagger).
+- **Motion:** springs only (response 0.28 snappy / 0.42 smooth / 0.35 pop at damping 0.72 for arrivals), matching the app's motion tokens. Hard cuts between beats, 8-frame cross-fade into the end card. No element animates longer than 450 ms except progress-style bars.
 
-| Shot | Record this | Hold before/after | Used in beat |
-| --- | --- | --- | --- |
-| S01 | Gel main window Home, still, 5 s | — | 1 (hook background) |
-| S02 | Open Control Center → turn Wi-Fi off → close; menu bar shows Wi-Fi off | 2 s | 2 |
-| S03 | ⌥Space → hold right ⌥ → say *"Sino sa applicants ang may 5+ years sa payroll?"* → release → let the answer finish streaming | 3 s after the last token | 3 |
-| S04 | Click the first citation chip → viewer opens on the highlighted page; hold | 3 s | 4 |
-| S05 | Turn Wi-Fi on; open `demo-data/clipboard-samples/employee_record.txt`, select all, copy | 1 s | 5 |
-| S06 | Switch to Chrome chatgpt.com → overlay appears → press ⌥⌘V → placeholders appear in the input; hold | 3 s | 5 |
-| S07 | (Spare) Library → select resumes → Redact → preview → redacted PDF | 2 s | substitute |
+## Scenes
 
-Do two takes of S03 and S06; the best one is used.
+| # | Frames (30 fps) | Scene | Motion | Caption |
+| --- | --- | --- | --- | --- |
+| 1 | 0–150 | Hook | Dark canvas. A document card ("201 File · Reyes") with masked lines `SSS 34-•••` `TIN •••` `₱ salary` rises; the ID lines detach and float up toward a cloud glyph; the cloud tints danger | "HR files are full of government IDs." → "And they get pasted into cloud AI." |
+| 2 | 150–300 | Meet Gel | Cut to warm canvas. Drop pops in, "Gel" slides in beside it, tagline fades up. Top-right: Wi-Fi glyph gets a slash and a "Wi-Fi off" chip pops | "Gel. Private AI for your files." → "Wi-Fi off. Everything below runs on this Mac." |
+| 3 | 300–720 | Ask | `C1` in the frame (clip if present, else still). The question types out in a replica of nothing: the caption carries it. Callouts in order: question field → citation chips → **Local · Qwen3 4B** badge | "Ask in Taglish." → "Get an answer with its sources." → "Answered on this Mac." |
+| 4 | 720–960 | Verify | `C2` in the frame, zoom 1.0→1.15 toward the highlighted passage; callout "Cited passage · page 2" | "Every answer opens its source, highlighted." |
+| 5 | 960–1260 | Redact | `C3` in the frame; a wipe reveals the After side left→right; callouts on two boxes | "Redact scans and PDFs." → "Originals stay untouched." |
+| 6 | 1260–1560 | Leak Guard | `C4` (clip if present): callout on the overlay summary line; then cut to `C5` with callout on the placeholders | "Copy a record into ChatGPT…" → "Gel catches it. Pastes placeholders instead." |
+| 7 | 1560–1680 | Local stack | Five pills stagger in: WhisperKit (speech) · Apple Vision (OCR) · BGE-M3 (search) · Qwen3 4B (answers) · SQLite (index). Under them, one measured line: "58 demo files indexed in 25.5 s on an M2" (D-030). Small line: "Cloud fallback: off by default. Redacted text only." | "Speech, OCR, search and answers. All on this Mac." |
+| 8 | 1680–1800 | End card | Dark canvas, drop + "Gel", tagline, then `Team 12M · github.com/joshuagemvicente/gel · #AppBuildersPH` | — |
 
-## Captions
+If `C1-launcher.mov` exists, scene 3 plays it at up to 2× with a `2×` pill top-right while sped up; the answer's final frame holds for the callouts.
 
-- Font: SF Pro Display Semibold (system); white text on a 70% black rounded box, bottom-center, 48 px at 1080p, max 2 lines, ≤ 8 words per line.
-- One caption per beat; sentence case; no exclamation marks.
-- Draft captions (finalized after recording, must match what's on screen):
-  1. "HR files are full of government IDs."
-  2. "Wi-Fi off. Everything below runs on this Mac."
-  3. "Ask in Taglish. Get a cited answer."
-  4. "Every answer opens its source."
-  5. "Copy an employee record into ChatGPT…" → "Gel catches it and pastes a redacted copy."
-- Speed tag: small `2×` pill top-right while sped up.
+## Speed tag
 
-## Title and end cards
-
-- No title card (the hook caption sits over S01 instead), to save seconds.
-- End card, 4 s: warm off-white background, "Gel" large, "Private AI for your files. Runs on your Mac." below, then `Team 12M · github.com/joshuagemvicente/gel · #AppBuildersPH` in small text. Colors from `docs/features/app-shell/design.md`.
-
-## Transitions
-
-Hard cuts only; a 6-frame crossfade into the end card. No zooms unless a UI element is under ~3% of the frame (then a single slow 1.0→1.4 zoom on it).
+`2×` (or the real factor) in a 28 px capsule, top-right, visible for the whole sped-up span.

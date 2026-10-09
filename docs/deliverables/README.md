@@ -15,7 +15,7 @@ docs/deliverables/<deliverable>/
 
 Each deliverable's finished content goes in the file its `spec.md` names (for example `submission-form/answers.md`).
 
-**Public vs private (user decision, Oct 9):** every spec file is public in the repo. The *outputs* of S4–S7 (`script.md`, `qa.md`, `runsheet.md`, `qa-test-plan.md`, `peoples-choice.md`, `closing-screen.html`) are git-ignored and stay on this Mac. S1–S3 outputs (`answers.md`, `post.md`, `cut-list.md`) are committed. Video files live in git-ignored `media/`. The demo video is **captions only: no voiceover, no music.**
+**Public vs private (user decision, Oct 9):** every spec file is public in the repo. The *outputs* of S4–S7 (`script.md`, `qa.md`, `runsheet.md`, `qa-test-plan.md`, `peoples-choice.md`, `closing-screen.html`) are git-ignored and stay on this Mac. S1–S3 outputs (`answers.md`, `post.md`, `cut-list.md`) are committed. Video files live in git-ignored `media/`. The demo video is **captions only: no voiceover, no music.** Its source lives in `video/` (committed; renders and captures git-ignored).
 
 ## Deliverables
 
@@ -23,11 +23,12 @@ Each deliverable's finished content goes in the file its `spec.md` names (for ex
 | --- | --- | --- | --- | --- | --- |
 | S1 | [submission-form](submission-form/) | Final answers for every Cerebral Valley field | Writes every answer, runs the truth pass | Pastes and submits once | spec drafted |
 | S2 | [x-post](x-post/) | The required X video post | Writes the post text and alt text | Posts it, sends back the URL | spec drafted |
-| S3 | [demo-video](demo-video/) | ~1-minute demo video | Writes the shot list, edits the raw footage, exports | Records the raw takes, approves the cut | spec drafted |
+| S3 | [demo-video](demo-video/) | ~1-minute motion-graphics demo video around real app captures | Builds and renders the Remotion cut | Captures the app frames, approves the cut | spec approved; Remotion cut built, captures pending |
 | S4 | [pitch-script](pitch-script/) | The 5-minute spoken pitch with the live demo | Writes the timed script | Rehearses and delivers it | spec drafted |
 | S5 | [judge-qa](judge-qa/) | Likely judge questions with short answers | Writes questions and answers | Practices them | spec drafted |
 | S6 | [demo-day-runsheet](demo-day-runsheet/) | Run sheet, Wi-Fi-off checklist, manual QA test plan | Writes the sheets and test cases | Runs every test by hand, records results | spec drafted |
 | S7 | [peoples-choice](peoples-choice/) | Audience-vote plan: the ask, closing screen, hallway demo | Writes the copy and builds the closing screen | Delivers the ask, runs hallway demos | spec drafted |
+| S8 | [pitch-deck](pitch-deck/) | Short Canva deck that frames the live demo, plus a Q&A appendix | Writes the outline, builds it in Canva, exports for offline | Connects Canva, reviews, presents | spec drafted |
 | S8 | [demo-download](demo-download/) | Local downloadable macOS app: ZIP and drag-to-install DMG, synthetic files and setup steps | Builds, verifies and packages the app | Hosts the files, installs models, runs the manual demo | ZIP and DMG verified; manual UI and website-download checks pending |
 | S9 | [website](website/) | One-page Next.js + shadcn/ui landing and download site in `website/` | Researches, specs and builds it; runs it locally | Deploys it | built and verified locally, DMG bundled (uncommitted); deploy pending |
 

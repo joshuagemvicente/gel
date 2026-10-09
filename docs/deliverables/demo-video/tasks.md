@@ -2,12 +2,12 @@
 
 Legend: `[x]` done and verified · `[~]` done, not verified · `[ ]` not started. Owner in brackets.
 
-- [x] **T1 Tooling.** _(Oct 9 22:15: ffmpeg 9.0.2 installed; no `drawtext`/`subtitles` in the Homebrew build, so captions are PNG overlays rendered by a small Swift/CoreText script; `overlay`, `setpts`, `xfade`, `tile`, libx264 and aac confirmed; `media/` git-ignored and created.)_ [Claude, after user OK] `brew install ffmpeg`; add `media/` to `.gitignore`; create `media/raw`, `media/frames`, `media/out`. **Verify:** `ffmpeg -version` runs; `ffmpeg -filters | grep drawtext` shows the filter (else switch to PNG captions); `git status` doesn't list `media/`.
-- [ ] **T2 Shot list final.** [Claude] Update [design.md](design.md) → Shots to what's actually built at the 06:00 freeze (check each feature's `tasks.md`). **Verify:** user agrees with the list.
-- [ ] **T3 Record.** [user, ~06:00–06:30] Follow Recording setup; record S01–S06 (+S07) into `media/raw/`. **Verify:** every file exists and opens in QuickTime.
-- [ ] **T4 Review footage.** [Claude] Extract frames at 2 fps into contact sheets; check for private data and failed takes; pick the best takes and cut points. **Verify:** `cut-list.md` lists every segment with in/out times; problem takes reported to the user for re-recording.
-- [ ] **T5 Edit v1.** [Claude] Trim, speed-up with tags, captions, end card, export per [spec](spec.md) → Output. **Verify:** `ffprobe` matches the spec; a contact sheet of the export shows every caption and no private data.
-- [ ] **T6 Review → v2.** [user → Claude] User watches v1 and sends notes; Claude renders v2 (and v3 if needed by 07:30). **Verify:** user approves.
-- [ ] **T7 Hand off.** [Claude] Final path given to the user for S2; a copy at `~/Desktop/gel-demo-backup.mp4` for the stage backup (S6). **Verify:** file plays from the Desktop with Wi-Fi off.
+- [x] **T1 Tooling.** _(Oct 9 22:15: ffmpeg 9.0.2 installed; `media/` git-ignored.)_
+- [x] **T2 Spec → motion graphics.** _(Oct 10: approved via questionnaire.)_ [Claude] Rewrite spec/design for the motion-graphics cut. **Verify:** user confirms.
+- [ ] **T3 Captures.** [user; see captures.md] Produce `media/captures/C1–C5` per the spec table. **Verify:** each file exists, opens, shows only synthetic data.
+- [x] **T4 Remotion project.** _(Oct 10 04:38: `media/out/gel-demo-v1.mp4` rendered with capture slots; ffprobe: h264 1920×1080 30 fps yuv420p + aac, 60.0 s, 6.8 MB.)_ [Claude] `video/` with scenes 1–8, brand tokens, capture frame + callout components, silent audio. **Verify:** `npx remotion render` produces `media/out/gel-demo-v1.mp4`; `ffprobe` matches the spec.
+- [~] **T5 Frame check.** _(Contact sheet of v1 reviewed: all captions present, no private data; re-check after the real captures.)_ [Claude] Contact sheet of the export at 2 fps; every caption visible ≥ 1.5 s; no private data; no website. **Verify:** sheet reviewed.
+- [ ] **T6 Review → v2.** [user → Claude] Notes → v2. **Verify:** user approves.
+- [ ] **T7 Hand off.** [Claude] Final path for S2; copy at `~/Desktop/gel-demo-backup.mp4`. **Verify:** plays with Wi-Fi off.
 
 Done when: all [spec.md](spec.md) acceptance criteria hold.

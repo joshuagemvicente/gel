@@ -12,8 +12,10 @@ A ~1-minute demo video is a required submission field, it is what the X post ([S
 
 ## Current state
 
-- Nothing recorded. The app UI isn't built yet (`Gel/Gel/GelApp.swift` is a placeholder); recording waits for the 06:00 freeze.
-- `ffmpeg` 9.0.2 is installed (Homebrew). It has no `drawtext` or `subtitles` filter, so captions are rendered as transparent PNGs (Swift + CoreText, SF Pro) and composited with `overlay`. `media/raw`, `media/frames` and `media/out` exist and are git-ignored.
+- **Oct 10 (user decision):** the video is a motion-graphics cut (Remotion, `video/`) that frames real captures of the app; spec and design rewritten and approved. Captions only; the website is never shown.
+- The Remotion project renders all eight beats; a capture that is missing renders as a labelled slot. Captures are listed in [captures.md](captures.md) and go in `media/captures/`.
+- Claude could not capture the app from this session (no screen-recording permission for the shell, no desktop-control tools), so the user captures; see captures.md.
+- `ffmpeg` 9.0.2 (Homebrew) adds the silent AAC track and `+faststart` after the Remotion render (`video/scripts/render.sh`).
 
 ## Facts and gotchas
 
