@@ -48,6 +48,17 @@ public final class ModelRouter {
         return ((try? await URLSession.shared.data(for: r))?.1 as? HTTPURLResponse)?.statusCode == 200
     }
 
+    /// True when Ollama reports the chat model as loaded in memory (`GET /api/ps`).
+    public func localModelLoaded() async -> Bool {
+        guard let url = URL(string: settings.localBaseURL + "/api/ps") else { return false }
+        var r = URLRequest(url: url)
+        r.timeoutInterval = 2
+        guard let (data, _) = try? await URLSession.shared.data(for: r),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let models = obj["models"] as? [[String: Any]] else { return false }
+        return models.contains { ($0["name"] as? String) == settings.localModel || ($0["model"] as? String) == settings.localModel }
+    }
+
     /// Loads the chat model into memory and keeps it there for an hour, so the first question isn't slow.
     public func warmUp() async {
         guard let url = URL(string: settings.localBaseURL + "/api/generate") else { return }
@@ -61,15 +72,17 @@ public final class ModelRouter {
     // MARK: - Chat
 
     /// Streams an answer. `redactForCloud` must remove personal data; if it throws, no cloud call is made.
-    public func chat(_ messages: [ChatMessage], maxTokens: Int = 600,
+    public func chat(_ messages: [ChatMessage], maxTokens: Int = 600, temperature: Double = 0.2,
                      onToken: @escaping (String) -> Void,
                      redactForCloud: (String) throws -> String) async throws -> RouteResult {
         var localError: Error?
         if !isInCloudCooldown {
             let state = StreamState()
             do {
-                let text = try await streamWithTimeouts(localClient, messages, maxTokens: maxTokens,
-                                                        firstToken: settings.firstTokenTimeout, total: settings.totalTimeout,
+                let cold = await !localModelLoaded()
+                let firstLimit = cold ? max(45, settings.firstTokenTimeout) : settings.firstTokenTimeout
+                let text = try await streamWithTimeouts(localClient, messages, maxTokens: maxTokens, temperature: temperature,
+                                                        firstToken: firstLimit, total: settings.totalTimeout + (cold ? 45 : 0),
                                                         state: state, onToken: onToken)
                 return RouteResult(text: text, provider: .local, model: settings.localModel, sentPayload: nil)
             } catch {
@@ -78,14 +91,15 @@ public final class ModelRouter {
                 localError = error
             }
         }
-        guard let cloud = cloudClient else { throw localError ?? LLMError.notConfigured }
+        // No cloud configured: report it plainly instead of a raw network error.
+        guard let cloud = cloudClient else { throw LLMError.notConfigured }
         startCooldown()
 
         let redacted: [ChatMessage]
         do { redacted = try messages.map { ChatMessage(role: $0.role, content: try redactForCloud($0.content)) } }
         catch { throw LLMError.redactionFailed }
         let payload = redacted.map { "[\($0.role)]\n\($0.content)" }.joined(separator: "\n\n")
-        let text = try await streamWithTimeouts(cloud, redacted, maxTokens: maxTokens, firstToken: 20, total: 60,
+        let text = try await streamWithTimeouts(cloud, redacted, maxTokens: maxTokens, temperature: temperature, firstToken: 20, total: 60,
                                                 state: StreamState(), onToken: onToken)
         Store.shared.logEvent(kind: "cloud_call", category: "chat", count: payload.count, provider: "cloud")
         return RouteResult(text: text, provider: .cloud, model: cloud.model, sentPayload: payload)
@@ -126,13 +140,13 @@ public final class ModelRouter {
         }
     }
 
-    private func streamWithTimeouts(_ client: OpenAICompatibleClient, _ messages: [ChatMessage], maxTokens: Int,
+    private func streamWithTimeouts(_ client: OpenAICompatibleClient, _ messages: [ChatMessage], maxTokens: Int, temperature: Double,
                                     firstToken: TimeInterval, total: TimeInterval, state: StreamState,
                                     onToken: @escaping (String) -> Void) async throws -> String {
         let start = Date()
         let task = Task {
             do {
-                for try await token in client.stream(messages, maxTokens: maxTokens) {
+                for try await token in client.stream(messages, temperature: temperature, maxTokens: maxTokens) {
                     state.append(token)
                     onToken(token)
                 }

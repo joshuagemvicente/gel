@@ -234,11 +234,19 @@ public final class Store {
         return scored.sorted { $0.1 > $1.1 }.prefix(limit).map { (chunkId: $0.0, score: $0.1) }
     }
 
+    /// English and Tagalog function words, plus "years": dates appear in every resume, so they only add noise.
+    static let stopwords: Set<String> = [
+        "the", "and", "for", "who", "what", "which", "whom", "whose", "how", "many", "much", "has", "have", "had",
+        "with", "from", "this", "that", "are", "was", "were", "been", "does", "did", "than", "more", "least", "most",
+        "year", "years", "yrs", "sino", "ano", "ang", "mga", "may", "kay", "niya", "nila", "ito", "iyan", "yung",
+        "para", "kung", "lang", "din", "rin", "nga", "ilan", "saan", "kailan", "bakit", "paano", "naman", "ngayon",
+    ]
+
     /// BM25 keyword search. The query is reduced to quoted terms OR'ed together, so user text can't break FTS syntax.
     public func keywordSearch(_ text: String, limit: Int) -> [(chunkId: Int64, score: Double)] {
         let terms = text.lowercased()
             .components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .filter { $0.count >= 3 }
+            .filter { $0.count >= 3 && !Self.stopwords.contains($0) }
         guard !terms.isEmpty else { return [] }
         let match = Set(terms).map { "\"\($0)\"" }.joined(separator: " OR ")
         return query("SELECT chunk_id, bm25(chunks_fts) FROM chunks_fts WHERE chunks_fts MATCH ? ORDER BY bm25(chunks_fts) LIMIT ?",

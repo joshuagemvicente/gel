@@ -71,6 +71,7 @@ public enum DPOReport {
         public var localAnswers = 0
         public var cloudAnswers = 0
         public var byCategory: [String: Int] = [:]
+        public init() {}
         public var localShare: Double {
             let total = localAnswers + cloudAnswers
             return total == 0 ? 1 : Double(localAnswers) / Double(total)

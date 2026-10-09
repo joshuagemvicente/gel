@@ -13,3 +13,6 @@ Gel/Gel.xcodeproj/
 # Python caches
 __pycache__/
 *.pyc
+
+# Gel redaction outputs created while testing
+demo-data/**/Redacted/

@@ -1,0 +1,14 @@
+# F3 · Query and citations — Tasks
+
+Legend: `[x]` done and verified · `[~]` built, not verified end-to-end · `[ ]` not started. Commands: `cd Gel`, `export GEL_HOME=/tmp/gel-dev`, `CLI=build/Build/Products/Debug/gelcli`; requires the folder indexed ([indexing tasks](../indexing/tasks.md) T4).
+
+- [x] **T1 Citation parsing.** Distinct `[n]` in order of first appearance. Files: `GelCore/Query/QueryEngine.swift`. **Verify:** unit test `testCitationNumbers` passes.
+- [x] **T2 Hybrid search.** Vector + BM25 (keywords 2×, stopwords), RRF, top 5 files × 2 chunks as one source each (D-025–D-031). Files: `QueryEngine.swift`, `Index/Store.swift`. **Verify:** `$CLI search "Sino sa applicants ang may 5+ years sa payroll?"` lists the Reyes, Santos and Cruz resumes among the 8 hits.
+- [x] **T3 Prompted, streamed answer.** Files: `QueryEngine.swift`. **Verify:** `$CLI ask "Sino sa applicants ang may 5+ years sa payroll?"` names exactly Reyes, Santos, Cruz, each followed by a citation whose file is that person's resume.
+- [x] **T4 Not-found path.** **Verify:** `$CLI ask "Ano ang paboritong pagkain ni Reyes?"` replies exactly `Hindi ko nakita sa files. (I couldn't find it in your files.)`.
+- [x] **T5 History + events.** **Verify:** after T3, `$CLI stats` shows `answers local/cloud: 1/0` (or more).
+- [~] **T6 Keyword-only fallback when embeddings fail.** If `embedder.embed` throws, continue with `keywordSearch` results alone so the cloud fallback can still answer. Files: `QueryEngine.swift` (+ a note in [spec](spec.md) and [decisions](../../project/decisions.md) first — spec-first). **Verify:** with Ollama stopped and `GEL_CLOUD_*` set, `$CLI ask "<demo question>"` answers with `provider: cloud`.
+- [x] **T7 Measure.** Run T3 three times warm; record first-token and total times in [decisions](../../project/decisions.md). Target: first token < 4 s, total < 15 s.
+- [ ] **T8 Viewer highlight** (app side, owned by [library-viewer](../library-viewer/spec.md)). **Verify:** clicking a chip highlights the passage on a text PDF and on a scan.
+
+Done when: all [spec.md](spec.md) acceptance criteria observed passing.

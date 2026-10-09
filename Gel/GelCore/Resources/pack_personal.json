@@ -41,7 +41,7 @@
       "label": "card number",
       "category": "card",
       "validator": "luhn",
-      "pattern": "(?<!\\d)(?:\\d[ -]?){12,18}\\d(?!\\d)"
+      "pattern": "(?<!\\d)\\d{4}(?:[ -]?\\d{4}){3}(?!\\d)|(?<!\\d)\\d{4}[ -]?\\d{6}[ -]?\\d{5}(?!\\d)"
     },
     {
       "id": "AMOUNT",
@@ -60,6 +60,12 @@
       "label": "bank account",
       "category": "bank account",
       "pattern": "(?<![\\d-])\\d{3}-\\d{4}-\\d{3,5}(?![\\d-])"
+    },
+    {
+      "id": "AMOUNT",
+      "label": "money amount",
+      "category": "money",
+      "pattern": "(?<![\\d,.])\\d{1,3}(?:,\\d{3})+\\.\\d{2}(?!\\d)"
     }
   ],
   "sampleQuestions": [

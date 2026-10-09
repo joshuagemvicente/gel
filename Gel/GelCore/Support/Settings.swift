@@ -74,7 +74,7 @@ public final class GelSettings {
     }
 
     public var firstTokenTimeout: TimeInterval {
-        get { let v = defaults.double(forKey: "firstTokenTimeout"); return v > 0 ? v : 8 }
+        get { let v = defaults.double(forKey: "firstTokenTimeout"); return v > 0 ? v : 15 }
         set { defaults.set(newValue, forKey: "firstTokenTimeout") }
     }
 

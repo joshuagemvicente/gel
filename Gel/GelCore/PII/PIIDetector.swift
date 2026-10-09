@@ -121,17 +121,65 @@ public final class PIIDetector {
 
     // MARK: Layer 2 — names and places (NaturalLanguage, on-device)
 
-    public func nameFindings(_ text: String) -> [Finding] {
+    public func nameFindings(_ text: String, seeds extraSeeds: [String] = []) -> [Finding] {
+        // The tagger misses ALL-CAPS names ("KRISTINE JOY REYES"), so also scan a title-cased copy.
+        // Title-casing keeps every UTF-16 offset, so ranges map back to the original text.
+        let titled = Self.titleCaseAllCaps(text)
+        var found = tagNames(text, original: text)
+        if titled != text { found += tagNames(titled, original: text) }
+        // Email local parts ("jasmine.tolentino@…") are reliable name seeds when the tagger finds nothing.
+        var seeds = found.map(\.text) + extraSeeds
+        if let email = try? NSRegularExpression(pattern: "([A-Za-z]+[._-][A-Za-z._-]+?)[0-9]*@") {
+            let ns = text as NSString
+            for m in email.matches(in: text, range: NSRange(location: 0, length: ns.length)) {
+                seeds.append(ns.substring(with: m.range(at: 1)).replacingOccurrences(of: "_", with: " ").replacingOccurrences(of: ".", with: " "))
+            }
+        }
+        return found + propagateNames(seeds, in: text)
+    }
+
+    /// Finds variants of already-found names: runs of 2–4 capitalized words/initials that share at least two
+    /// name parts (3+ letters) with a known name, e.g. "Jerome Q. Ramos" after "JEROME QUIAMBAO RAMOS".
+    func propagateNames(_ names: [String], in text: String) -> [Finding] {
+        let parts = Set(names.flatMap { $0.lowercased().components(separatedBy: CharacterSet.letters.inverted) }.filter { $0.count >= 3 })
+        guard parts.count >= 2,
+              let re = try? NSRegularExpression(pattern: "\\b[A-ZÑ][A-Za-zÑñ'-]*\\.?(?:[ \\t]+[A-ZÑ][A-Za-zÑñ'-]*\\.?){1,3}") else { return [] }
+        let ns = text as NSString
+        var out: [Finding] = []
+        for m in re.matches(in: text, range: NSRange(location: 0, length: ns.length)) {
+            let value = ns.substring(with: m.range).trimmingCharacters(in: CharacterSet(charactersIn: ". "))
+            let words = value.lowercased().components(separatedBy: CharacterSet.letters.inverted).filter { $0.count >= 3 }
+            if Set(words).intersection(parts).count >= 2 {
+                out.append(Finding(type: "NAME", label: "name", category: "name", text: value,
+                                   range: NSRange(location: m.range.location, length: (value as NSString).length), layer: 2))
+            }
+        }
+        return out
+    }
+
+    static func titleCaseAllCaps(_ text: String) -> String {
+        let ns = NSMutableString(string: text)
+        guard let re = try? NSRegularExpression(pattern: "\\b[A-ZÑ][A-ZÑ'-]+\\b") else { return text }
+        for m in re.matches(in: text, range: NSRange(location: 0, length: ns.length)).reversed() {
+            let word = ns.substring(with: m.range)
+            let titled = word.prefix(1) + word.dropFirst().lowercased()
+            if (titled as NSString).length == m.range.length { ns.replaceCharacters(in: m.range, with: String(titled)) }
+        }
+        return ns as String
+    }
+
+    private func tagNames(_ text: String, original: String) -> [Finding] {
         let tagger = NLTagger(tagSchemes: [.nameType])
         tagger.string = text
         var out: [Finding] = []
         let options: NLTagger.Options = [.omitPunctuation, .omitWhitespace, .joinNames]
         tagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .nameType, options: options) { tag, range in
             guard let tag, tag == .personalName else { return true }
-            let value = String(text[range])
+            let nsRange = NSRange(range, in: text)
+            let value = (original as NSString).substring(with: nsRange)
             // Single short tokens are often false positives ("Payroll", "Manila"); require 2+ words for names.
             guard value.split(separator: " ").count >= 2 || value.count >= 6 else { return true }
-            out.append(Finding(type: "NAME", label: "name", category: "name", text: value, range: NSRange(range, in: text), layer: 2))
+            out.append(Finding(type: "NAME", label: "name", category: "name", text: value, range: nsRange, layer: 2))
             return true
         }
         return out
@@ -139,7 +187,9 @@ public final class PIIDetector {
 
     /// Layers 1 + 2. Instant, offline; used for Leak Guard and for redacting anything sent to the cloud.
     public func detectFast(_ text: String, packs: [String] = GelSettings.shared.activePacks) -> [Finding] {
-        Self.merge(patternFindings(text, packs: packs) + nameFindings(text))
+        let patterns = patternFindings(text, packs: packs)
+        let nameSeeds = patterns.filter { $0.type == "NAME" }.map(\.text)
+        return Self.merge(patterns + nameFindings(text, seeds: [nameSeeds.joined(separator: " ")]))
     }
 
     // MARK: Layer 3 — LLM
