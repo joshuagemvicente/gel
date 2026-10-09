@@ -43,6 +43,14 @@ For terminal testing: `GEL_CLOUD_BASE_URL`, `GEL_CLOUD_API_KEY`, `GEL_CLOUD_MODE
 - The menu bar icon shows a cloud variant while the cooldown is active.
 - Each cloud call logs a `cloud_call` event (character count only).
 
+## Real names in cloud answers (E5)
+
+The redaction gate returns its placeholder → value mapping (kept in memory on the Mac only). After a cloud answer arrives, Gel swaps placeholders like `[NAME_1]` back to the real values **locally** before showing and saving it. "What was sent" still shows the placeholder version, exactly as it left the Mac.
+
+## Endpoint used for the hackathon
+
+`https://dialagram.me/router/v1` (OpenAI-compatible, `Authorization: Bearer`; unauthenticated `GET /models` → 401). The API key is entered in Settings and stored in the Keychain only.
+
 ## Acceptance criteria
 
 - [ ] With Ollama stopped and a cloud endpoint set, a question is answered with a Cloud badge in under 10 s.

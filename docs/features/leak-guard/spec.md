@@ -13,6 +13,10 @@
 - **Pause:** menu bar "Pause Leak Guard" toggles watching.
 - **Permissions:** if Accessibility isn't granted, ⌥⌘V still replaces the clipboard and the overlay says "Press ⌘V to paste the redacted text".
 
+## Watched apps (E12)
+
+Default list adds chat apps where people paste work data: Slack (`com.tinyspeck.slackmacgap`), Microsoft Teams (`com.microsoft.teams2`, `com.microsoft.teams`), Messenger (`com.facebook.archon.developerID`), Telegram (`ru.keepcoder.Telegram`, `org.telegram.desktop`), Viber (`com.viber.osx`), WhatsApp (`net.whatsapp.WhatsApp`), Discord (`com.hnc.Discord`). A policy's `watchedApps` still replaces the list.
+
 ## Acceptance criteria
 
 - [ ] Copying `demo-data/clipboard-samples` employee record text and switching to Chrome shows the overlay within 1 s with the right summary.

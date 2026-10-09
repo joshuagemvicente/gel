@@ -14,6 +14,12 @@
 - **Watching:** while the app runs, rescan the folder every 5 s (cheap: compares modification dates) and index anything new or changed.
 - **Progress:** the app shows "Indexing n of m · <file>" while running.
 
+## Folder safety (E2, E3, E8)
+
+- **Missing folder:** if the chosen folder doesn't exist or can't be read (drive unplugged, renamed), the rescan is skipped and nothing is pruned; the app shows "Folder not found" until it's back or changed.
+- **Changing folders:** documents outside the newly chosen folder are removed from the index.
+- **Unreadable files:** files that fail to extract (password-protected, corrupt) are collected with a short reason; the Library and Settings show "n files couldn't be read" with the list.
+
 ## Acceptance criteria
 
 - [ ] `gelcli index "demo-data/HR Files"` indexes all 58 files without errors, in under 3 minutes on the M2.

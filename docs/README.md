@@ -15,6 +15,7 @@ docs/
     decisions.md           decision log, including every deviation from a spec
     demo-and-submission.md Demo Day script, judge Q&A, submission checklist, disclosures
     conventions.md         build/test/CLI commands, env vars, code style, git
+    test-scenarios.md      basic → edge-case walk-through with status; decides what to fix next
   features/<feature>/      one folder per feature
     role.md                the expertise and rules for building this feature
     context.md             why it exists, where it sits, current state in code, gotchas

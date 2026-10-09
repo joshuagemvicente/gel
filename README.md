@@ -90,14 +90,11 @@ F6 (acting on the Finder selection) was cut from the start. The Library's Redact
 - **Launcher:** opens with ⌥Space at top center, where Spotlight and Raycast appear. You type or talk there and get a short answer with citation chips and a Local or Cloud badge.
 - **Main window:** a sidebar with Home (privacy stats), History, Library with the document viewer, Redactions & Leak Guard, and Settings.
 
-**Choosing the local answer model**
+**Local models**
 
-- **Settings → Models** lists every LLM already installed in Ollama, read from Ollama's `/api/tags` endpoint.
-- Pick one and it becomes the model for answers and the AI detection pass. Qwen3 4B is the default.
-- The choice takes effect on the next question, with no restart. The answer badge shows which model replied, e.g. **Local · qwen3:4b**.
-- If the chosen model is removed from Ollama, Gel switches back to the default and says so.
-- The search model stays fixed on `bge-m3`. Every indexed passage is stored as `bge-m3` vectors, so changing it would mean re-indexing the whole folder.
-- If an admin `policy.json` pins a model, the picker is locked and shows "Managed by your organization".
+- Answers and the AI detection pass use Qwen3 4B Instruct (`qwen3:4b-instruct-2507-q4_K_M`). Settings → Models shows the model in use and Ollama's status. The answer badge shows which model replied, e.g. **Local · qwen3:4b-instruct-2507-q4_K_M**.
+- Search uses `bge-m3`. Every indexed passage is stored as `bge-m3` vectors, so changing the search model would mean re-indexing the whole folder.
+- **Planned, not built yet:** a picker in Settings → Models listing every chat model installed in Ollama (from its `/api/tags` endpoint), with Qwen3 4B Instruct as the default.
 
 ---
 
@@ -125,7 +122,7 @@ The only way data leaves the Mac is through the redactor.
 | --- | --- |
 | App shell | Swift, SwiftUI, AppKit `NSPanel` (launcher and overlay) |
 | Speech-to-text | WhisperKit, Whisper `large-v3-turbo` |
-| LLM | Ollama, Qwen3 4B by default (any installed Ollama model can be chosen in Settings), through Ollama's OpenAI-compatible `/v1` API |
+| LLM | Ollama, Qwen3 4B Instruct (`qwen3:4b-instruct-2507-q4_K_M`), through Ollama's OpenAI-compatible `/v1` API |
 | Embeddings | Ollama `bge-m3`, fixed (multilingual, handles Taglish) |
 | OCR and PDF | Apple Vision, PDFKit |
 | Name and place detection | Apple NaturalLanguage (`NLTagger`) |
@@ -187,11 +184,11 @@ Gel isn't deployed as a hosted app. These steps rebuild it from this repository.
 ```bash
 brew install ollama xcodegen
 brew services start ollama
-ollama pull qwen3:4b
+ollama pull qwen3:4b-instruct-2507-q4_K_M
 ollama pull bge-m3
 ```
 
-<!-- TODO: if the build switches to a different Qwen3 tag (e.g. the non-thinking instruct build), update the pull command and the disclosures. -->
+Use this exact tag. Gel looks for `qwen3:4b-instruct-2507-q4_K_M` by name. The plain `qwen3:4b` is a "thinking" build that is much slower to answer.
 
 The WhisperKit speech model (about 1.6 GB) downloads the first time you use voice.
 
@@ -223,11 +220,7 @@ The project is signed to run locally, so it doesn't need a paid Apple Developer 
    - **Accessibility**, for the hotkey and safe paste.
 3. Press **⌥Space** and ask a question.
 
-### 5. Optional: a different local answer model
-
-Pull any chat model with Ollama, for example `ollama pull llama3.2:3b`. Then select it in Settings → Models. Gel has only been tested with Qwen3 4B, the default.
-
-### 6. Optional: cloud fallback
+### 5. Optional: cloud fallback
 
 In Settings → Cloud fallback, enter a base URL (e.g. `https://<host>/v1`), an API key and a model name. Click **Test connection**, then turn it on. Without these settings, Gel stays local-only.
 
@@ -249,7 +242,7 @@ The briefing rules out fake benchmarks, so this table lists only numbers measure
 
 ## Disclosures
 
-- **Models:** Qwen3 4B (Alibaba, via Ollama; the default local answer model, which users can swap for any model installed in Ollama), BGE-M3 (BAAI, via Ollama), Whisper large-v3-turbo (OpenAI weights, run with WhisperKit). The cloud fallback model is whichever one the user configures. The demo uses a Claude model through an OpenAI-compatible endpoint.
+- **Models:** Qwen3 4B Instruct 2507, 4-bit (`qwen3:4b-instruct-2507-q4_K_M`; Alibaba, via Ollama), BGE-M3 (BAAI, via Ollama), Whisper large-v3-turbo (OpenAI weights, run with WhisperKit). The cloud fallback model is whichever one the user configures. The demo uses a Claude model through an OpenAI-compatible endpoint.
 - **Technologies and frameworks:**
   - App: Swift, SwiftUI, AppKit, PDFKit, Vision, NaturalLanguage, SQLite (FTS5).
   - Libraries: [WhisperKit](https://github.com/argmaxinc/WhisperKit), [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts).

@@ -233,7 +233,7 @@ public final class PIIDetector {
         """
         let messages: [ChatMessage] = [.system(system), .user(text)]
         let result = try await ModelRouter.shared.completeJSON(messages) { content in
-            try Redactor.cloudSafe(content, packs: packs)
+            try Redactor.cloudSafeWithMapping(content, packs: packs)
         }
         let json = Self.extractJSON(result.text)
         struct Wrapper: Decodable { var items: [LLMItem] }

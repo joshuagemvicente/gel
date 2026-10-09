@@ -23,6 +23,11 @@
 - **Preview first:** the app shows findings grouped by category with checkboxes before writing; unticked values are kept (`keep:` set, matched case-insensitively).
 - Each redaction logs a `redaction` event plus `redaction_item` counts per category, and a `redactions` row (source, output, counts).
 
+## Output naming and DOCX types (E6, E7)
+
+- Redaction never overwrites: if `<name>_REDACTED.pdf` exists, the output is `<name>_REDACTED-2.pdf`, `-3`, …
+- DOCX/TXT outputs keep each finding's real type in placeholders (`[SSS_1]`, `[NAME_2]`), never `[OTHER_n]`.
+
 ## Acceptance criteria
 
 - [ ] Layer 1 finds 100% of the SSS, TIN, PhilHealth, Pag-IBIG, PhilSys, passport, driver's license and card values in `ground_truth.json` for text-layer files (scripted check against the ground truth).

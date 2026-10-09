@@ -12,6 +12,10 @@
 - **Errors:** one inline line, e.g. "Local model unavailable · Retry", "Nothing indexed yet · Choose a folder".
 - **History:** every answer is already saved by the engine; "Open in Gel" opens History on it.
 
+## Re-asking (E1)
+
+Each run has its own id. Starting a new question cancels the previous run **including its model stream**, and any token that still arrives for an old run is dropped, so two answers never mix.
+
 ## Acceptance criteria
 
 - [ ] ⌥Space opens the launcher at top-center from any app in under 200 ms; Esc closes it.

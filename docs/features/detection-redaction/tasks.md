@@ -13,3 +13,4 @@ Legend: `[x]` done and verified · `[~]` built, not verified end-to-end · `[ ]`
 - [x] **T9 Measure.** Time T6 on a 5-page scan with and without layer 3; record in [decisions](../../project/decisions.md).
 
 Done when: all [spec.md](spec.md) acceptance criteria observed passing.
+- [ ] **T10 E6/E7 naming + DOCX types.** **Verify:** redact the same file twice → `_REDACTED.pdf` and `_REDACTED-2.pdf`; redacted DOCX text shows `[SSS_1]`-style tokens.

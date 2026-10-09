@@ -16,3 +16,4 @@ Status: `[x]` done and verified · `[~]` built, not verified · `[ ]` not starte
   **Verify:** visual check with Reduce Motion on and off.
 
 Done when: all [spec.md](spec.md) acceptance criteria are observed passing.
+- [ ] **T7 E1 run ids.** Run id per question; cancel the inner stream; drop tokens from old runs. Files: `LauncherController.swift`, `ModelRouter.swift`. **Verify:** ask twice quickly → second answer contains no text from the first.

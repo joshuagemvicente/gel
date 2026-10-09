@@ -44,3 +44,7 @@ Newest last. Each entry: what was decided, why, and what it affects. Add an entr
 | D-037 | With no cloud configured, a local failure surfaces as "Local model unavailable…" (`LLMError.notConfigured`) instead of the raw network error | Spec wording; clearer for users | model-fallback |
 | D-038 | DEBUG-only test hook: distributed notifications `gel.debug.ask` (opens the launcher and asks `q`) and `gel.debug.chip` (clicks citation n) | Lets the agent verify the launcher → viewer flow with window screenshots without synthesizing keystrokes; compiled out of Release builds | launcher, verification |
 | D-039 | Voice uses WhisperKit v0.18.0 with `openai_whisper-large-v3-v20240930_turbo_632MB` (quantized turbo), falling back to `openai_whisper-small` | Same model as specified, ~632 MB instead of ~1.6 GB: faster download and load, within the 16 GB memory budget | voice, disclosures |
+| D-040 | Fix now from the test walkthrough: E1, E2, E3, E4, E5, E6, E7, E8, E10, E12 (user choice) | Two real bugs (E1 mixed answers, E2 index wipe) plus gaps that touch the demo or trust | launcher, indexing, query-citations, model-fallback, detection-redaction, leak-guard |
+| D-041 | Cloud fallback endpoint: `https://dialagram.me/router/v1` (OpenAI-compatible, Bearer auth); key in Keychain only | Supplied by the user | model-fallback, settings, disclosures |
+| D-042 | Leak Guard bundle IDs for Messenger/Teams/Telegram/Viber/WhatsApp/Discord are best-known values, not verified on this Mac | None of those apps are installed here to check | leak-guard |
+

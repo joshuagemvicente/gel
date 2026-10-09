@@ -11,6 +11,8 @@ public final class ModelRouter {
         public var model: String
         /// Exactly what was sent to the cloud (already redacted). Nil when the local model answered.
         public var sentPayload: String?
+        /// Placeholder → value mapping from the redaction gate (cloud only; stays on this Mac).
+        public var mapping: [String: String] = [:]
     }
 
     private let settings = GelSettings.shared
@@ -74,7 +76,7 @@ public final class ModelRouter {
     /// Streams an answer. `redactForCloud` must remove personal data; if it throws, no cloud call is made.
     public func chat(_ messages: [ChatMessage], maxTokens: Int = 600, temperature: Double = 0.2,
                      onToken: @escaping (String) -> Void,
-                     redactForCloud: (String) throws -> String) async throws -> RouteResult {
+                     redactForCloud: (String) throws -> Redactor.TextResult) async throws -> RouteResult {
         var localError: Error?
         if !isInCloudCooldown {
             let state = StreamState()
@@ -95,18 +97,16 @@ public final class ModelRouter {
         guard let cloud = cloudClient else { throw LLMError.notConfigured }
         startCooldown()
 
-        let redacted: [ChatMessage]
-        do { redacted = try messages.map { ChatMessage(role: $0.role, content: try redactForCloud($0.content)) } }
-        catch { throw LLMError.redactionFailed }
+        let (redacted, mapping) = try Self.redact(messages, with: redactForCloud)
         let payload = redacted.map { "[\($0.role)]\n\($0.content)" }.joined(separator: "\n\n")
         let text = try await streamWithTimeouts(cloud, redacted, maxTokens: maxTokens, temperature: temperature, firstToken: 20, total: 60,
                                                 state: StreamState(), onToken: onToken)
         Store.shared.logEvent(kind: "cloud_call", category: "chat", count: payload.count, provider: "cloud")
-        return RouteResult(text: text, provider: .cloud, model: cloud.model, sentPayload: payload)
+        return RouteResult(text: text, provider: .cloud, model: cloud.model, sentPayload: payload, mapping: mapping)
     }
 
     /// Non-streaming JSON task (personal-data detection, layer 3). Same fallback and redaction rules as `chat`.
-    public func completeJSON(_ messages: [ChatMessage], redactForCloud: (String) throws -> String,
+    public func completeJSON(_ messages: [ChatMessage], redactForCloud: (String) throws -> Redactor.TextResult,
                              timeout: TimeInterval = 25) async throws -> RouteResult {
         if !isInCloudCooldown {
             do {
@@ -116,13 +116,25 @@ public final class ModelRouter {
         }
         guard let cloud = cloudClient else { throw LLMError.notConfigured }
         startCooldown()
-        let redacted: [ChatMessage]
-        do { redacted = try messages.map { ChatMessage(role: $0.role, content: try redactForCloud($0.content)) } }
-        catch { throw LLMError.redactionFailed }
+        let (redacted, mapping) = try Self.redact(messages, with: redactForCloud)
         let payload = redacted.map { "[\($0.role)]\n\($0.content)" }.joined(separator: "\n\n")
         let text = try await cloud.complete(redacted, json: false, timeout: 45)
         Store.shared.logEvent(kind: "cloud_call", category: "detect", count: payload.count, provider: "cloud")
-        return RouteResult(text: text, provider: .cloud, model: cloud.model, sentPayload: payload)
+        return RouteResult(text: text, provider: .cloud, model: cloud.model, sentPayload: payload, mapping: mapping)
+    }
+
+    /// The redaction gate over every message. Any error means no cloud request at all.
+    static func redact(_ messages: [ChatMessage], with gate: (String) throws -> Redactor.TextResult) throws -> ([ChatMessage], [String: String]) {
+        var mapping: [String: String] = [:]
+        var out: [ChatMessage] = []
+        do {
+            for m in messages {
+                let r = try gate(m.content)
+                for (k, v) in r.mapping where mapping[k] == nil { mapping[k] = v }
+                out.append(ChatMessage(role: m.role, content: r.text))
+            }
+        } catch { throw LLMError.redactionFailed }
+        return (out, mapping)
     }
 
     final class StreamState {
@@ -156,7 +168,9 @@ public final class ModelRouter {
             }
         }
         while true {
-            try await Task.sleep(nanoseconds: 100_000_000)
+            if Task.isCancelled { task.cancel(); throw CancellationError() }
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            if Task.isCancelled { task.cancel(); throw CancellationError() }
             let s = state.snapshot
             if s.done { break }
             let elapsed = Date().timeIntervalSince(start)

@@ -11,3 +11,4 @@ Legend: `[x]` done and verified · `[~]` built, not verified end-to-end · `[ ]`
 - [x] **T7 Record numbers.** Add the measured index time and chunk count to [decisions](../../project/decisions.md).
 
 Done when: all [spec.md](spec.md) acceptance criteria observed passing.
+- [ ] **T8 E2/E3/E8 folder safety.** Skip prune when the folder is missing; drop documents outside a newly chosen folder; collect unreadable files. **Verify:** rename the folder → Library keeps files and shows "Folder not found"; rename back → recovers; a corrupt PDF shows in "couldn't be read".

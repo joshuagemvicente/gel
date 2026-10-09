@@ -12,3 +12,4 @@ Legend: `[x]` done and verified · `[~]` built, not verified · `[ ]` not starte
 - [ ] **T8 Pack switch takes effect.** **Verify:** menu bar → Personal; passport sample now triggers; HR-only sample behaviour changes accordingly, no restart.
 
 Done when: all [spec.md](spec.md) acceptance criteria observed passing.
+- [ ] **T9 E12 watched apps.** Extend `LeakGuardDefaults.watchedApps`. **Verify:** copy the employee record, switch to Slack (if installed) → overlay.

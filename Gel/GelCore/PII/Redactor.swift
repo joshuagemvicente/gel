@@ -39,8 +39,22 @@ public enum Redactor {
 
     /// The gate in front of every cloud call: pattern + name detection (no LLM, no network), then placeholders.
     public static func cloudSafe(_ text: String, packs: [String] = GelSettings.shared.activePacks) throws -> String {
-        let findings = PIIDetector.shared.detectFast(text, packs: packs)
-        return redactText(text, findings: findings).text
+        try cloudSafeWithMapping(text, packs: packs).text
+    }
+
+    /// Same gate, also returning the placeholder → value mapping so a cloud answer can be shown with real values
+    /// locally. The mapping never leaves the Mac.
+    public static func cloudSafeWithMapping(_ text: String, packs: [String] = GelSettings.shared.activePacks) throws -> TextResult {
+        redactText(text, findings: PIIDetector.shared.detectFast(text, packs: packs))
+    }
+
+    /// Swaps placeholders back to real values (longest tokens first so [NAME_12] isn't hit by [NAME_1]).
+    public static func rehydrate(_ text: String, mapping: [String: String]) -> String {
+        var out = text
+        for (token, value) in mapping.sorted(by: { $0.key.count > $1.key.count }) {
+            out = out.replacingOccurrences(of: token, with: value)
+        }
+        return out
     }
 
     // MARK: - Burned-in PDF
@@ -53,7 +67,14 @@ public enum Redactor {
     public static func outputURL(for source: URL, ext: String) -> URL {
         let dir = source.deletingLastPathComponent().appendingPathComponent("Redacted", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir.appendingPathComponent(source.deletingPathExtension().lastPathComponent + "_REDACTED." + ext)
+        let base = source.deletingPathExtension().lastPathComponent + "_REDACTED"
+        var url = dir.appendingPathComponent(base + "." + ext)
+        var n = 2
+        while FileManager.default.fileExists(atPath: url.path) {
+            url = dir.appendingPathComponent("\(base)-\(n).\(ext)")
+            n += 1
+        }
+        return url
     }
 
     /// Redacts a file. PDFs and scans become an image-only PDF with black boxes flattened into each page, so the
@@ -69,7 +90,18 @@ public enum Redactor {
         case .docx, .text:
             let pages = try TextExtraction.extract(url: url, kind: kind)
             let text = pages.map(\.text).joined(separator: "\n")
-            let result = redactText(text, findings: PIIDetector.merge(values.flatMap { PIIDetector.locate($0, in: text, type: "OTHER", layer: 1) }))
+            // Keep each finding's real type ([SSS_1], not [OTHER_1]) when locating values in the joined text.
+            var typeFor: [String: Finding] = [:]
+            for f in active where typeFor[f.text.lowercased()] == nil { typeFor[f.text.lowercased()] = f }
+            let located = values.flatMap { v -> [Finding] in
+                let f = typeFor[v.lowercased()]
+                return PIIDetector.locate(v, in: text, type: "OTHER", layer: 1).map { found in
+                    var g = found
+                    if let f { g.type = f.type; g.label = f.label; g.category = f.category }
+                    return g
+                }
+            }
+            let result = redactText(text, findings: PIIDetector.merge(located))
             let out = outputURL(for: url, ext: "txt")
             try result.text.write(to: out, atomically: true, encoding: .utf8)
             return FileResult(output: out, counts: counts)
