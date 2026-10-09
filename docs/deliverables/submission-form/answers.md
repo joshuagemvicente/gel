@@ -90,7 +90,7 @@ Nothing else connects to the internet.
 ```
 - Qwen3 4B Instruct 2507, 4-bit (qwen3:4b-instruct-2507-q4_K_M; Alibaba), run locally with Ollama: answers and the AI detection pass
 - BGE-M3 (BAAI), run locally with Ollama: embeddings for search
-- Whisper large-v3 turbo (OpenAI weights), run locally with WhisperKit: speech-to-text
+- Whisper large-v3 turbo, quantized to about 632 MB (OpenAI weights), run locally with WhisperKit: speech-to-text
 - Cloud fallback (optional): whichever model the user configures. Our demo uses a Claude model through an OpenAI-compatible endpoint.
 ```
 

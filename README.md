@@ -77,7 +77,7 @@ Status markers are updated as features land.
 | --- | --- | --- | --- |
 | F1 | Indexing | Indexes a folder you pick: PDFs (PDFKit text, or Vision OCR for scanned pages), images, and DOCX. Chunks keep their page and position so citations can be highlighted. `bge-m3` embeddings plus SQLite FTS5 keyword search. | ⏳ |
 | F2 | Voice input | Hold right ⌥ to talk. WhisperKit transcribes Taglish on-device. The transcript stays editable, and typing always works. | ⏳ |
-| F3 | Cited answers | Hybrid search, then a local LLM answer with numbered citations. If the files don't contain the answer, it replies *"Hindi ko nakita sa files"* ("I didn't find it in the files") instead of guessing. | ⏳ |
+| F3 | Cited answers | Hybrid search, then a local LLM answer with numbered citations. Answers are always in English, even when you ask in Tagalog or Taglish, typed or spoken. If the files don't contain the answer, it replies *"I couldn't find that in your files."* instead of guessing. | ⏳ |
 | F4 | Detection and redaction | Three layers: Philippine ID, phone and ₱ patterns; Apple `NLTagger` for names and places; a local LLM pass for addresses and salary context. Redacted PDFs are rasterized so the original text can't be recovered. | ⏳ |
 | F5 | Leak Guard and safe paste | Watches the clipboard and the frontmost app (browsers, ChatGPT, Claude). It warns before a leak, and ⌥⌘V pastes redacted text. Clipboard contents are never stored. | ⏳ |
 | F7 | Packs | JSON packs define which data types to catch. HR (full) and Personal (light) ship with the app. Adding a pack needs no code change. | ⏳ |
@@ -155,7 +155,7 @@ Gel always uses the local model first. Gel has one OpenAI-compatible client with
 - **When it triggers:**
   - Ollama is unreachable or returns a 5xx error.
   - The model is missing.
-  - The first token takes more than 8 s, or the whole answer more than 30 s.
+  - The first token takes more than 15 s (45 s while Ollama is still loading the model), or the whole answer more than 30 s.
   - The response is empty or malformed.
 
   After a failure Gel retries local after 60 s.
@@ -190,7 +190,7 @@ ollama pull bge-m3
 
 Use this exact tag. Gel looks for `qwen3:4b-instruct-2507-q4_K_M` by name. The plain `qwen3:4b` is a "thinking" build that is much slower to answer.
 
-The WhisperKit speech model (about 1.6 GB) downloads the first time you use voice.
+The WhisperKit speech model (Whisper large-v3 turbo, quantized, about 632 MB) downloads the first time you use voice.
 
 ### 2. Generate the synthetic demo files (optional)
 
@@ -232,17 +232,22 @@ The briefing rules out fake benchmarks, so this table lists only numbers measure
 
 | Measurement | Result |
 | --- | --- |
-| Indexing 50 synthetic documents (10 scans) | Not yet measured |
-| Voice: release key to transcript (10-word Taglish query) | Not yet measured |
-| Question to first answer token (local) | Not yet measured |
-| Redacting a 5-page scan | Not yet measured |
+| Indexing the 58 demo files, including 10 scans read with OCR | 25.5 s → 169 passages; re-checking an unchanged folder takes 0.02 s |
+| Demo question, first time it's asked (model already loaded) | about 9–10 s to the first word, about 16 s for the full answer |
+| The same question asked again | 0.2 s to the first word, 6.3 s for the full answer (Ollama reuses the prompt) |
+| First question after the model was unloaded | 13.5 s to the first word |
+| Personal-data detection, fast layers (IDs, cards, phones, emails, addresses, bank accounts, salaries) | 100% recall on the demo set; dates of birth 87.3%, names 73.1%, scans (excluding names) 89.4% |
+| Redaction with the local-LLM pass | text PDF 17 s, image-only PDF 21 s, JPG 25 s; outputs have no text layer, and OCR finds 0 of the 11 original values |
+| Voice: release key to transcript | Not yet measured |
 | Leak overlay after switching to ChatGPT | Not yet measured |
+
+Source: `docs/project/decisions.md` (D-030, D-036). Detection recall comes from `gelcli check` against `demo-data/ground_truth.json`.
 
 ---
 
 ## Disclosures
 
-- **Models:** Qwen3 4B Instruct 2507, 4-bit (`qwen3:4b-instruct-2507-q4_K_M`; Alibaba, via Ollama), BGE-M3 (BAAI, via Ollama), Whisper large-v3-turbo (OpenAI weights, run with WhisperKit). The cloud fallback model is whichever one the user configures. The demo uses a Claude model through an OpenAI-compatible endpoint.
+- **Models:** Qwen3 4B Instruct 2507, 4-bit (`qwen3:4b-instruct-2507-q4_K_M`; Alibaba, via Ollama), BGE-M3 (BAAI, via Ollama), Whisper large-v3 turbo, quantized to about 632 MB (OpenAI weights, run with WhisperKit). The cloud fallback model is whichever one the user configures. The demo uses a Claude model through an OpenAI-compatible endpoint.
 - **Technologies and frameworks:**
   - App: Swift, SwiftUI, AppKit, PDFKit, Vision, NaturalLanguage, SQLite (FTS5).
   - Libraries: [WhisperKit](https://github.com/argmaxinc/WhisperKit), [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts).
