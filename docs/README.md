@@ -44,6 +44,7 @@ docs/
 | F3 | [query-citations](features/query-citations/) | Hybrid search and a cited answer | engine built |
 | F4 | [detection-redaction](features/detection-redaction/) | Three-layer personal-data detection, placeholders, burned-in PDFs | engine built |
 | F5 | [leak-guard](features/leak-guard/) | Clipboard watcher, leak overlay, safe paste | detection built |
+| F5a | [browser-discovery](features/browser-discovery/) | Automatic web-link-app coverage, user overrides and per-app warnings | specification only |
 | F7 | [packs](features/packs/) | Configurable detection packs (HR, Personal) | engine built |
 | F8 | [policy-dpo-report](features/policy-dpo-report/) | Team policy and counts-only DPO report | engine built |
 | M1 | [model-fallback](features/model-fallback/) | Local-first LLM routing with a redacted cloud fallback | engine built |
@@ -57,6 +58,7 @@ docs/
 | U8 | [redactions-module](features/redactions-module/) | Redact flow, Leak Guard log, DPO export | not started |
 | U9 | [polish](features/polish/) | App icon, brand mark, motion system, per-screen polish | built, partly verified |
 | U10 | [multi-folder](features/multi-folder/) | Index a list of folders chosen in Settings, not just one | built, mostly verified |
+| U11 | [model-setup](features/model-setup/) | Model presets with measured specs, one-click download, install/start Ollama | approved, building |
 
 F6 (Finder selection) was cut; see `project/decisions.md` D-007.
 

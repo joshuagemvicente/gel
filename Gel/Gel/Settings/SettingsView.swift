@@ -1,5 +1,4 @@
 import SwiftUI
-import AVFoundation
 import KeyboardShortcuts
 import GelCore
 
@@ -14,9 +13,10 @@ struct SettingsView: View {
     @State private var total = GelSettings.shared.totalTimeout
     @State private var testResult: (ok: Bool, text: String)?
     @State private var testing = false
-    @State private var micStatus = AVCaptureDevice.authorizationStatus(for: .audio)
+    @State private var micAccess = VoiceRecorder.micAccess()
     @State private var axTrusted = AXIsProcessTrusted()
     @State private var removing: String?
+    @State private var muteWhileTalking = GelSettings.shared.muteWhileTalking
 
     private let env = ProcessInfo.processInfo.environment
     private var org: String? { state.policy?.organization }
@@ -39,6 +39,8 @@ struct SettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .onAppear { refreshPermissions() }
+        // Back from System Settings: both rows update without pressing Refresh.
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in refreshPermissions() }
     }
 
     private static let sectionOrder = ["Folders", "Packs", "Models", "Cloud fallback", "Hotkeys", "Permissions", "Policy"]
@@ -155,17 +157,8 @@ struct SettingsView: View {
     }
 
     private var modelsCard: some View {
-        section("Models", "These run on this Mac through Ollama.") {
-            LabeledContent("Chat model", value: GelSettings.shared.localModel)
-            LabeledContent("Embedding model", value: GelSettings.shared.embedModel)
-            HStack {
-                StatusDot(color: state.localStatus == .unavailable ? Theme.danger : Theme.accent, pulsing: state.localStatus == .checking)
-                Text(!state.missingModels.isEmpty ? "Model missing. Run: ollama pull \(state.missingModels.joined(separator: " "))"
-                     : state.localStatus == .unavailable ? "Ollama isn't running. Start it with `brew services start ollama`." : "Ollama is running.")
-                    .font(.system(size: 12))
-                Spacer()
-                Button("Warm up") { Task { await ModelRouter.shared.warmUp(); state.refreshHealth() } }
-            }
+        section("Models", "Gel runs AI on this Mac with Ollama. Downloads come from ollama.com; none of your files are sent.") {
+            ModelsSection()
         }
     }
 
@@ -228,12 +221,19 @@ struct SettingsView: View {
         section("Hotkeys", "Open the launcher and paste safely from anywhere.") {
             KeyboardShortcuts.Recorder("Launcher", name: .toggleLauncher)
             KeyboardShortcuts.Recorder("Safe paste (redacted)", name: .safePaste)
+            Toggle(isOn: $muteWhileTalking) {
+                VStack(alignment: .leading) {
+                    Text("Mute other sounds while I talk").font(.system(size: 13))
+                    Text("Silences music while you hold right ⌥, then turns it back on.").font(.system(size: 11)).foregroundStyle(Theme.textSecondary)
+                }
+            }
+            .onChange(of: muteWhileTalking) { _, v in GelSettings.shared.muteWhileTalking = v }
         }
     }
 
     private var permissionsCard: some View {
         section("Permissions", "Gel asks only for what a feature needs.") {
-            permissionRow("Microphone", granted: micStatus == .authorized, detail: "for hold-to-talk",
+            permissionRow("Microphone", granted: micAccess == .granted, detail: "for hold-to-talk",
                           link: "x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone")
             permissionRow("Accessibility", granted: axTrusted, detail: "for ⌥⌘V safe paste",
                           link: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")
@@ -293,7 +293,7 @@ struct SettingsView: View {
     }
 
     private func refreshPermissions() {
-        micStatus = AVCaptureDevice.authorizationStatus(for: .audio)
+        micAccess = VoiceRecorder.micAccess()
         axTrusted = AXIsProcessTrusted()
     }
 }

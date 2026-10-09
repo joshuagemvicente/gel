@@ -19,7 +19,11 @@ struct LauncherView: View {
                 HStack(spacing: 6) {
                     KeyHint(key: "⏎", text: "ask")
                     KeyHint(key: "esc", text: "close")
-                    KeyHint(key: "right ⌥", text: "hold to talk")
+                    if let notice = idleNotice {
+                        Text(notice).font(.system(size: 10.5)).foregroundStyle(Theme.textSecondary)
+                    } else {
+                        KeyHint(key: "right ⌥", text: "hold to talk")
+                    }
                 }
                 .padding(.horizontal, 18).padding(.bottom, 12)
                 .transition(.opacity)
@@ -50,7 +54,7 @@ struct LauncherView: View {
                 .animation(Motion.snappy, value: markMode)
             if model.phase == .recording {
                 LevelMeter(level: voice.level)
-                Text("Listening… release ⌥ to ask").foregroundStyle(Theme.textSecondary)
+                Text(voice.soundMuted ? "Listening… release ⌥ to ask · sound muted" : "Listening… release ⌥ to ask").foregroundStyle(Theme.textSecondary)
                     .transition(.opacity)
                 Spacer()
             } else {
@@ -93,15 +97,20 @@ struct LauncherView: View {
 
     private var micColor: Color {
         if case .unavailable = voice.state { return Theme.textSecondary.opacity(0.4) }
+        if voice.micDenied { return Theme.textSecondary.opacity(0.4) }
         return Theme.textSecondary
     }
 
+    /// Replaces the hold-to-talk hint; same priority as `micHelp`, so the row and the tooltip agree.
+    private var idleNotice: String? {
+        if case .unavailable(let why) = voice.state { return why }
+        return voice.micNotice
+    }
+
     private var micHelp: String {
-        switch voice.state {
-        case .loading: return "Loading the voice model…"
-        case .unavailable(let why): return why
-        default: return "Hold right ⌥ to talk"
-        }
+        if case .unavailable(let why) = voice.state { return why }
+        if let notice = voice.micNotice { return notice }
+        return voice.state == .loading ? "Loading the voice model…" : "Hold right ⌥ to talk"
     }
 
     @ViewBuilder private var answerArea: some View {
@@ -125,7 +134,7 @@ struct LauncherView: View {
                 }
                 .shake(errorTick)
             default:
-                Text(markdown(model.answerText))
+                AnswerText(text: model.answerText, citations: model.answer?.citations) { model.open($0) }
                     .font(.system(size: 14))
                     .lineSpacing(2)
                     .foregroundStyle(QueryEngine.isNotFound(model.answerText) ? Theme.textSecondary : Theme.textPrimary)
@@ -158,14 +167,6 @@ struct LauncherView: View {
         }
         .padding(.horizontal, 20).padding(.vertical, 14)
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func markdown(_ s: String) -> AttributedString {
-        // Inline-only markdown keeps "- " list markers as text; show them as bullets.
-        let text = s.split(separator: "\n", omittingEmptySubsequences: false)
-            .map { $0.hasPrefix("- ") ? "•  " + $0.dropFirst(2) : String($0) }
-            .joined(separator: "\n")
-        return (try? AttributedString(markdown: text, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))) ?? AttributedString(text)
     }
 }
 

@@ -2,6 +2,8 @@
 
 **Goal:** catch personal data on the clipboard at the moment it's about to reach an AI app, and offer a redacted paste instead.
 
+**Planned extension:** [Automatic browser discovery](../browser-discovery/README.md) specifies dynamic app membership, user additions/exclusions, per-app warnings and one-incident accounting. It replaces the static-only membership and global once-per-change warning rules below when implemented. Runtime implementation still requires approval; the other Leak Guard fundamentals remain in this brief.
+
 ## Behaviour
 
 - **Watch:** poll `NSPasteboard.general.changeCount` every 0.5 s. On change, read the string and run `detectFast` (layers 1+2 only: no LLM, no network, target < 100 ms). Keep the latest findings in memory only.

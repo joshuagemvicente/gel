@@ -18,6 +18,20 @@
 - Leading glyph: `magnifyingglass`, replaced by a pulsing dot while recording and a small spinner-free shimmer while waiting.
 - Mic glyph `mic` at the trailing edge; `mic.fill` in accent while recording, with a 5-bar level meter replacing the placeholder text.
 
+## Citation markers
+
+`[n]` markers in the answer text are drawn as **number pills**, never raw brackets:
+
+```
+3 applicants have 5+ years in payroll: Kristine Joy Reyes ⁽1⁾,
+Rodel Santos ⁽2⁾ and Patricia Anne Cruz ⁽3⁾.      ⁽n⁾ = pill
+```
+
+- Pill: the number in 10 pt semibold, `accent` text on `accentSoft`, raised 2 pt, a thin space on each side. A run like `[1][2][3]` or `[1, 2, 3]` becomes adjacent pills `1 2 3`.
+- Click opens the source exactly like chip n (same file, page and highlight). Hover shows the pointing hand.
+- A number with no matching source (the model wrote `[8]` with 7 sources) is removed from the text.
+- Same component in History (`AnswerText`), so both read the same.
+
 ## States
 
 | State | Shows |

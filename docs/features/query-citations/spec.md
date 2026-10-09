@@ -33,6 +33,14 @@ Judgment questions ("find five resumes with the best HR experience", "sino ang p
 - **Same language:** a question with common Filipino words (sino, ano, ang, mga, sa, ilan, ba, po, …) gets an explicit "reply in Taglish" instruction; answers use the question's language (Filipino, English or Taglish), including the not-found reply: "I couldn't find that in your files." for English, "Hindi ko nakita sa files." for Filipino/Taglish.
 - **Not found** only when the sources contain **nothing relevant**. If they're related but incomplete, Gel answers with what the files do say and names what's missing.
 
+## Library questions (L1)
+
+Questions about the library itself ("how many files do I have?", "ilang files meron ako?") are answered from the index, not by the model. A model given 12 sources can't count a library, and in this domain it misreads phrases like "201 files" (the Philippine HR term for an employee's personnel record) as a count.
+
+- **Trigger:** a count word (`how many`, `ilan`, `ilang`, `count`) **and** a file noun (`file(s)`, `document(s)`, `docs`, `PDF(s)`, `dokumento`), **and** every other word is filler from a short list (do, i, we, have, are, there, in, my, our, the, library, folder(s), indexed, gel, ang, na, ba, meron, mayroon, ko, natin, sa, lahat, total). Anything else ("how many files mention payroll?", "ilan ang empleyado sa Operations?") stays a normal question.
+- **Answer:** "You have 64 files indexed: 51 PDFs, 10 images, 3 DOCX." Filipino questions get "May 64 files ka sa library: 51 PDFs, 10 images, 3 DOCX." Kinds with zero files are left out. Nothing indexed yet keeps the existing "Nothing indexed yet" error.
+- **Provider:** local, model label `index`, no citations, no network call. Saved to history like any answer.
+
 ## Acceptance criteria
 
 - [ ] `gelcli ask "Sino sa applicants ang may 5+ years sa payroll?"` names Reyes, Santos and Cruz, each with a citation, and no one else.
@@ -40,3 +48,5 @@ Judgment questions ("find five resumes with the best HR experience", "sino ang p
 - [ ] Every answer drawn from files has ≥ 1 citation; every citation points to a file and page that contains the cited fact.
 - [ ] A question with no answer in the files gets the exact "not found" reply.
 - [ ] In the app, clicking a citation opens the right page highlighted in under 1 s, including on a scan.
+- [ ] "How many files do I have?" and "Ilang files meron ako?" return the exact index counts instantly, with no model call; "Ilan ang empleyado sa Operations?" still goes to the model.
+- [ ] Every `[n]` in an answer shows as a clickable number pill (launcher and History) that opens the same file and page as chip n; numbers with no matching source are dropped from the text.

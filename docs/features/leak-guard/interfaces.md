@@ -2,6 +2,8 @@
 
 Leak Guard's runtime lives in the **app target** (`Gel/LeakGuard/`); its logic calls `GelCore`.
 
+For the planned membership resolver, discovery adapters and per-app warning ledger, read [browser-discovery/interfaces.md](../browser-discovery/interfaces.md). The original interface sketch below does not implement that extension.
+
 ## To build (app target)
 
 ```swift

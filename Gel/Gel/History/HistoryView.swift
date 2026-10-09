@@ -79,7 +79,7 @@ struct HistoryView: View {
                         ProviderBadge(provider: a.provider, model: a.model)
                     }
                     Text(a.question).font(.system(size: 18, weight: .semibold)).tracking(-0.2)
-                    Text((try? AttributedString(markdown: a.text, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))) ?? AttributedString(a.text))
+                    AnswerText(text: a.text, citations: a.citations) { state.open(citation: $0) }
                         .font(.system(size: 13.5)).lineSpacing(2).textSelection(.enabled)
                     if !a.citations.isEmpty {
                         SectionLabel(text: "Sources").padding(.top, 4)

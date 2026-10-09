@@ -102,7 +102,9 @@ public final class ModelRouter {
             let state = StreamState()
             do {
                 let cold = await !localModelLoaded()
-                let firstLimit = cold ? max(45, settings.firstTokenTimeout) : settings.firstTokenTimeout
+                var firstLimit = cold ? max(45, settings.firstTokenTimeout) : settings.firstTokenTimeout
+                // Nothing to fall back to: giving up early only turns a slow answer into an error (D-064).
+                if cloudClient == nil { firstLimit = settings.totalTimeout + (cold ? 45 : 0) }
                 let text = try await streamWithTimeouts(localClient, messages, maxTokens: maxTokens, temperature: temperature,
                                                         firstToken: firstLimit, total: settings.totalTimeout + (cold ? 45 : 0),
                                                         state: state, onToken: onToken)

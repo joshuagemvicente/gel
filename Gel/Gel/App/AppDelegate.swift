@@ -21,6 +21,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppDelegate.shared = self
         NSApp.setActivationPolicy(.regular)
+        OutputMuter.shared.restore()  // sound Gel muted before a crash mid-recording
         AppState.shared.start()
         setUpStatusItem()
         KeyboardShortcuts.onKeyUp(for: .toggleLauncher) { [weak self] in self?.launcher.toggle() }
@@ -33,6 +34,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         showMainWindow()
     }
 
+    func applicationWillTerminate(_ notification: Notification) {
+        OutputMuter.shared.restore()
+    }
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -41,7 +46,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     #if DEBUG
-    /// Test-only hooks (D-038): `gel.debug.ask` {q}, `gel.debug.chip` {n}, `gel.debug.module` {name}, `gel.debug.appearance` {light|dark}, `gel.debug.leak` {blocked?}, `gel.debug.addFolders` {paths separated by ":"} (D-052). Not compiled into Release.
+    /// Test-only hooks (D-038): `gel.debug.ask` {q}, `gel.debug.chip` {n}, `gel.debug.module` {name}, `gel.debug.appearance` {light|dark}, `gel.debug.leak` {blocked?}, `gel.debug.addFolders` {paths separated by ":"} (D-052), `gel.debug.holdToTalk` {down|up} (D-059). Not compiled into Release.
     private func installDebugHooks() {
         let center = DistributedNotificationCenter.default()
         center.addObserver(forName: Notification.Name("gel.debug.ask"), object: nil, queue: .main) { [weak self] note in
@@ -63,6 +68,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         center.addObserver(forName: Notification.Name("gel.debug.leak"), object: nil, queue: .main) { [weak self] note in
             let blocked = (note.object as? String) == "blocked"
             Task { @MainActor in self?.leakGuard.debugShow(blocked: blocked) }
+        }
+        center.addObserver(forName: Notification.Name("gel.debug.holdToTalk"), object: nil, queue: .main) { [weak self] note in
+            let down = (note.object as? String) == "down"
+            Task { @MainActor in
+                if down { self?.launcher.show() }
+                self?.launcher.model.optionKey(down: down)
+            }
         }
         center.addObserver(forName: Notification.Name("gel.debug.addFolders"), object: nil, queue: .main) { note in
             let paths = ((note.object as? String) ?? "").split(separator: ":").map { URL(fileURLWithPath: String($0)) }
@@ -133,7 +145,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         state.refreshHealth()
         menu.removeAllItems()
         let statusTitle = state.missingModels.isEmpty ? state.localStatus.menuTitle
-            : "Model missing — run: ollama pull \(state.missingModels.joined(separator: " "))"
+            : "Model missing · open Settings › Models"
         let status = NSMenuItem(title: statusTitle, action: nil, keyEquivalent: "")
         status.isEnabled = false
         menu.addItem(status)

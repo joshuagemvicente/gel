@@ -16,8 +16,22 @@ Built and packaged from the final fixed snapshot, including the redaction-review
 - **Archive:** integrity and SHA-256 checks passed; a fresh extraction retained the executable permissions, app icon, arm64 architecture and valid embedded code signatures. It includes 11 dependency license/notice texts.
 - **Warnings:** existing warnings remain for the unused `localError` in `ModelRouter.swift` and asynchronous `NSLock` use in `VoiceRecorder.swift`. This build uses the project's Swift 5 language mode; a Swift 6 migration is outside this task.
 
+**DMG (Oct 10):**
+- File: `dist/Gel-macOS-arm64.dmg` (14,423,750 bytes, UDZO).
+- SHA-256: `23ae6581dc2f4e2b3852b62e04e24a27ceaaad95b1c97b10059e4620a416f72f`, saved in `dist/Gel-macOS-arm64.dmg.sha256`.
+- Contents: the same signed `Gel.app` as the ZIP, with the designed installer window ([design](design.md), D-057, D-058).
+- Website hand-off: `dist/dmg-window@2x.png` (background art) and `dist/dmg-window-dark.png` (mounted-window screenshot).
+- Guide: the DMG's guide comes from `start-here-dmg.md`.
+
 `dist/` is git-ignored. No release was published and repository visibility remains private. The archive's `BUILD-INFO.json` records the source revision and verification limits.
 
 ## Limits
 
 No bundled Ollama, chat/embedding/speech model weights, notarization, hosted download or product video. Manual microphone, Accessibility, browser-paste and offline checks remain the user's responsibility unless observed passing in this packaging session.
+
+## Hosting notes for the download website (Oct 10)
+
+- **File hosting:** keep the DMG out of the website's Git repo. Upload it to object storage (Cloudflare R2, or Vercel Blob) or a public GitHub Release, and link to it. Static hosts limit file size (for example, Cloudflare Pages caps each file at 25 MiB), and the DMG will grow with each release.
+- **Gatekeeper copy:** the site should show the **Open Anyway** step with a screenshot, publish the SHA-256, and say it's an unnotarized demo build. Removing the prompt needs an Apple Developer ID and notarization, which is out of scope here.
+- **Models aren't in the DMG:** the site needs the Ollama install and `ollama pull` steps from `start-here.md`.
+- **The website is a separate deliverable:** it gets its own spec folder before it's built. Claude never deploys or publishes it (deliverables hard rule 1).

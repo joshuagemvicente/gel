@@ -72,6 +72,41 @@ public final class QueryEngine {
         return ["ilan ", "ilan?", "how many", "count", "lahat ng", "list all", "all employees", "lahat ng empleyado"].contains { q.contains($0) }
     }
 
+    /// "How many files do I have?" / "Ilang files meron ako?": a count word, a file noun, and only filler words (L1).
+    /// These are answered from the index; the model can't count a library from 12 sources.
+    public static func isLibraryQuestion(_ question: String) -> Bool {
+        let words = question.lowercased().components(separatedBy: CharacterSet.letters.inverted).filter { !$0.isEmpty }
+        let text = " " + words.joined(separator: " ") + " "
+        guard [" how many ", " ilan ", " ilang ", " count "].contains(where: { text.contains($0) }) else { return false }
+        let nouns: Set<String> = ["file", "files", "document", "documents", "docs", "pdf", "pdfs", "dokumento"]
+        let filler: Set<String> = ["how", "many", "ilan", "ilang", "count", "do", "does", "i", "we", "you", "have", "has", "are", "is",
+                                   "there", "in", "my", "our", "the", "a", "all", "total", "library", "folder", "folders", "indexed",
+                                   "gel", "ang", "na", "ba", "po", "meron", "mayroon", "ako", "ko", "kami", "tayo", "natin", "sa",
+                                   "lahat", "mga", "yung", "nasa"]
+        return words.contains(where: nouns.contains) && words.allSatisfy { nouns.contains($0) || filler.contains($0) }
+    }
+
+    /// The library question's answer, from document counts by kind; nil when nothing is indexed.
+    public func libraryAnswer(_ question: String) -> String? {
+        let docs = store.documents()
+        guard !docs.isEmpty else { return nil }
+        func label(_ kind: DocKind, _ n: Int) -> String {
+            switch kind {
+            case .pdf: return n == 1 ? "PDF" : "PDFs"
+            case .image: return n == 1 ? "image" : "images"
+            case .docx: return "DOCX"
+            case .text: return n == 1 ? "text file" : "text files"
+            }
+        }
+        var byKind: [(kind: DocKind, count: Int)] = DocKind.allCases.map { kind in (kind, docs.filter { $0.kind == kind }.count) }
+        byKind = byKind.filter { $0.count > 0 }.sorted { $0.count > $1.count }
+        let counts = byKind.map { "\($0.count) \(label($0.kind, $0.count))" }.joined(separator: ", ")
+        let total = docs.count == 1 ? "1 file" : "\(docs.count) files"
+        let q = " " + question.lowercased() + " "
+        let filipino = Self.isFilipino(question) || [" ilan", " ilang ", " meron ", " mayroon "].contains { q.contains($0) }
+        return filipino ? "May \(total) ka sa library: \(counts)." : "You have \(total) indexed: \(counts)."
+    }
+
     public func search(_ question: String, files: Int? = nil, perFile: Int? = nil) async throws -> [Source] {
         let kind = Self.kind(of: question)
         let files = files ?? (kind == .broad ? 12 : kind == .ranking ? 6 : 5)
@@ -164,6 +199,10 @@ public final class QueryEngine {
 
     /// Streams tokens through `onToken`; returns the final answer with citations resolved to files and pages.
     public func ask(_ question: String, onToken: @escaping (String) -> Void = { _ in }) async throws -> AnswerResult {
+        if Self.isLibraryQuestion(question), let text = libraryAnswer(question) {
+            onToken(text)
+            return finish(question: question, text: text, sources: [], provider: .local, model: "index", sent: nil)
+        }
         let sources = try await search(question)
         guard !sources.isEmpty else {
             return finish(question: question, text: Self.notFound, sources: [], provider: .local,
@@ -199,12 +238,20 @@ public final class QueryEngine {
         return answer
     }
 
-    /// Distinct citation numbers in order of first appearance: "[2] … [1][2]" → [2, 1].
+    /// Citation markers as written: "[2]" or "[1, 3]", with their range in `text`.
+    public static func citationMarkers(in text: String) -> [(range: Range<String.Index>, numbers: [Int])] {
+        guard let re = try? NSRegularExpression(pattern: "\\[(\\d{1,2}(?:\\s*,\\s*\\d{1,2})*)\\]") else { return [] }
+        return re.matches(in: text, range: NSRange(text.startIndex..., in: text)).compactMap { m in
+            guard let r = Range(m.range, in: text), let inner = Range(m.range(at: 1), in: text) else { return nil }
+            return (r, text[inner].split(separator: ",").compactMap { Int($0.trimmingCharacters(in: .whitespaces)) })
+        }
+    }
+
+    /// Distinct citation numbers in order of first appearance: "[2] … [1][2]" → [2, 1]; "[1, 3]" counts both.
     public static func citationNumbers(in text: String) -> [Int] {
-        guard let re = try? NSRegularExpression(pattern: "\\[(\\d{1,2})\\]") else { return [] }
         var seen: [Int] = []
-        for m in re.matches(in: text, range: NSRange(text.startIndex..., in: text)) {
-            if let r = Range(m.range(at: 1), in: text), let n = Int(text[r]), !seen.contains(n) { seen.append(n) }
+        for marker in citationMarkers(in: text) {
+            for n in marker.numbers where !seen.contains(n) { seen.append(n) }
         }
         return seen
     }

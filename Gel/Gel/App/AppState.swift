@@ -44,6 +44,18 @@ extension Notification.Name {
     static let gelActivityChanged = Notification.Name("GelActivityChanged")
 }
 
+struct ModelDownload: Equatable {
+    var tag: String
+    var title: String
+    var completed: Int64
+    var total: Int64
+    var error: String?
+
+    var fraction: Double { total > 0 ? min(1, Double(completed) / Double(total)) : 0 }
+    var percent: Int { Int(fraction * 100) }
+    var isRunning: Bool { error == nil }
+}
+
 /// The single source of UI state. Views observe it; engine work goes through GelCore.
 @MainActor
 final class AppState: ObservableObject {
@@ -71,10 +83,13 @@ final class AppState: ObservableObject {
     /// Required Ollama models that aren't installed (Q5); shown as "Model missing — run ollama pull …".
     @Published var missingModels: [String] = []
     @Published var activityVersion = 0
+    /// The model download started from Settings › Models (U11); nil when none is running or failed.
+    @Published var modelDownload: ModelDownload?
 
     private var rescanTimer: Timer?
     private var healthTimer: Timer?
     private var isIndexing = false
+    private var downloadTask: Task<Void, Never>?
 
     var settings: GelSettings { .shared }
 
@@ -113,6 +128,67 @@ final class AppState: ObservableObject {
                 if cooldown { localStatus = .cloudActive }
                 else { localStatus = healthy ? .healthy : .unavailable }
             }
+            await OllamaSetup.shared.refresh()
+        }
+    }
+
+    // MARK: - Model download (U11)
+
+    /// Downloads whatever `preset` still needs (bge-m3 first, then the chat model), then switches to it and warms it up.
+    func useModel(_ preset: ModelPreset) {
+        guard downloadTask == nil, !settings.localModelFromEnvironment else { return }
+        let installed = OllamaSetup.shared.installedModels
+        let needed = [(ModelCatalog.embeddingTag, ModelCatalog.embeddingBytes), (preset.tag, preset.downloadBytes)]
+            .filter { !ModelCatalog.isInstalled($0.0, in: installed) }
+        guard !needed.isEmpty else { return switchModel(to: preset) }
+        let planned = needed.reduce(Int64(0)) { $0 + $1.1 }
+        modelDownload = ModelDownload(tag: preset.tag, title: preset.name, completed: 0, total: planned)
+        downloadTask = Task {
+            var finished: Int64 = 0
+            do {
+                for (tag, expected) in needed {
+                    let base = finished
+                    try await OllamaAPI.pull(tag) { p in
+                        // Publish whole-percent steps only: progress lines arrive many times a second.
+                        let total = max(planned, base + p.total)
+                        let completed = base + p.completed
+                        Task { @MainActor in
+                            guard var d = AppState.shared.modelDownload, d.tag == preset.tag, d.error == nil else { return }
+                            let before = d.percent
+                            d.completed = completed; d.total = total
+                            if d.percent != before { AppState.shared.modelDownload = d }
+                        }
+                    }
+                    finished += expected
+                }
+                guard !Task.isCancelled else { return }
+                downloadTask = nil
+                modelDownload = nil
+                switchModel(to: preset)
+            } catch {
+                // Cancel already cleared the state (and a new download may own it now).
+                guard !Task.isCancelled else { return }
+                downloadTask = nil
+                modelDownload?.error = error.localizedDescription
+            }
+            await OllamaSetup.shared.refresh()
+        }
+    }
+
+    func cancelModelDownload() {
+        downloadTask?.cancel()
+        downloadTask = nil
+        modelDownload = nil
+    }
+
+    func dismissModelDownloadError() { if modelDownload?.error != nil { modelDownload = nil } }
+
+    private func switchModel(to preset: ModelPreset) {
+        settings.localModel = preset.tag
+        objectWillChange.send()
+        Task {
+            await ModelRouter.shared.warmUp()
+            refreshHealth()
         }
     }
 

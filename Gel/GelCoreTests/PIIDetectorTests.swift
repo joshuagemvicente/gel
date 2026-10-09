@@ -66,6 +66,8 @@ final class PIIDetectorTests: XCTestCase {
 
     func testCitationNumbers() {
         XCTAssertEqual(QueryEngine.citationNumbers(in: "Reyes [2] and Cruz [1][2]."), [2, 1])
+        XCTAssertEqual(QueryEngine.citationNumbers(in: "Both [3, 1] and [4]."), [3, 1, 4])
+        XCTAssertEqual(QueryEngine.citationMarkers(in: "a [1][2] b").count, 2)
     }
 
     func testChunkerCoversText() {
@@ -121,6 +123,15 @@ final class QuestionKindTests: XCTestCase {
     func testFilipinoDetection() {
         XCTAssertTrue(QueryEngine.isFilipino("Ano ang paboritong pagkain ni Reyes?"))
         XCTAssertFalse(QueryEngine.isFilipino("Who has payroll experience?"))
+    }
+
+    func testLibraryQuestions() {
+        XCTAssertTrue(QueryEngine.isLibraryQuestion("How many files do I have?"))
+        XCTAssertTrue(QueryEngine.isLibraryQuestion("Ilang files meron ako?"))
+        XCTAssertTrue(QueryEngine.isLibraryQuestion("how many documents are in my library"))
+        XCTAssertFalse(QueryEngine.isLibraryQuestion("How many files mention payroll?"))
+        XCTAssertFalse(QueryEngine.isLibraryQuestion("Ilan ang empleyado sa Operations?"))
+        XCTAssertFalse(QueryEngine.isLibraryQuestion("Who maintains 201 files?"))
     }
 
     func testNotFoundBothLanguages() {

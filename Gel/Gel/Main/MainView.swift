@@ -79,15 +79,20 @@ struct MainView: View {
     /// inserting views or animating text on each tick loops AppKit's constraint pass (see D-047).
     private var statusFooter: some View {
         let p = state.indexProgress
+        // Indexing wins over a model download (U11); both reuse the same text and bar, so nothing is inserted.
+        let d = p == nil ? state.modelDownload.flatMap { $0.isRunning ? $0 : nil } : nil
+        let line = p.map { "Reading \(min($0.done + 1, $0.total)) of \($0.total)" }
+            ?? d.map { "Downloading \($0.title) · \($0.percent)%" } ?? statusText
         return VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 7) {
                 StatusDot(color: statusColor, pulsing: state.localStatus == .checking)
-                Text(p.map { "Reading \(min($0.done + 1, $0.total)) of \($0.total)" } ?? statusText)
+                Text(line).lineLimit(1)
                     .font(.system(size: 11).monospacedDigit()).foregroundStyle(Theme.textSecondary)
             }
-            GelProgressBar(value: Double(p?.done ?? 0), total: Double(p?.total ?? 1), height: 2, animated: false)
+            GelProgressBar(value: p.map { Double($0.done) } ?? (d?.fraction ?? 0),
+                           total: p.map { Double($0.total) } ?? 1, height: 2, animated: false)
                 .padding(.leading, 20)
-                .opacity(p == nil ? 0 : 1)
+                .opacity(p == nil && d == nil ? 0 : 1)
         }
         .padding(.horizontal, 12).padding(.bottom, 8)
     }

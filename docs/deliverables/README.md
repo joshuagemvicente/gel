@@ -28,7 +28,8 @@ Each deliverable's finished content goes in the file its `spec.md` names (for ex
 | S5 | [judge-qa](judge-qa/) | Likely judge questions with short answers | Writes questions and answers | Practices them | spec drafted |
 | S6 | [demo-day-runsheet](demo-day-runsheet/) | Run sheet, Wi-Fi-off checklist, manual QA test plan | Writes the sheets and test cases | Runs every test by hand, records results | spec drafted |
 | S7 | [peoples-choice](peoples-choice/) | Audience-vote plan: the ask, closing screen, hallway demo | Writes the copy and builds the closing screen | Delivers the ask, runs hallway demos | spec drafted |
-| S8 | [demo-download](demo-download/) | Local downloadable macOS app ZIP with synthetic files and setup steps | Builds, verifies and packages the app | Installs models and runs the manual demo | ZIP verified; manual UI checks pending |
+| S8 | [demo-download](demo-download/) | Local downloadable macOS app: ZIP and drag-to-install DMG, synthetic files and setup steps | Builds, verifies and packages the app | Hosts the files, installs models, runs the manual demo | ZIP and DMG verified; manual UI and website-download checks pending |
+| S9 | [website](website/) | One-page Next.js + shadcn/ui landing and download site in `website/` | Researches, specs and builds it; runs it locally | Deploys it | built and verified locally, DMG bundled (uncommitted); deploy pending |
 
 LinkedIn is out of scope: the user posts on X only.
 

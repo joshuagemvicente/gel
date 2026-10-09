@@ -31,3 +31,14 @@ The package has not been resolved/built yet in this session (only `gelcli` was b
 ## Related
 
 [spec](spec.md) · [tasks](tasks.md) · [interfaces](interfaces.md) · [launcher](../launcher/spec.md)
+
+## Mute while talking (Oct 10)
+
+- **Why:** the user asked that voice mode mute background music, so it doesn't compete with their voice or get into Whisper's transcript.
+- **Approach chosen by the user:** mute the Mac's output. They considered and rejected two others: lowering other apps' volume with voice processing (it changes how the microphone is captured, too risky before the demo) and pausing players (there's no public macOS API).
+- **Core Audio:**
+  - Find the output with `kAudioHardwarePropertyDefaultOutputDevice`.
+  - Mute with `kAudioDevicePropertyMute` (output scope, main element).
+  - Fall back to `kAudioHardwareServiceDeviceProperty_VirtualMainVolume` through `AudioHardwareServiceSetPropertyData` (AudioToolbox).
+  - Check settability with `AudioObjectIsPropertySettable` first.
+- **Gotcha:** the launcher hides when it loses focus (`windowDidResignKey`), and until now a recording kept running after that. With muting, it would also keep the sound muted, so hiding now cancels.

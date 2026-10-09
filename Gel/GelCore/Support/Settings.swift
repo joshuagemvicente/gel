@@ -64,6 +64,9 @@ public final class GelSettings {
         set { defaults.set(newValue, forKey: "localModel") }
     }
 
+    /// `GEL_LOCAL_MODEL` pins the chat model; Settings locks the presets while it's set.
+    public var localModelFromEnvironment: Bool { !(env["GEL_LOCAL_MODEL"] ?? "").isEmpty }
+
     public var embedModel: String {
         get { defaults.string(forKey: "embedModel") ?? Self.defaultEmbedModel }
         set { defaults.set(newValue, forKey: "embedModel") }
@@ -102,6 +105,12 @@ public final class GelSettings {
     public var activePacks: [String] {
         get { defaults.stringArray(forKey: "activePacks") ?? ["hr"] }
         set { defaults.set(newValue, forKey: "activePacks") }
+    }
+
+    /// Mute the Mac's sound output while hold-to-talk records (voice spec addendum). On by default.
+    public var muteWhileTalking: Bool {
+        get { defaults.object(forKey: "muteWhileTalking") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "muteWhileTalking") }
     }
 
     public var onboardingDone: Bool {

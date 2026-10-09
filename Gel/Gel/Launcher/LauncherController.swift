@@ -27,6 +27,7 @@ final class LauncherController: NSObject, NSWindowDelegate {
     private var panel: LauncherPanel?
     private var host: NSHostingView<LauncherView>?
     private var sizeWatch: AnyCancellable?
+    private var promptWatch: AnyCancellable?
     let model = LauncherModel()
 
     var isVisible: Bool { panel?.isVisible ?? false }
@@ -57,6 +58,7 @@ final class LauncherController: NSObject, NSWindowDelegate {
 
     func hide() {
         guard let panel, panel.isVisible else { return }
+        model.cancelRecording()
         NSAnimationContext.runAnimationGroup({ ctx in
             ctx.duration = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? 0 : 0.1
             panel.animator().alphaValue = 0
@@ -86,6 +88,16 @@ final class LauncherController: NSObject, NSWindowDelegate {
         sizeWatch = model.objectWillChange.merge(with: VoiceRecorder.shared.objectWillChange)
             .debounce(for: .milliseconds(16), scheduler: RunLoop.main)
             .sink { [weak self] _ in self?.fitToContent() }
+        // The macOS microphone prompt took key; once it's answered, take it back so the notice shows and right ⌥ reaches the panel.
+        promptWatch = VoiceRecorder.shared.$askingForAccess
+            .removeDuplicates()
+            .dropFirst()
+            .filter { !$0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let panel = self?.panel, panel.isVisible, !panel.isKeyWindow else { return }
+                panel.makeKeyAndOrderFront(nil)
+            }
     }
 
     private func fitToContent() {
@@ -100,7 +112,11 @@ final class LauncherController: NSObject, NSWindowDelegate {
         panel.setFrame(frame, display: true, animate: false)
     }
 
-    func windowDidResignKey(_ notification: Notification) { hide() }
+    func windowDidResignKey(_ notification: Notification) {
+        // The microphone prompt takes key; keep the launcher (and its prompt notice) up until it's answered.
+        guard !VoiceRecorder.shared.askingForAccess else { return }
+        hide()
+    }
 }
 
 @MainActor
@@ -121,6 +137,14 @@ final class LauncherModel: ObservableObject {
     func prepareForShow() {
         focusTick += 1
         if case .error = phase { phase = .idle }
+        voice.refreshAccess()
+    }
+
+    /// The launcher closed while recording: discard the recording and give the sound back.
+    func cancelRecording() {
+        guard phase == .recording else { return }
+        voice.cancel()
+        phase = .idle
     }
 
     func optionKey(down: Bool) {

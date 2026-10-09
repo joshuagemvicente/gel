@@ -8,10 +8,11 @@
 | --- | --- | --- |
 | Folders | A list of folders with **Add folders…** (multi-select), per-row remove, **Reindex now**, index stats; see [multi-folder](../multi-folder/spec.md) | Adding a folder indexes it immediately |
 | Packs | A toggle per selectable pack with its description | Required packs from the policy are on and locked |
+| Leak Guard coverage (planned) | Discovered/known/manual app list, **Refresh**, **Add app…**, exclusions and managed row states | See [browser-discovery](../browser-discovery/design.md); specification only, not implemented |
 | Models | Local model and embedding model names, Ollama status (✓ / not running + how to start), warm-up button | Defaults from `GelSettings` |
 | Cloud fallback | Enable toggle, Base URL, API key (secure field → Keychain), Model, first-token and total timeouts, **Test connection** (`GET {base}/models` → "OK · n models" or the error text) | Enable only when URL and model are set; locked if the policy disallows cloud |
-| Hotkeys | Launcher hotkey recorder (KeyboardShortcuts), safe-paste hotkey (⌥⌘V) | |
-| Permissions | Microphone and Accessibility status with **Open System Settings** buttons | Accessibility is needed for ⌥⌘V to paste |
+| Hotkeys | Launcher hotkey recorder (KeyboardShortcuts), safe-paste hotkey (⌥⌘V), "Mute other sounds while I talk" toggle (voice addendum) | |
+| Permissions | Microphone and Accessibility status with **Open System Settings** buttons; both re-read when Gel becomes active (voice P5) | Accessibility is needed for ⌥⌘V to paste |
 | Policy | Current policy (organization or "Not managed"), **Install sample policy**, **Remove policy** | Sample = `TeamPolicy.sample` |
 
 - **Locked items** show a lock glyph and "Managed by <organization>".
