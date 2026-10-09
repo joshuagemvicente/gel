@@ -2,7 +2,7 @@
 
 Status: **v1, Oct 10 early morning.** Source of truth for the Canva build. 16:9. Colours and type in [design.md](design.md). `⚠` = re-check at the 06:00 freeze.
 
-Built file: `media/deck/gel-pitch.pptx` and `gel-pitch.pdf` (git-ignored; generator `media/deck/build.js`). Canva: import the .pptx (canva.com → Create → Import file); link `<<record here>>`.
+Built file: `media/deck/gel-pitch.pptx` and `gel-pitch.pdf` (git-ignored; generator `media/deck/build.js`). Canva design (built natively from this outline, Oct 10 ~05:30; slides 5, 7, 9–12 corrected to this outline after generation): https://canva.link/c0mcwdfmixt0wc6 · offline export `media/deck/gel-pitch-canva.pdf`.
 
 ---
 
