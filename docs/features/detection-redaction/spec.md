@@ -28,6 +28,19 @@
 - Redaction never overwrites: if `<name>_REDACTED.pdf` exists, the output is `<name>_REDACTED-2.pdf`, `-3`, …
 - DOCX/TXT outputs keep each finding's real type in placeholders (`[SSS_1]`, `[NAME_2]`), never `[OTHER_n]`.
 
+## Every page is OCR-checked when redacting (Q1)
+
+Burned-in redaction boxes come from **both** the PDFKit text layer and Vision OCR on every page, so a scan with a small text stamp can't slip through.
+
+## IDs inside longer spans (Q3)
+
+- Label patterns (e.g. `Address:`) stop at two or more spaces or at the next field label (`SSS`, `TIN`, `PhilHealth`, `Pag-IBIG`, `Tel`, `Mobile`, `Email`).
+- When a government ID sits inside a longer non-ID finding, the ID is kept as its own finding and the longer span is cut to end before it, so block-mode policy and counts see the ID.
+
+## Names in "SURNAME, First M." order (Q2)
+
+Core pack adds `SURNAME, Given M.` / `Surname, Given` patterns (common in Philippine forms and lists).
+
 ## Acceptance criteria
 
 - [ ] Layer 1 finds 100% of the SSS, TIN, PhilHealth, Pag-IBIG, PhilSys, passport, driver's license and card values in `ground_truth.json` for text-layer files (scripted check against the ground truth).

@@ -13,4 +13,7 @@ Legend: `[x]` done and verified · `[~]` built, not verified end-to-end · `[ ]`
 - [x] **T9 Measure.** Time T6 on a 5-page scan with and without layer 3; record in [decisions](../../project/decisions.md).
 
 Done when: all [spec.md](spec.md) acceptance criteria observed passing.
-- [ ] **T10 E6/E7 naming + DOCX types.** **Verify:** redact the same file twice → `_REDACTED.pdf` and `_REDACTED-2.pdf`; redacted DOCX text shows `[SSS_1]`-style tokens.
+- [x] **T10 E6/E7 naming + DOCX types.** **Verify:** redact the same file twice → `_REDACTED.pdf` and `_REDACTED-2.pdf`; redacted DOCX text shows `[SSS_1]`-style tokens.
+- [x] **T11 Q1 OCR on every redacted page.** **Verify:** redact the stamped scan PDF → OCR of the output finds none of its IDs.
+- [x] **T12 Q3 IDs inside spans + label stops.** **Verify:** `$CLI detect "Address: 147 Mabini St., Brgy. Sampaloc I   SSS No: 04-4989449-2"` → 1 address + 1 government ID.
+- [x] **T13 Q2 surname-first pattern.** **Verify:** `$CLI detect "ZAMORA, Christian B."` → 1 name.

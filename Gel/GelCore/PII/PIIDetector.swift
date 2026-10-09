@@ -192,6 +192,49 @@ public final class PIIDetector {
         return Self.merge(patterns + nameFindings(text, seeds: [nameSeeds.joined(separator: " ")]))
     }
 
+    // MARK: Strict names (cloud gate only)
+
+    /// Words that start with a capital in headings, job titles and labels; a run made only of these isn't a name.
+    static let strictStopwords: Set<String> = [
+        "payroll", "specialist", "officer", "analyst", "associate", "assistant", "supervisor", "lead", "manager", "senior",
+        "junior", "head", "chief", "director", "hr", "human", "resources", "resource", "generalist", "recruitment", "recruiter",
+        "accounting", "accountant", "operations", "customer", "service", "services", "support", "education", "experience",
+        "work", "skills", "summary", "professional", "personal", "details", "references", "reference", "trainings", "training",
+        "seminars", "seminar", "attended", "bachelor", "science", "technology", "university", "college", "school", "company",
+        "corp", "corporation", "inc", "logistics", "address", "date", "birth", "place", "sex", "civil", "status",
+        "citizenship", "religion", "government", "numbers", "number", "contact", "emergency", "relationship", "employment",
+        "information", "position", "department", "basic", "salary", "monthly", "rate", "expected", "source", "question",
+        "sources", "present", "filipino", "single", "married", "male", "female", "mobile", "email", "phone", "tel", "no",
+        "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november",
+        "december", "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec", "the", "and",
+        "of", "for", "in", "at", "to", "sss", "tin", "philhealth", "pag", "ibig", "philsys", "train", "law", "bir", "form",
+        "memo", "memorandum", "offer", "letter", "contract", "resume", "curriculum", "vitae", "applicant", "employee",
+        "employer", "pay", "net", "gross", "deductions", "overtime", "withholding", "tax", "period", "id", "hmo",
+        "certificate", "file", "files", "page", "pages", "yes", "none", "objective", "career", "achievements", "key",
+    ]
+
+    /// Runs of 2–4 Capitalized/ALL-CAPS words and "Surname, First M." forms that aren't only headings or labels.
+    /// Deliberately over-redacts: used only for text that leaves the Mac.
+    public func strictNameFindings(_ text: String) -> [Finding] {
+        let patterns = [
+            "\\b[A-ZÑ][A-Za-zÑñ'-]+(?:[ \\t]+(?:[A-ZÑ]\\.|[A-ZÑ][A-Za-zÑñ'-]+)){1,3}\\b",
+            "\\b[A-ZÑ][A-Za-zÑñ'-]+,[ \\t]+[A-ZÑ][A-Za-zÑñ'-]+(?:[ \\t]+[A-ZÑ][A-Za-zÑñ'-]+)?(?:[ \\t]+[A-ZÑ]\\.)?",
+        ]
+        let ns = text as NSString
+        var out: [Finding] = []
+        for p in patterns {
+            guard let re = regex(p) else { continue }
+            for m in re.matches(in: text, range: NSRange(location: 0, length: ns.length)) {
+                let value = ns.substring(with: m.range)
+                if value.contains("[") || value.contains("]") { continue }
+                let words = value.lowercased().components(separatedBy: CharacterSet.letters.inverted).filter { $0.count > 1 }
+                guard !words.isEmpty, !words.allSatisfy({ Self.strictStopwords.contains($0) }) else { continue }
+                out.append(Finding(type: "NAME", label: "name", category: "name", text: value, range: m.range, layer: 2))
+            }
+        }
+        return out
+    }
+
     // MARK: Layer 3 — LLM
 
     public struct FullResult {
@@ -233,7 +276,7 @@ public final class PIIDetector {
         """
         let messages: [ChatMessage] = [.system(system), .user(text)]
         let result = try await ModelRouter.shared.completeJSON(messages) { content in
-            try Redactor.cloudSafeWithMapping(content, packs: packs)
+            try Redactor.cloudSafeWithMapping(content, packs: packs, strict: true)
         }
         let json = Self.extractJSON(result.text)
         struct Wrapper: Decodable { var items: [LLMItem] }
@@ -268,7 +311,27 @@ public final class PIIDetector {
     }
 
     /// Keeps the longest finding where spans overlap (e.g. a PhilSys number wins over a Pag-IBIG-shaped part of it).
-    public static func merge(_ findings: [Finding]) -> [Finding] {
+    public static func merge(_ input: [Finding]) -> [Finding] {
+        // A government ID inside a longer non-ID span (e.g. an address line that runs into "SSS No: …") stays its own
+        // finding; the longer span is cut to end before it, so policies and counts see the ID.
+        var findings = input
+        let ids = input.filter { $0.category == "government ID" }
+        for i in findings.indices where findings[i].category != "government ID" {
+            let outer = findings[i].range
+            guard let inner = ids.filter({ NSLocationInRange($0.range.location, outer) && $0.range.location > outer.location })
+                .min(by: { $0.range.location < $1.range.location }) else { continue }
+            var cut = (findings[i].text as NSString).substring(to: inner.range.location - outer.location)
+            while let last = cut.unicodeScalars.last, CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: ",;:-|")).contains(last) {
+                cut.removeLast()
+            }
+            // Drop a trailing field label such as "SSS No" left at the end of the cut span.
+            if let r = cut.range(of: "\\s+(SSS|TIN|PhilHealth|Pag-?IBIG|PhilSys)[A-Za-z .#:]*$", options: [.regularExpression, .caseInsensitive]) {
+                cut = String(cut[..<r.lowerBound])
+            }
+            findings[i].text = cut
+            findings[i].range = NSRange(location: outer.location, length: (cut as NSString).length)
+        }
+        findings.removeAll { $0.range.length < 3 }
         let generic: Set<String> = ["PHONE", "AMOUNT", "NAME", "OTHER"]
         let sorted = findings.sorted { a, b in
             if a.range.length != b.range.length { return a.range.length > b.range.length }

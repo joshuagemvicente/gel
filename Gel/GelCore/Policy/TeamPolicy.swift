@@ -43,6 +43,16 @@ public enum LeakGuardDefaults {
         "org.mozilla.firefox": "Firefox",
         "com.openai.chat": "ChatGPT",
         "com.anthropic.claudefordesktop": "Claude",
+        // Chat apps where people paste work data (bundle IDs not all verified on this Mac; see D-042).
+        "com.tinyspeck.slackmacgap": "Slack",
+        "com.microsoft.teams2": "Microsoft Teams",
+        "com.microsoft.teams": "Microsoft Teams",
+        "com.facebook.archon.developerID": "Messenger",
+        "ru.keepcoder.Telegram": "Telegram",
+        "org.telegram.desktop": "Telegram",
+        "com.viber.osx": "Viber",
+        "net.whatsapp.WhatsApp": "WhatsApp",
+        "com.hnc.Discord": "Discord",
     ]
 }
 

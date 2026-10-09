@@ -28,7 +28,7 @@
       "label": "home address",
       "category": "address",
       "group": 1,
-      "pattern": "(?i)(?:home address|present address|permanent address|address|tirahan)\\s*[:\\-]\\s*([^\\n]{8,140})"
+      "pattern": "(?i)(?:home address|present address|permanent address|address|tirahan)\\s*[:\\-]\\s*([^\\n]{8,140}?)(?=[ \\t]{2,}|[ \\t]+(?:SSS|TIN|PhilHealth|Pag-?IBIG|Tel|Mobile|Email|Contact)\\b|\\n|$)"
     },
     {
       "id": "ADDRESS",
@@ -55,6 +55,18 @@
       "category": "name",
       "group": 1,
       "pattern": "(?i:last name|surname|first name|given name|middle name|apelyido|unang pangalan)[ \\t]*[:\\-]?[ \\t]*\\n?[ \\t]*([A-ZÑ][A-Za-zÑñ'-]+(?:[ \\t][A-ZÑ][A-Za-zÑñ'-]+){0,2})"
+    },
+    {
+      "id": "NAME",
+      "label": "name",
+      "category": "name",
+      "pattern": "\\b(?!(?:SSS|TIN|BIR|HMO|DOLE|HRIS|NBI|PSA|DTI|SEC|HR|ID|PH)\\b)[A-ZÑ][A-ZÑ'-]{2,}(?:[ \\t][A-ZÑ][A-ZÑ'-]{2,})?,[ \\t]+[A-ZÑ][a-zñ'-]+(?![A-Za-zñ])(?:[ \\t][A-ZÑ][a-zñ'-]+(?![A-Za-zñ]))?(?:[ \\t][A-ZÑ]\\.)?"
+    },
+    {
+      "id": "ADDRESS",
+      "label": "home address",
+      "category": "address",
+      "pattern": "\\b\\d{1,5}[A-Z]?(?:-[A-Z0-9]+)?[ \\t]+[A-Z][A-Za-zñÑ.'-]+(?:[ \\t][A-Z][A-Za-zñÑ.'-]+){0,3}[ \\t](?:St|Street|Ave|Avenue|Road|Rd|Blvd|Boulevard|Drive|Dr|Highway|Hwy|Extension|Ext)\\.?,?(?:[ \\t]*(?:Brgy\\.?|Barangay)[^\\n]{0,90})?"
     }
   ],
   "sampleQuestions": []

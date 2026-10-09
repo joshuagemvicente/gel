@@ -7,6 +7,8 @@ import ImageIO
 /// Pulls text out of PDFs, scans and DOCX files. Pages without a text layer are rendered and read with Vision OCR,
 /// keeping each line's position so citations and redactions can be drawn on the page later.
 public enum TextExtraction {
+    /// Pages with fewer non-space text-layer characters than this are also OCR'd (Q1).
+    public static let minTextLayerChars = 200
 
     public static func extract(url: URL, kind: DocKind) throws -> [PageContent] {
         switch kind {
@@ -33,16 +35,25 @@ public enum TextExtraction {
     }
 
     static func extractPDF(url: URL) throws -> [PageContent] {
-        guard let pdf = PDFDocument(url: url) else { throw ExtractionError.unreadable(url.lastPathComponent) }
+        guard let pdf = PDFDocument(url: url), !pdf.isLocked else { throw ExtractionError.unreadable(url.lastPathComponent) }
         var pages: [PageContent] = []
         for i in 0..<pdf.pageCount {
             guard let page = pdf.page(at: i) else { continue }
             let text = page.string ?? ""
-            if text.trimmingCharacters(in: .whitespacesAndNewlines).count >= 20 {
+            let textChars = text.filter { !$0.isWhitespace }.count
+            if textChars >= minTextLayerChars {
                 pages.append(PageContent(page: i, text: text, lines: nil))
             } else if let image = render(page: page, scale: 2) {
-                let (ocrText, lines) = try OCR.recognize(image)
-                pages.append(PageContent(page: i, text: ocrText, lines: lines))
+                // Scans often carry a tiny text layer ("Scanned with CamScanner"); OCR them anyway and keep both.
+                let (ocrText, ocrLines) = try OCR.recognize(image)
+                if textChars == 0 {
+                    pages.append(PageContent(page: i, text: ocrText, lines: ocrLines))
+                } else {
+                    let prefix = text + "\n"
+                    let shift = (prefix as NSString).length
+                    let lines = ocrLines.map { PageLine(text: $0.text, rect: $0.rect, start: $0.start + shift) }
+                    pages.append(PageContent(page: i, text: prefix + ocrText, lines: lines))
+                }
             } else {
                 pages.append(PageContent(page: i, text: text, lines: nil))
             }

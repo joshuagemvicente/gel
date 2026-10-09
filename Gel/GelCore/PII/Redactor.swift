@@ -39,13 +39,17 @@ public enum Redactor {
 
     /// The gate in front of every cloud call: pattern + name detection (no LLM, no network), then placeholders.
     public static func cloudSafe(_ text: String, packs: [String] = GelSettings.shared.activePacks) throws -> String {
-        try cloudSafeWithMapping(text, packs: packs).text
+        try cloudSafeWithMapping(text, packs: packs, strict: true).text
     }
 
     /// Same gate, also returning the placeholder → value mapping so a cloud answer can be shown with real values
     /// locally. The mapping never leaves the Mac.
-    public static func cloudSafeWithMapping(_ text: String, packs: [String] = GelSettings.shared.activePacks) throws -> TextResult {
-        redactText(text, findings: PIIDetector.shared.detectFast(text, packs: packs))
+    public static func cloudSafeWithMapping(_ text: String, packs: [String] = GelSettings.shared.activePacks,
+                                            strict: Bool = false) throws -> TextResult {
+        var findings = PIIDetector.shared.detectFast(text, packs: packs)
+        // Strict mode (cloud gate): also redact anything that looks like a name, even at the cost of over-redacting.
+        if strict { findings = PIIDetector.merge(findings + PIIDetector.shared.strictNameFindings(text)) }
+        return redactText(text, findings: findings)
     }
 
     /// Swaps placeholders back to real values (longest tokens first so [NAME_12] isn't hit by [NAME_1]).
@@ -106,51 +110,13 @@ public enum Redactor {
             try result.text.write(to: out, atomically: true, encoding: .utf8)
             return FileResult(output: out, counts: counts)
 
-        case .image:
-            guard let image = TextExtraction.loadImage(url: url) else { throw TextExtraction.ExtractionError.unreadable(url.lastPathComponent) }
-            let redacted = try burn(image: image, values: values)
-            let doc = PDFDocument()
-            let size = NSSize(width: CGFloat(image.width) / 2, height: CGFloat(image.height) / 2)
-            if let page = PDFPage(image: NSImage(cgImage: redacted, size: size)) { doc.insert(page, at: 0) }
-            let out = outputURL(for: url, ext: "pdf")
-            guard doc.write(to: out) else { throw TextExtraction.ExtractionError.unreadable(out.lastPathComponent) }
-            return FileResult(output: out, counts: counts)
-
-        case .pdf:
-            guard let pdf = PDFDocument(url: url) else { throw TextExtraction.ExtractionError.unreadable(url.lastPathComponent) }
+        case .image, .pdf:
+            // Same renderer as the review screen's "After" page, so the saved copy is exactly what was previewed.
+            let pages = try renderPages(url, findings: findings, keep: keep)
             let out = PDFDocument()
-            let scale: CGFloat = 2
-            for i in 0..<pdf.pageCount {
-                guard let page = pdf.page(at: i), let image = TextExtraction.render(page: page, scale: scale) else { continue }
-                let bounds = page.bounds(for: .mediaBox)
-                let pageText = page.string ?? ""
-                let burned: CGImage
-                if pageText.trimmingCharacters(in: .whitespacesAndNewlines).count >= 20 {
-                    // Text layer: locate each value with PDFKit selections.
-                    var rects: [CGRect] = []
-                    let ns = pageText as NSString
-                    for v in values {
-                        var search = NSRange(location: 0, length: ns.length)
-                        while true {
-                            let r = ns.range(of: v, options: .caseInsensitive, range: search)
-                            if r.location == NSNotFound { break }
-                            if let sel = page.selection(for: r) {
-                                for line in sel.selectionsByLine() {
-                                    let b = line.bounds(for: page)
-                                    rects.append(CGRect(x: (b.minX - bounds.minX) * scale, y: (b.minY - bounds.minY) * scale,
-                                                        width: b.width * scale, height: b.height * scale))
-                                }
-                            }
-                            let next = r.location + r.length
-                            search = NSRange(location: next, length: ns.length - next)
-                        }
-                    }
-                    burned = draw(boxes: rects, on: image)
-                } else {
-                    burned = try burn(image: image, values: values)
-                }
-                if let newPage = PDFPage(image: NSImage(cgImage: burned, size: NSSize(width: bounds.width, height: bounds.height))) {
-                    out.insert(newPage, at: out.pageCount)
+            for p in pages {
+                if let page = PDFPage(image: NSImage(cgImage: p.redacted, size: NSSize(width: p.size.width, height: p.size.height))) {
+                    out.insert(page, at: out.pageCount)
                 }
             }
             let outURL = outputURL(for: url, ext: "pdf")
@@ -159,10 +125,112 @@ public enum Redactor {
         }
     }
 
+    // MARK: - Preview (Before | After)
+
+    /// One page for the review screen: the original, the redacted copy, and where every finding is.
+    public struct RenderedPage: Identifiable {
+        public struct Box: Hashable {
+            /// Normalized 0–1 with a top-left origin (ready for a SwiftUI overlay).
+            public var rect: CGRect
+            /// The `Finding.text` that produced this box (match by `value.lowercased()`, like `keep`).
+            public var value: String
+            public var category: String
+            public var label: String
+            public var kept: Bool
+        }
+        public var id: Int { index }
+        public var index: Int
+        /// Page size in points.
+        public var size: CGSize
+        public var original: CGImage
+        public var redacted: CGImage
+        public var boxes: [Box]
+    }
+
+    /// Renders every page of a PDF or image with boxes for **all** findings (`kept` marks the unticked ones) and the
+    /// redacted image with only the ticked ones blacked out. DOCX/TXT have no pages: returns [].
+    public static func renderPages(_ url: URL, findings: [Finding], keep: Set<String> = []) throws -> [RenderedPage] {
+        guard let kind = DocKind.from(url: url) else { throw TextExtraction.ExtractionError.unreadable(url.lastPathComponent) }
+        let values = Array(Set(findings.map(\.text))).sorted { $0.count > $1.count }
+        var info: [String: Finding] = [:]
+        for f in findings where info[f.text.lowercased()] == nil { info[f.text.lowercased()] = f }
+        func page(_ index: Int, image: CGImage, size: CGSize, pixelBoxes: [(CGRect, String)]) -> RenderedPage {
+            let w = CGFloat(image.width), h = CGFloat(image.height)
+            var seen = Set<String>()
+            var boxes: [RenderedPage.Box] = []
+            for (r, v) in pixelBoxes {
+                let key = "\(Int(r.minX))-\(Int(r.minY))-\(Int(r.width))-\(v)"
+                guard seen.insert(key).inserted else { continue }
+                let f = info[v.lowercased()]
+                boxes.append(.init(rect: CGRect(x: r.minX / w, y: 1 - r.maxY / h, width: r.width / w, height: r.height / h),
+                                   value: v, category: f?.category ?? "other", label: f?.label ?? "personal detail",
+                                   kept: keep.contains(v.lowercased())))
+            }
+            return RenderedPage(index: index, size: size, original: image, redacted: redactedImage(original: image, boxes: boxes, keep: keep), boxes: boxes)
+        }
+        switch kind {
+        case .docx, .text:
+            return []
+        case .image:
+            guard let image = TextExtraction.loadImage(url: url) else { throw TextExtraction.ExtractionError.unreadable(url.lastPathComponent) }
+            let size = CGSize(width: CGFloat(image.width) / 2, height: CGFloat(image.height) / 2)
+            return [page(0, image: image, size: size, pixelBoxes: try ocrBoxes(image: image, values: values))]
+        case .pdf:
+            guard let pdf = PDFDocument(url: url), !pdf.isLocked else { throw TextExtraction.ExtractionError.unreadable(url.lastPathComponent) }
+            let scale: CGFloat = 2
+            var pages: [RenderedPage] = []
+            for i in 0..<pdf.pageCount {
+                guard let pdfPage = pdf.page(at: i), let image = TextExtraction.render(page: pdfPage, scale: scale) else { continue }
+                let bounds = pdfPage.bounds(for: .mediaBox)
+                var boxes: [(CGRect, String)] = []
+                let pageText = pdfPage.string ?? ""
+                if !pageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    // Text layer: locate each value with PDFKit selections.
+                    let ns = pageText as NSString
+                    for v in values {
+                        var search = NSRange(location: 0, length: ns.length)
+                        while true {
+                            let r = ns.range(of: v, options: .caseInsensitive, range: search)
+                            if r.location == NSNotFound { break }
+                            if let sel = pdfPage.selection(for: r) {
+                                for line in sel.selectionsByLine() {
+                                    let b = line.bounds(for: pdfPage)
+                                    boxes.append((CGRect(x: (b.minX - bounds.minX) * scale, y: (b.minY - bounds.minY) * scale,
+                                                         width: b.width * scale, height: b.height * scale), v))
+                                }
+                            }
+                            let next = r.location + r.length
+                            search = NSRange(location: next, length: ns.length - next)
+                        }
+                    }
+                }
+                // Always OCR too: a scan with a small text stamp has most of its text only in pixels (Q1).
+                boxes += try ocrBoxes(image: image, values: values)
+                pages.append(page(i, image: image, size: bounds.size, pixelBoxes: boxes))
+            }
+            return pages
+        }
+    }
+
+    /// The "After" image for a page: black boxes on every box whose value isn't in `keep`. Fast (no OCR), so the
+    /// review screen can call it on every toggle.
+    public static func redactedImage(original: CGImage, boxes: [RenderedPage.Box], keep: Set<String>) -> CGImage {
+        let w = CGFloat(original.width), h = CGFloat(original.height)
+        let rects = boxes.filter { !keep.contains($0.value.lowercased()) }.map {
+            CGRect(x: $0.rect.minX * w, y: (1 - $0.rect.maxY) * h, width: $0.rect.width * w, height: $0.rect.height * h)
+        }
+        return draw(boxes: rects, on: original)
+    }
+
     /// OCR the image, box every occurrence of each value (word-precise via Vision), and flatten black boxes.
     static func burn(image: CGImage, values: [String]) throws -> CGImage {
+        draw(boxes: try ocrBoxes(image: image, values: values).map(\.0), on: image)
+    }
+
+    /// Pixel-space boxes (bottom-left origin) for every occurrence of each value, word-precise via Vision.
+    static func ocrBoxes(image: CGImage, values: [String]) throws -> [(CGRect, String)] {
         let w = CGFloat(image.width), h = CGFloat(image.height)
-        var rects: [CGRect] = []
+        var rects: [(CGRect, String)] = []
         for line in try OCR.recognizeLines(image) {
             let lineText = line.candidate.string
             for v in values {
@@ -170,14 +238,14 @@ public enum Redactor {
                     var searchStart = lineText.startIndex
                     while let r = lineText.range(of: part, options: .caseInsensitive, range: searchStart..<lineText.endIndex) {
                         if let box = try? line.candidate.boundingBox(for: r)?.boundingBox {
-                            rects.append(CGRect(x: box.minX * w, y: box.minY * h, width: box.width * w, height: box.height * h))
+                            rects.append((CGRect(x: box.minX * w, y: box.minY * h, width: box.width * w, height: box.height * h), v))
                         }
                         searchStart = r.upperBound
                     }
                 }
             }
         }
-        return draw(boxes: rects, on: image)
+        return rects
     }
 
     static func draw(boxes: [CGRect], on image: CGImage) -> CGImage {
