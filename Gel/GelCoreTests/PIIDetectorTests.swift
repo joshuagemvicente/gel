@@ -97,6 +97,16 @@ final class CloudGateTests: XCTestCase {
         XCTAssertEqual(shown, "Ben and Ana")
     }
 
+    func testOnePassGateKeepsSystemAndNumbersOnce() throws {
+        let system = "Rules:\n- Use ONLY the numbered sources. Answer in English, Filipino or Taglish."
+        let messages: [ChatMessage] = [.system(system), .user("<source n=\"1\">\nPatricia Anne Cruz\nPayroll Lead\n</source>\nWho has payroll?")]
+        let (out, mapping) = try ModelRouter.redact(messages, with: QueryEngine.cloudGate)
+        XCTAssertEqual(out[0].content, system)
+        XCTAssertFalse(out[1].content.contains("Patricia"))
+        XCTAssertEqual(mapping["[NAME_1]"], "Patricia Anne Cruz")
+        XCTAssertEqual(Redactor.rehydrate("[NAME_1] has 9 years [1].", mapping: mapping), "Patricia Anne Cruz has 9 years [1].")
+    }
+
     func testGateFailureMeansNoRequest() {
         struct Boom: Error {}
         XCTAssertThrowsError(try ModelRouter.redact([.user("SSS 25-6708763-7")], with: { _ in throw Boom() })) { error in

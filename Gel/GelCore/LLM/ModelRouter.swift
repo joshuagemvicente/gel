@@ -145,18 +145,20 @@ public final class ModelRouter {
         return RouteResult(text: text, provider: .cloud, model: cloud.model, sentPayload: payload, mapping: mapping)
     }
 
-    /// The redaction gate over every message. Any error means no cloud request at all.
+    /// The redaction gate. User and assistant messages are gated in one pass, so a placeholder means one value across
+    /// the whole request; system messages are Gel's own constant text and pass through (D-069). Any error, or messages
+    /// that can't be split back, means no cloud request at all.
     static func redact(_ messages: [ChatMessage], with gate: (String) throws -> Redactor.TextResult) throws -> ([ChatMessage], [String: String]) {
-        var mapping: [String: String] = [:]
-        var out: [ChatMessage] = []
-        do {
-            for m in messages {
-                let r = try gate(m.content)
-                for (k, v) in r.mapping where mapping[k] == nil { mapping[k] = v }
-                out.append(ChatMessage(role: m.role, content: r.text))
-            }
-        } catch { throw LLMError.redactionFailed }
-        return (out, mapping)
+        let boundary = "\n\u{1E}\u{1E}\u{1E}\n"
+        let gated = messages.indices.filter { messages[$0].role != "system" }
+        guard !gated.isEmpty else { return (messages, [:]) }
+        let r: Redactor.TextResult
+        do { r = try gate(gated.map { messages[$0].content }.joined(separator: boundary)) } catch { throw LLMError.redactionFailed }
+        let parts = r.text.components(separatedBy: boundary)
+        guard parts.count == gated.count else { throw LLMError.redactionFailed }
+        var out = messages
+        for (k, i) in gated.enumerated() { out[i].content = parts[k] }
+        return (out, r.mapping)
     }
 
     final class StreamState {

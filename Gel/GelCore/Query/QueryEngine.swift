@@ -194,7 +194,7 @@ public final class QueryEngine {
     public func previewCloudPayload(_ question: String) async throws -> String {
         let sources = try await search(question)
         let messages: [ChatMessage] = [.system(Self.systemPrompt(for: question)), .user(Self.userPrompt(question: question, sources: sources))]
-        return try messages.map { "[\($0.role)]\n\(try Self.cloudGate($0.content).text)" }.joined(separator: "\n\n")
+        return try ModelRouter.redact(messages, with: Self.cloudGate).0.map { "[\($0.role)]\n\($0.content)" }.joined(separator: "\n\n")
     }
 
     /// Streams tokens through `onToken`; returns the final answer with citations resolved to files and pages.
