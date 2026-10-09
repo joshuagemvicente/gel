@@ -16,3 +16,14 @@ __pycache__/
 
 # Gel redaction outputs created while testing
 demo-data/**/Redacted/
+
+# Demo video working files (raw takes, frames, exports) — see docs/deliverables/demo-video
+media/
+
+# Private Demo Day outputs: specs are public, these stay on this Mac (decision D-028)
+docs/deliverables/pitch-script/script.md
+docs/deliverables/judge-qa/qa.md
+docs/deliverables/demo-day-runsheet/runsheet.md
+docs/deliverables/demo-day-runsheet/qa-test-plan.md
+docs/deliverables/peoples-choice/peoples-choice.md
+docs/deliverables/peoples-choice/closing-screen.html
