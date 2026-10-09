@@ -1,6 +1,6 @@
-# S8 · Deck outline (v1)
+# S8 · Deck outline (v2: website v2 messaging)
 
-Status: **v1, Oct 10 early morning.** Source of truth for the Canva build. 16:9. Colours and type in [design.md](design.md). `⚠` = re-check at the 06:00 freeze.
+Status: **v2, Oct 10 ~05:45.** Copy aligned with the website v2 (D-077–D-079): headline "Use AI without leaking personal data.", the three claims, Work/Personal uses, privacy lines, and the Research figures. v1 was "Private AI for your files". Source of truth for the Canva build. 16:9. Colours and type in [design.md](design.md). `⚠` = re-check at the 06:00 freeze.
 
 Built file: `media/deck/gel-pitch.pptx` and `gel-pitch.pdf` (git-ignored; generator `media/deck/build.js`). Canva design (built natively from this outline, Oct 10 ~05:30; slides 5, 7, 9–12 corrected to this outline after generation): https://canva.link/c0mcwdfmixt0wc6 · offline export `media/deck/gel-pitch-canva.pdf`.
 
@@ -10,12 +10,13 @@ Built file: `media/deck/gel-pitch.pptx` and `gel-pitch.pdf` (git-ignored; genera
 
 ### 1 · Title (S4 block 1, 0:00)
 - **Headline:** Gel
-- **Sub:** Private AI for your files. Runs on your Mac.
-- **Small:** Team 12M · AppBuildersPH Hackathon 2026
+- **Sub:** Use AI without leaking personal data.
+- **Small:** Runs on your Mac · Team 12M · AppBuildersPH Hackathon 2026
 - **Visual:** Gel drop + wordmark, centred.
 - **Cue:** on screen while you tell the Makati story.
 
 ### 2 · Stat: sensitive data (S4 block 1, end ~0:12)
+- **Kicker (website Research headline):** Most leaks into AI aren't malicious. They're copy and paste.
 - **Big number:** Nearly 40%
 - **Line:** of interactions with AI tools involved sensitive data.
 - **Source (small):** Cyberhaven Labs, 2026 AI Adoption & Risk Report · 222 companies · 2025 data
@@ -50,20 +51,20 @@ Built file: `media/deck/gel-pitch.pptx` and `gel-pitch.pdf` (git-ignored; genera
 - **Cue:** advance on "If the local model fails…".
 
 ### 7 · Business (S4 block 7, 3:50)
-- **Headline:** HR teams first. Everyone next.
+- **Headline:** For anyone who asks AI for help with real documents.
 - **Two columns:**
-  - **Teams (paid, per seat):** admin policy (warn or block) · counts-only DPO report
-  - **Personal (free):** IDs, bank statements, medical records
+  - **Work: HR and admin teams · paid, per seat:** résumés, 201 files and payslips carry SSS, TIN and PhilHealth numbers and salaries · admin policy (warn or block) · counts-only DPO report
+  - **Personal: your own documents · free:** passports, driver's licenses, bank statements and GCash details
 - **Footer:** Next: finance and legal packs. A pack is a config file, not code.
 - `⚠` keep "admin policy" and "DPO report" only if policy-dpo-report is verified at the freeze; otherwise say "planned".
 - **Cue:** advance on "HR teams pay first…".
 
 ### 8 · Close (S4 block 8, 4:15)
 - **Headline:** Gel
-- **Sub:** Private AI for your files. Runs on your Mac.
-- **Proof points:** ✓ Works offline · ✓ Cites every answer · ✓ Stops leaks to ChatGPT `⚠` keep only those that pass QA
+- **Sub:** Use AI without leaking personal data.
+- **Proof points (website claims):** ✓ Caught before you paste · ✓ Finds the personal data · ✓ Blacked out for good `⚠` keep only those that pass QA
 - **Ask (accent):** People's Choice: vote for 12M
-- **Footer:** github.com/joshuagemvicente/app-hackathon · #AppBuildersPH
+- **Footer:** github.com/joshuagemvicente/gel · #AppBuildersPH
 - **Cue:** stays up through Q&A.
 
 ---
@@ -82,12 +83,22 @@ Built file: `media/deck/gel-pitch.pptx` and `gel-pitch.pdf` (git-ignored; genera
 - **Needs internet:** first-time model download · optional cloud fallback (redacted text only)
 
 ### A3 · Privacy rules we never break
+- Your files never leave your Mac
+- Cloud fallback is off by default
 - Counts, never content, in logs and reports
 - Redacted before anything leaves the Mac; if redaction fails, nothing is sent
 - API key in the macOS Keychain
 - Synthetic demo data only
 
-### A4 · Sources
+### A4 · The research (mirrors the website Research section; Q&A only)
+- **39.7%** of all AI interactions involve sensitive data, counting prompts, copy-paste and file uploads. [Cyberhaven Labs, 2026 AI Adoption & Risk Report, Feb 5, 2026]
+- **Every 3 days**, on average, an employee puts sensitive data into an AI tool. [Cyberhaven blog, Feb 11, 2026]
+- **32.3%** of ChatGPT use happens through personal accounts (Claude 58.2%, Perplexity 60.9%). [Cyberhaven blog, Feb 11, 2026]
+- **82%** of the 100 most-used AI apps are rated medium, high or critical risk. [Cyberhaven Labs, 2026 report]
+- Quote: "AI-related threats are almost always unintentional." [Cyberhaven, AI Insider Threats, updated Mar 18, 2026]
+- Kept to the appendix: the research report advised against speaking the per-tool and every-3-days figures on stage.
+
+### A5 · Sources
 - Cyberhaven Labs, "2026 AI Adoption & Risk Report", Feb 2026: 39.7% of AI interactions involved sensitive data; 222 customer companies, 2025 data. Vendor research (Cyberhaven sells data-security software).
 - Microsoft & LinkedIn, "2024 Work Trend Index", Philippines release, May 23, 2024: 83% of Filipino AI users bring their own AI tools (global 78%). Survey by Edelman, 31,000 people, 31 markets.
 - Republic Act 10173 (Data Privacy Act of 2012), Sec. 3(l): government-issued identifiers are sensitive personal information.
