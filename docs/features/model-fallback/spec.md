@@ -19,7 +19,7 @@
 - **No mid-answer switching:** if local already streamed tokens and then fails, keep the partial answer and report the error.
 - **Cooldown:** after a fallback, stay on cloud for **60 s**, then try local again.
 - **Health and warm-up:** `GET {local}/api/version` at launch and every 30 s; `POST /api/generate` with an empty prompt and `keep_alive: 60m` at launch, so the first question is fast.
-- **Redaction gate (hard rule):** every cloud message goes through `Redactor.cloudSafe`; if that throws, no request is made (`LLMError.redactionFailed`). Citations are computed locally, so they always point at real local files.
+- **Redaction gate (hard rule):** every user and assistant message goes through `Redactor.cloudSafe` **in one pass with one placeholder numbering**, so `[NAME_1]` means exactly one value across the whole request; if that throws, or the messages can't be split back, no request is made (`LLMError.redactionFailed`). System messages are sent as written: they are built only from Gel's own constant text (plus a number), never from file text or the question, and redacting them garbled the instructions ([D-069](../../project/decisions.md)). Citations are computed locally, so they always point at real local files.
 - **No cloud configured / disabled by policy:** no fallback; the UI shows "Local model unavailable" with Retry.
 - **Cloud timeouts:** 20 s first token, 60 s total.
 
