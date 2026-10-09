@@ -16,7 +16,7 @@
 1. **Hook (0–5 s):** the problem in one caption over the app: HR files full of government IDs, and people paste them into AI.
 2. **Offline proof (5–10 s):** Wi-Fi visibly turned off.
 3. **Ask (10–25 s):** ⌥Space, the Taglish voice question, the streamed answer with citation chips and the **Local** badge.
-4. **Verify (25–33 s):** click a chip → the scanned page opens with the passage highlighted.
+4. **Verify (25–33 s):** click the Reyes chip → her resume opens at page 2 with the passage highlighted.
 5. **Leak catch (33–50 s):** Wi-Fi on, copy the employee record, switch to chatgpt.com → the overlay names what would leak → ⌥⌘V pastes placeholders.
 6. **Close (50–60 s):** end card: Gel · "Private AI for your files. Runs on your Mac." · team 12M · repo URL · #AppBuildersPH.
 

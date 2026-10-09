@@ -61,7 +61,7 @@ A single engine serves both audiences through **packs**, which are configuration
 All demo files are synthetic. No real personal data appears anywhere.
 
 1. **Offline voice query.** Turn Wi-Fi off. Press ⌥Space, hold right ⌥, and ask: *"Sino sa applicants ang may 5+ years sa payroll?"* ("Which applicants have 5+ years in payroll?") A streamed answer appears with citation chips and a **Local** badge.
-2. **Verify the citation.** Click a chip. The main window opens at the exact page of a *scanned* resume, with the passage highlighted.
+2. **Verify the citation.** Click a chip. The main window opens the resume at the exact page (page 2 for Reyes), with the passage highlighted.
 3. **Redact.** Select the resumes in the Library and click **Redact**. A preview lists every finding, then Gel writes PDFs with black boxes burned into the page.
 4. **Catch a leak.** Turn Wi-Fi back on, copy an employee record and switch to ChatGPT. An overlay shows *"This would leak 3 government ID numbers, 1 salary, 1 address"*, and ⌥⌘V pastes the redacted version instead. One click exports the DPO report, which contains counts only.
 5. **Consumer reveal (20 s).** Switch to the Personal pack, copy passport and bank-statement text, and Leak Guard catches both with no other setup.

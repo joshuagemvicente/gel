@@ -2,7 +2,7 @@
 
 Legend: `[x]` done and verified · `[~]` done, not verified · `[ ]` not started. Owner in brackets.
 
-- [ ] **T1 Draft both files.** [Claude] `runsheet.md` and `qa-test-plan.md` per [spec](spec.md), written against the feature specs. **Verify:** user reads them on their phone and finds every step clear.
+- [~] **T1 Draft both files.** _(v1 Oct 9 ~22:55: run sheet + QA-01…QA-20; ⚠ on QA-07 block mode, QA-10, QA-11, QA-12 for features not built yet. `OLLAMA_KEEP_ALIVE` isn't set, so the run sheet re-warms with `keep_alive: 60m` and QA-16 checks it.)_ [Claude] `runsheet.md` and `qa-test-plan.md` per [spec](spec.md), written against the feature specs. **Verify:** user reads them on their phone and finds every step clear.
 - [ ] **T2 Freeze pass (~06:00).** [Claude] Mark cases for cut features "cut"; align steps with the actual UI (button names, shortcuts). **Verify:** every step matches what's on screen (user spot-checks 3 cases).
 - [ ] **T3 QA run 1 (before recording, ~05:30–06:00).** [user] Run QA-01–QA-13 with Wi-Fi off; log results; file bug notes. **Verify:** results table filled.
 - [ ] **T4 Bug hand-off.** [Claude] Turn failed cases into tasks in the matching `docs/features/<feature>/tasks.md` for the build session. **Verify:** each failure has a task or an agreed workaround.

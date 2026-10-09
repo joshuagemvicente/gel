@@ -32,7 +32,7 @@ https://github.com/joshuagemvicente/app-hackathon
 ## Alt text for the video
 
 ```
-Screen recording of Gel, a Mac app. Wi-Fi is turned off in the menu bar. A search bar opens at the top of the screen and the user asks out loud, in Taglish, which applicants have five or more years of payroll experience. An answer streams in with numbered citation chips and a "Local" badge. Clicking a chip opens a scanned resume with the matching passage highlighted. Wi-Fi is turned back on, an employee record is copied, and the user switches to ChatGPT in Chrome. A Gel panel warns that the text would leak government ID numbers, a salary and an address. Pressing Option-Command-V pastes a copy with placeholders like [SSS_1] instead of the real numbers. The video ends on the Gel name, team 12M and the GitHub link.
+Screen recording of Gel, a Mac app. Wi-Fi is turned off in the menu bar. A search bar opens at the top of the screen and the user asks out loud, in Taglish, which applicants have five or more years of payroll experience. An answer streams in with numbered citation chips and a "Local" badge. Clicking a chip opens the applicant's resume at the cited page, with the passage highlighted. Wi-Fi is turned back on, an employee record is copied, and the user switches to ChatGPT in Chrome. A Gel panel warns that the text would leak government ID numbers, a salary and an address. Pressing Option-Command-V pastes a copy with placeholders like [SSS_1] instead of the real numbers. The video ends on the Gel name, team 12M and the GitHub link.
 ```
 
 `⚠` Rewrite the alt text to match the final cut if any beat was dropped.

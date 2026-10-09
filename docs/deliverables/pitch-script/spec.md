@@ -8,7 +8,7 @@
 | --- | --- | --- | --- | --- |
 | 1 Hook | 0:00 | 0:20 | Problem | A concrete HR moment: pasting 201 files into ChatGPT; the government IDs in them |
 | 2 Problem and user | 0:20 | 0:25 | Problem 25% | Who (HR teams at PH SMEs/BPOs), the Data Privacy Act duty, why Spotlight/ChatGPT don't solve it |
-| 3 Live demo: offline answer | 0:45 | 1:10 | Local AI 25%, Execution 20% | Wi-Fi off → voice question → cited answer → open the highlighted scan |
+| 3 Live demo: offline answer | 0:45 | 1:10 | Local AI 25%, Execution 20% | Wi-Fi off → voice question → cited answer → open Reyes's resume at page 2, passage highlighted |
 | 4 Live demo: leak catch | 1:55 | 1:00 | Innovation 15% | Copy record → chatgpt.com → overlay → ⌥⌘V placeholders → DPO counts |
 | 5 Consumer reveal | 2:55 | 0:20 | Problem (reach) | Switch to Personal pack, catch passport + bank text |
 | 6 Why local | 3:15 | 0:35 | Local AI 25% | Privacy, offline, free per-copy checking, speed; the cloud fallback only sees placeholders |
