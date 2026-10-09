@@ -21,7 +21,7 @@ One section per form field, in the form's order, each with the field name as the
 | APIs and cloud services | User-supplied OpenAI-compatible endpoint, fallback only, redacted text only |
 | Existing code and assets | None; demo data generated; OSS libraries as dependencies |
 | AI development tools | Claude Code |
-| Why local | 80–150 words: the four reasons from `product.md`, the Data Privacy Act, and "the cloud only ever sees redacted text" |
+| Why local | 80–180 words: the two attributed stats (Cyberhaven 2026 ~40%, Microsoft/LinkedIn 2024 83%; user request Oct 10), the four reasons from `product.md`, the Data Privacy Act, and "the cloud only ever sees redacted text". Each stat names its source; the two are never merged. |
 | Any other field the form has | Answered from the same sources; flagged in the file if unclear |
 
 A **pre-submit checklist** at the top of the file (repo public, X URL filled, video link opens logged-out, truth pass done, names match the official list).

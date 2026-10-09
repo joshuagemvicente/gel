@@ -121,18 +121,18 @@ Claude Code (Anthropic).
 ## Why does this product benefit from running AI locally?
 
 ```
-HR files and personal documents hold government ID numbers (SSS, TIN, PhilHealth, Pag-IBIG, PhilSys), salaries, bank accounts and home addresses, all protected by the Data Privacy Act. Sending them to a cloud AI is the risk companies are trying to avoid, so for Gel, local AI is a requirement.
+Employees already put sensitive data into AI tools. Cyberhaven's 2026 AI Adoption & Risk Report, which tracked activity at 222 companies through 2025, found nearly 40% of interactions with AI tools involved sensitive data. Microsoft and LinkedIn's 2024 Work Trend Index found 83% of Filipino AI users bring their own AI tools to work. HR files are some of the most sensitive files a company has: government ID numbers (SSS, TIN, PhilHealth, Pag-IBIG, PhilSys), salaries and home addresses, all protected by the Data Privacy Act. So for Gel, local AI is a requirement.
 
 Running locally gives four things a cloud-only product can't:
 1. Private: speech, OCR, search and the language model run on the Mac, so the files never leave it.
 2. Works offline: the full demo runs with Wi-Fi off.
-3. Free to check every copy: Leak Guard scans every clipboard change. Doing that through a cloud API would cost money per copy and send your clipboard to a third party.
-4. Fast: answers to voice questions come straight from the Mac, with no trip to a server.
+3. Free to check every copy: Leak Guard scans every clipboard change with no API bill, and the clipboard never goes to a third party.
+4. Fast: no trip to a server.
 
 If the local model fails, the optional cloud fallback only ever sees redacted placeholders.
 ```
 
-(About 140 words.)
+(About 177 words. Sources: Cyberhaven Labs, "2026 AI Adoption & Risk Report", Feb 2026 (39.7%, 222 companies); Microsoft & LinkedIn, "2024 Work Trend Index", Philippines release, May 23, 2024 (83%). Details and caveats: `reports/Sensitive data in AI tools.md` (private). If the form's limit is tighter, drop sentence 3 first, then point 4.)
 
 ---
 
