@@ -181,6 +181,9 @@ struct RedactReview: View {
                             }
                             .padding(2)
                         }
+                        .defaultScrollAnchor(.top)
+                        // A fresh scroll per file/page, so each opens at the top.
+                        .id("\(current?.path ?? "")#\(p.index)")
                         .background(Theme.canvas, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                         .onChange(of: pulse) { _, key in
                             guard let key, p.boxes.contains(where: { $0.value.lowercased() == key }) else { return }
@@ -252,12 +255,14 @@ struct RedactReview: View {
             if kept {
                 RoundedRectangle(cornerRadius: 2)
                     .strokeBorder(Color.gray, style: StrokeStyle(lineWidth: 1.2, dash: [3, 2]))
-                    .overlay(alignment: .topTrailing) {
+                    // Tag just past the box's right end, so it never covers the line above.
+                    .overlay(alignment: .trailing) {
                         Text("kept").font(.system(size: 8, weight: .bold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 3)
-                            .background(Color.gray, in: RoundedRectangle(cornerRadius: 2))
-                            .offset(y: -9)
+                            .background(Color.gray.opacity(0.9), in: RoundedRectangle(cornerRadius: 2))
+                            .fixedSize()
+                            .alignmentGuide(.trailing) { d in d[.leading] - 3 }
                     }
             } else {
                 RoundedRectangle(cornerRadius: 2).fill(Color.red.opacity(0.28))

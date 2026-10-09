@@ -237,7 +237,11 @@ public enum Redactor {
                 for part in v.components(separatedBy: "\n") where part.count >= 2 {
                     var searchStart = lineText.startIndex
                     while let r = lineText.range(of: part, options: .caseInsensitive, range: searchStart..<lineText.endIndex) {
-                        if let box = try? line.candidate.boundingBox(for: r)?.boundingBox {
+                        // Whole words only: a fragment like "Team" must not black out part of "team of 5".
+                        let before = r.lowerBound > lineText.startIndex ? lineText[lineText.index(before: r.lowerBound)] : " "
+                        let after = r.upperBound < lineText.endIndex ? lineText[r.upperBound] : " "
+                        let wholeWord = !(before.isLetter || before.isNumber) && !(after.isLetter || after.isNumber)
+                        if wholeWord, part.count >= 3, let box = try? line.candidate.boundingBox(for: r)?.boundingBox {
                             rects.append((CGRect(x: box.minX * w, y: box.minY * h, width: box.width * w, height: box.height * h), v))
                         }
                         searchStart = r.upperBound
