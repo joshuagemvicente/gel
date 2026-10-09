@@ -1,0 +1,69 @@
+{
+  "id": "personal",
+  "name": "Personal",
+  "description": "IDs, bank and e-wallet details, cards and money amounts in your own documents.",
+  "audience": "Personal",
+  "types": [
+    {
+      "id": "PHILSYS",
+      "label": "PhilSys number",
+      "category": "government ID",
+      "pattern": "(?<!\\d)\\d{4}-\\d{4}-\\d{4}-\\d{4}(?!\\d)"
+    },
+    {
+      "id": "PASSPORT",
+      "label": "passport number",
+      "category": "government ID",
+      "pattern": "\\b[A-Z]\\d{7}[A-Z]\\b|\\b[A-Z]{2}\\d{7}\\b"
+    },
+    {
+      "id": "DRIVERS_LICENSE",
+      "label": "driver's license",
+      "category": "government ID",
+      "pattern": "\\b[A-Z]\\d{2}-\\d{2}-\\d{6}\\b"
+    },
+    {
+      "id": "BANK_ACCOUNT",
+      "label": "bank account",
+      "category": "bank account",
+      "group": 1,
+      "pattern": "(?i)(?:account|acct\\.?)\\s*(?:no\\.?|number|#)?\\s*[:\\-]?\\s*(\\d[\\d -]{8,18}\\d)"
+    },
+    {
+      "id": "GCASH",
+      "label": "GCash number",
+      "category": "bank account",
+      "group": 1,
+      "pattern": "(?i)g-?cash[^\\n\\d+]{0,24}((?:\\+63[\\s-]?|0)9\\d{2}[\\s-]?\\d{3}[\\s-]?\\d{4})"
+    },
+    {
+      "id": "CARD",
+      "label": "card number",
+      "category": "card",
+      "validator": "luhn",
+      "pattern": "(?<!\\d)(?:\\d[ -]?){12,18}\\d(?!\\d)"
+    },
+    {
+      "id": "AMOUNT",
+      "label": "money amount",
+      "category": "money",
+      "pattern": "(?:₱|PHP|Php)\\s?\\d{1,3}(?:,\\d{3})+(?:\\.\\d{2})?"
+    },
+    {
+      "id": "AMOUNT",
+      "label": "money amount",
+      "category": "money",
+      "pattern": "(?<![A-Za-z0-9])P\\s?\\d{1,3}(?:[.,]\\d{3})+[.,]\\d{2}(?!\\d)"
+    },
+    {
+      "id": "BANK_ACCOUNT",
+      "label": "bank account",
+      "category": "bank account",
+      "pattern": "(?<![\\d-])\\d{3}-\\d{4}-\\d{3,5}(?![\\d-])"
+    }
+  ],
+  "sampleQuestions": [
+    "Kailan mag-e-expire ang passport ko?",
+    "What was my ending balance last month?"
+  ]
+}

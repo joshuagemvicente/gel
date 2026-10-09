@@ -1,0 +1,90 @@
+name: Gel
+options:
+  bundleIdPrefix: com.joshuagemvicente
+  deploymentTarget:
+    macOS: "15.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+packages:
+  WhisperKit:
+    url: https://github.com/argmaxinc/WhisperKit
+    from: "0.9.0"
+  KeyboardShortcuts:
+    url: https://github.com/sindresorhus/KeyboardShortcuts
+    from: "2.0.0"
+targets:
+  GelCore:
+    type: framework
+    platform: macOS
+    sources:
+      - path: GelCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.joshuagemvicente.gel.core
+        GENERATE_INFOPLIST_FILE: YES
+        OTHER_LDFLAGS: -lsqlite3
+  Gel:
+    type: application
+    platform: macOS
+    sources:
+      - path: Gel
+    dependencies:
+      - target: GelCore
+      - package: WhisperKit
+      - package: KeyboardShortcuts
+    info:
+      path: Gel/Info.plist
+      properties:
+        CFBundleDisplayName: Gel
+        LSApplicationCategoryType: public.app-category.productivity
+        NSMicrophoneUsageDescription: Gel transcribes your voice questions on this Mac. Audio never leaves your device.
+        NSAppleEventsUsageDescription: Gel uses this to paste redacted text into the app you are using.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.joshuagemvicente.gel
+        PRODUCT_NAME: Gel
+        CODE_SIGN_ENTITLEMENTS: Gel/Gel.entitlements
+  gelcli:
+    type: tool
+    platform: macOS
+    sources:
+      - path: gelcli
+    dependencies:
+      - target: GelCore
+    settings:
+      base:
+        PRODUCT_NAME: gelcli
+        LD_RUNPATH_SEARCH_PATHS: "@executable_path @loader_path"
+  GelCoreTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: GelCoreTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.joshuagemvicente.gel.tests
+    dependencies:
+      - target: GelCore
+schemes:
+  Gel:
+    build:
+      targets:
+        Gel: all
+    run:
+      config: Debug
+    test:
+      targets:
+        - GelCoreTests
+  gelcli:
+    build:
+      targets:
+        gelcli: all

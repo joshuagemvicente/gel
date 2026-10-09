@@ -1,0 +1,5032 @@
+{
+  "description": "Ground truth for Gel's synthetic demo data. ALL values are fictional.",
+  "seed": 20261009,
+  "page_note": "page is 1-based. DOCX and .txt files have no fixed pagination, so page is always 1 for them. JPG scans are single images (page 1). A value printed on several pages is listed once per page.",
+  "salary_note": "SALARY covers compensation figures (monthly/basic rate, expected salary, gross, net pay, payroll credits) — not individual deduction line items.",
+  "regex": {
+    "SSS": "(?<![\\d-])\\d{2}-\\d{7}-\\d(?![\\d-])",
+    "TIN": "(?<![\\d-])\\d{3}-\\d{3}-\\d{3}-(?:\\d{5}|\\d{3})(?![\\d-])",
+    "PHILHEALTH": "(?<![\\d-])\\d{2}-\\d{9}-\\d(?![\\d-])",
+    "PAGIBIG": "(?<![\\d-])\\d{4}-\\d{4}-\\d{4}(?![\\d-])",
+    "PHILSYS": "(?<![\\d-])\\d{4}-\\d{4}-\\d{4}-\\d{4}(?![\\d-])",
+    "PASSPORT": "\\b[A-Z]\\d{7}[A-Z]\\b",
+    "DRIVERS_LICENSE": "\\b[A-Z]\\d{2}-\\d{2}-\\d{6}\\b",
+    "BANK_ACCOUNT": "(?<![\\d-])\\d{3}-\\d{4}-\\d{3,5}(?![\\d-])",
+    "CARD": "(?<!\\d)\\d{4} \\d{4} \\d{4} \\d{4}(?!\\d)",
+    "PHONE": "(?<!\\d)(?:\\+63 ?9\\d{2}|09\\d{2})[ -]?\\d{3}[ -]?\\d{4}(?!\\d)",
+    "GCASH": "(?<!\\d)(?:\\+63 ?9\\d{2}|09\\d{2})[ -]?\\d{3}[ -]?\\d{4}(?!\\d)",
+    "EMAIL": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}",
+    "SALARY": "₱?\\s?\\d{1,3}(?:,\\d{3})*\\.\\d{2}",
+    "DOB": "(?:(?:January|February|March|April|May|June|July|August|September|October|November|December) \\d{1,2}, (?:19|20)\\d{2}|\\d{2}/\\d{2}/(?:19|20)\\d{2})",
+    "ADDRESS": ".+, (?:Brgy\\. ).+ \\d{4}$",
+    "NAME": "^[A-Za-zÑñ .,'-]+$"
+  },
+  "demo_answers": {
+    "query": "Sino sa applicants ang may 5+ years sa payroll?",
+    "applicants": [
+      {
+        "surname": "Reyes",
+        "name": "Kristine Joy Manalo Reyes",
+        "file": "HR Files/Resumes/Resume_REYES.pdf",
+        "payroll_experience": [
+          "Payroll Specialist, Kapitbahay Logistics Corp., 2017–2024"
+        ],
+        "payroll_experience_pages": [
+          2
+        ],
+        "total_pages": 2
+      },
+      {
+        "surname": "Santos",
+        "name": "Rodel Aguilar Santos",
+        "file": "HR Files/Resumes/Santos_Rodel_Resume.pdf",
+        "payroll_experience": [
+          "Payroll Officer, Kalayaan Example BPO Services, Jun 2015 – Dec 2021"
+        ],
+        "payroll_experience_pages": [
+          1
+        ],
+        "total_pages": 1
+      },
+      {
+        "surname": "Cruz",
+        "name": "Patricia Anne Domingo Cruz",
+        "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+        "payroll_experience": [
+          "Senior Payroll Analyst, Bituin Contact Solutions Inc., 2019–2025",
+          "Payroll Associate, Sampaguita Retail Group, 2016–2019"
+        ],
+        "payroll_experience_pages": [
+          1
+        ],
+        "total_pages": 1
+      }
+    ],
+    "near_misses": [
+      "Jasmine Tolentino (Payroll Assistant 2022–2024)",
+      "Jerome Aguilar (Timekeeping and Payroll Clerk Mar 2023 – Present)"
+    ]
+  },
+  "scans": [
+    {
+      "scan": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "source": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "pages": 1
+    },
+    {
+      "scan": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "source": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "pages": 1
+    },
+    {
+      "scan": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "source": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "pages": 1
+    },
+    {
+      "scan": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "source": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "pages": 1
+    },
+    {
+      "scan": "HR Files/Scans/IMG_20260918_141027.jpg",
+      "source": "HR Files/Resumes/KatrinaCabrera_Resume_2026.pdf",
+      "pages": 1
+    },
+    {
+      "scan": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "source": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "pages": 1
+    },
+    {
+      "scan": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "source": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "pages": 2
+    },
+    {
+      "scan": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "source": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "pages": 1
+    },
+    {
+      "scan": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "source": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "pages": 1
+    },
+    {
+      "scan": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "source": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "pages": 1
+    }
+  ],
+  "entities": [
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "NAME",
+      "value": "JEROME QUIAMBAO RAMOS",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "ADDRESS",
+      "value": "265 Rizal St., Brgy. Balibago, Santa Rosa City, Laguna 4026",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "PHONE",
+      "value": "0993 143 1751",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "EMAIL",
+      "value": "jerome.ramos@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "DOB",
+      "value": "December 31, 1987",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "NAME",
+      "value": "Mr. Rommel Domingo",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "PHONE",
+      "value": "0926 131 3394",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "NAME",
+      "value": "Mr. Jerome Marquez",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "PHONE",
+      "value": "0929 882 4135",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "NAME",
+      "value": "Jerome Q. Ramos",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jerome Ramos.pdf",
+      "type": "NAME",
+      "value": "JEROME Q. RAMOS",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "NAME",
+      "value": "PAOLO S. TAN",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "ADDRESS",
+      "value": "Unit 13D, Anahaw Residences, 134 Sampaguita St., Brgy. Plainview, Mandaluyong City, Metro Manila 1550",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "PHONE",
+      "value": "0949 421 2171",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "EMAIL",
+      "value": "paolo.tan@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "DOB",
+      "value": "September 5, 1987",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "SSS",
+      "value": "11-6791574-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "TIN",
+      "value": "292-939-341-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "PHILHEALTH",
+      "value": "03-285513794-5",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "PAGIBIG",
+      "value": "1436-0149-0636",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Tan_Paolo_Resume.pdf",
+      "type": "SALARY",
+      "value": "₱28,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jasmine Tolentino.pdf",
+      "type": "NAME",
+      "value": "Jasmine Tolentino",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jasmine Tolentino.pdf",
+      "type": "PHONE",
+      "value": "+63 991 285 7716",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jasmine Tolentino.pdf",
+      "type": "EMAIL",
+      "value": "jasmine.tolentino@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jasmine Tolentino.pdf",
+      "type": "ADDRESS",
+      "value": "19 Molave St., Brgy. Marawoy, Lipa City, Batangas 4217",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jasmine Tolentino.pdf",
+      "type": "DOB",
+      "value": "July 1, 1990",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jasmine Tolentino.pdf",
+      "type": "SSS",
+      "value": "34-4576316-9",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jasmine Tolentino.pdf",
+      "type": "TIN",
+      "value": "248-294-269-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jasmine Tolentino.pdf",
+      "type": "PHILHEALTH",
+      "value": "02-320143978-1",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Jasmine Tolentino.pdf",
+      "type": "PAGIBIG",
+      "value": "1588-4592-4107",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "NAME",
+      "value": "KRISTINE JOY MANALO REYES",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "ADDRESS",
+      "value": "101 Sampaguita St., Brgy. Dela Paz, Antipolo City, Rizal 1870",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "PHONE",
+      "value": "0966 174 4548",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "EMAIL",
+      "value": "kristine.reyes@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "DOB",
+      "value": "April 18, 1991",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "SSS",
+      "value": "25-6708763-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "TIN",
+      "value": "320-398-458-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "PHILHEALTH",
+      "value": "03-376137895-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "PAGIBIG",
+      "value": "1861-6116-9066",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "SALARY",
+      "value": "₱45,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "NAME",
+      "value": "Kristine Joy M. Reyes",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "NAME",
+      "value": "Mr. Gilbert De Guzman",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "PHONE",
+      "value": "0947 060 7738",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "NAME",
+      "value": "Ms. Jasmine Dizon",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "PHONE",
+      "value": "0909 183 8234",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_REYES.pdf",
+      "type": "NAME",
+      "value": "KRISTINE JOY M. REYES",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/KatrinaCabrera_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "Katrina Cabrera",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/KatrinaCabrera_Resume_2026.pdf",
+      "type": "PHONE",
+      "value": "+63 955 569 2517",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/KatrinaCabrera_Resume_2026.pdf",
+      "type": "EMAIL",
+      "value": "katrina.cabrera@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/KatrinaCabrera_Resume_2026.pdf",
+      "type": "ADDRESS",
+      "value": "237 Narra St., Brgy. San Andres, Cainta, Rizal 1900",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/KatrinaCabrera_Resume_2026.pdf",
+      "type": "DOB",
+      "value": "October 29, 1989",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/KatrinaCabrera_Resume_2026.pdf",
+      "type": "SALARY",
+      "value": "₱25,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "NAME",
+      "value": "PATRICIA SORIANO MARIANO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 7 Lot 5, Del Pilar St., Brgy. Pio del Pilar, Makati City, Metro Manila 1230",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "PHONE",
+      "value": "+63 949 111 5633",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "EMAIL",
+      "value": "patricia.mariano86@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "DOB",
+      "value": "October 7, 1998",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "SSS",
+      "value": "22-7455064-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "TIN",
+      "value": "199-691-474-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "PHILHEALTH",
+      "value": "12-987951871-5",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "PAGIBIG",
+      "value": "1718-4409-5423",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "NAME",
+      "value": "Patricia S. Mariano",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "NAME",
+      "value": "Ms. Erlinda Lim",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "PHONE",
+      "value": "0953 959 0288",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "NAME",
+      "value": "Mr. Alvin Dimalanta",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "PHONE",
+      "value": "0926 153 1692",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mariano_Patricia_Resume.pdf",
+      "type": "NAME",
+      "value": "PATRICIA S. MARIANO",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Garcia_Charisse_Resume.pdf",
+      "type": "NAME",
+      "value": "Charisse Garcia",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Garcia_Charisse_Resume.pdf",
+      "type": "PHONE",
+      "value": "0929 211 1493",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Garcia_Charisse_Resume.pdf",
+      "type": "EMAIL",
+      "value": "charisse.garcia@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Garcia_Charisse_Resume.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 31 Lot 10, Sampaguita St., Brgy. Carmen, Cagayan de Oro City, Misamis Oriental 9000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Garcia_Charisse_Resume.pdf",
+      "type": "DOB",
+      "value": "March 2, 1993",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Garcia_Charisse_Resume.pdf",
+      "type": "SALARY",
+      "value": "₱28,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "NAME",
+      "value": "JEROME GALANG AGUILAR",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "ADDRESS",
+      "value": "249 Kamagong St., Brgy. Talamban, Cebu City, Cebu 6000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "PHONE",
+      "value": "0912 871 3243",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "EMAIL",
+      "value": "jerome.aguilar16@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "DOB",
+      "value": "July 8, 2000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "SSS",
+      "value": "33-9618512-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "TIN",
+      "value": "167-342-408-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "PHILHEALTH",
+      "value": "19-544251074-4",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "PAGIBIG",
+      "value": "1196-7523-7135",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "SALARY",
+      "value": "₱32,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "NAME",
+      "value": "Jerome G. Aguilar",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "NAME",
+      "value": "Mr. Ronaldo Gutierrez",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "PHONE",
+      "value": "0927 758 7095",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "NAME",
+      "value": "Ms. Aileen Domingo",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "PHONE",
+      "value": "0998 980 3361",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Resume_AGUILAR.pdf",
+      "type": "NAME",
+      "value": "JEROME G. AGUILAR",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "FRANCIS CASTILLO SISON",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 29 Lot 2, Magsaysay Ave., Brgy. Rosario, Pasig City, Metro Manila 1609",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "PHONE",
+      "value": "+63 977 007 4156",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "EMAIL",
+      "value": "francis.sison56@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "DOB",
+      "value": "May 18, 1991",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "SSS",
+      "value": "08-8239915-4",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "TIN",
+      "value": "222-899-714-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "PHILHEALTH",
+      "value": "02-869401541-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "PAGIBIG",
+      "value": "1100-7443-1215",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "SALARY",
+      "value": "₱22,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "Francis C. Sison",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "Ms. Cherry Mae Yap",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "PHONE",
+      "value": "0955 024 5181",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "Mr. Jayson Tan",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "PHONE",
+      "value": "0929 450 1185",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/FrancisSison_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "FRANCIS C. SISON",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "NAME",
+      "value": "HAZEL ALCANTARA MENDOZA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 21 Lot 5, Magsaysay Ave., Brgy. San Roque, Antipolo City, Rizal 1870",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "PHONE",
+      "value": "0991 274 3836",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "EMAIL",
+      "value": "hazel.mendoza70@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "DOB",
+      "value": "July 11, 1986",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "SSS",
+      "value": "33-4390901-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "TIN",
+      "value": "270-768-292-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "PHILHEALTH",
+      "value": "03-528789713-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "PAGIBIG",
+      "value": "1891-3138-7036",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "SALARY",
+      "value": "₱40,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "NAME",
+      "value": "Hazel A. Mendoza",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "NAME",
+      "value": "Ms. Rhea Flores",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "PHONE",
+      "value": "0945 760 9263",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "NAME",
+      "value": "Ms. Rosalinda Cortez",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "PHONE",
+      "value": "0906 531 3055",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Mendoza_Hazel_Resume.pdf",
+      "type": "NAME",
+      "value": "HAZEL A. MENDOZA",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Del Rosario_Rowena_Resume.pdf",
+      "type": "NAME",
+      "value": "ROWENA V. DEL ROSARIO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Del Rosario_Rowena_Resume.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 11 Lot 19, Gumamela St., Brgy. Talamban, Cebu City, Cebu 6000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Del Rosario_Rowena_Resume.pdf",
+      "type": "PHONE",
+      "value": "0927 338 0536",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Del Rosario_Rowena_Resume.pdf",
+      "type": "EMAIL",
+      "value": "rowena.delrosario22@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Del Rosario_Rowena_Resume.pdf",
+      "type": "DOB",
+      "value": "April 13, 1996",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Del Rosario_Rowena_Resume.pdf",
+      "type": "SALARY",
+      "value": "₱32,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Santos_Rodel_Resume.pdf",
+      "type": "NAME",
+      "value": "RODEL A. SANTOS",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Santos_Rodel_Resume.pdf",
+      "type": "ADDRESS",
+      "value": "Unit 16A, Molave Residences, 68 Sampaguita St., Brgy. Longos, Malolos City, Bulacan 3000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Santos_Rodel_Resume.pdf",
+      "type": "PHONE",
+      "value": "0936 544 7827",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Santos_Rodel_Resume.pdf",
+      "type": "EMAIL",
+      "value": "rodel.santos77@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Santos_Rodel_Resume.pdf",
+      "type": "DOB",
+      "value": "November 2, 1988",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Santos_Rodel_Resume.pdf",
+      "type": "SALARY",
+      "value": "₱38,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Michelle Abad.pdf",
+      "type": "NAME",
+      "value": "MICHELLE C. ABAD",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Michelle Abad.pdf",
+      "type": "ADDRESS",
+      "value": "241 Everlasting St., Brgy. Jaro, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Michelle Abad.pdf",
+      "type": "PHONE",
+      "value": "0991 402 5877",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Michelle Abad.pdf",
+      "type": "EMAIL",
+      "value": "michelle.abad@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Michelle Abad.pdf",
+      "type": "DOB",
+      "value": "July 25, 1988",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Michelle Abad.pdf",
+      "type": "SALARY",
+      "value": "₱22,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Aileen Magbanua.pdf",
+      "type": "NAME",
+      "value": "AILEEN F. MAGBANUA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Aileen Magbanua.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 30 Lot 1, Sampaguita St., Brgy. Sabang, Lipa City, Batangas 4217",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Aileen Magbanua.pdf",
+      "type": "PHONE",
+      "value": "+63 910 799 5442",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Aileen Magbanua.pdf",
+      "type": "EMAIL",
+      "value": "aileen.magbanua@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Aileen Magbanua.pdf",
+      "type": "DOB",
+      "value": "June 14, 1994",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Aileen Magbanua.pdf",
+      "type": "SALARY",
+      "value": "₱22,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_SORIANO.pdf",
+      "type": "NAME",
+      "value": "ROSALINDA C. SORIANO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_SORIANO.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 14 Lot 3, Rizal St., Brgy. Plainview, Mandaluyong City, Metro Manila 1550",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_SORIANO.pdf",
+      "type": "PHONE",
+      "value": "+63 935 173 6225",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_SORIANO.pdf",
+      "type": "EMAIL",
+      "value": "rosalinda.soriano@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_SORIANO.pdf",
+      "type": "DOB",
+      "value": "May 6, 1991",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_SORIANO.pdf",
+      "type": "SALARY",
+      "value": "₱28,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "NAME",
+      "value": "Patricia Anne Cruz",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "PHONE",
+      "value": "+63 908 948 8843",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "EMAIL",
+      "value": "patricia.cruz51@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "ADDRESS",
+      "value": "25 Molave St., Brgy. Sindalan, City of San Fernando, Pampanga 2000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "DOB",
+      "value": "July 25, 1990",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "SSS",
+      "value": "09-9738548-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "TIN",
+      "value": "158-536-732-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "PHILHEALTH",
+      "value": "03-931773257-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "PAGIBIG",
+      "value": "1476-4803-6698",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Patricia Anne Cruz.pdf",
+      "type": "SALARY",
+      "value": "₱52,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_UMALI.pdf",
+      "type": "NAME",
+      "value": "Juan Carlo Umali",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_UMALI.pdf",
+      "type": "PHONE",
+      "value": "0977 799 1424",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_UMALI.pdf",
+      "type": "EMAIL",
+      "value": "juan.umali39@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_UMALI.pdf",
+      "type": "ADDRESS",
+      "value": "Unit 4A, Sampaguita Residences, 71 Bonifacio Ave., Brgy. Aurora Hill, Baguio City, Benguet 2600",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_UMALI.pdf",
+      "type": "DOB",
+      "value": "December 25, 1994",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Resume_UMALI.pdf",
+      "type": "SALARY",
+      "value": "₱40,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Rommel Valdez.pdf",
+      "type": "NAME",
+      "value": "Rommel Valdez",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Rommel Valdez.pdf",
+      "type": "PHONE",
+      "value": "+63 977 712 7465",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Rommel Valdez.pdf",
+      "type": "EMAIL",
+      "value": "rommel.valdez84@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Rommel Valdez.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 25 Lot 26, Dahlia St., Brgy. Pinagbuhatan, Pasig City, Metro Manila 1602",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Rommel Valdez.pdf",
+      "type": "DOB",
+      "value": "November 7, 1992",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/CV - Rommel Valdez.pdf",
+      "type": "SALARY",
+      "value": "₱35,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "BRYAN CORTEZ MARQUEZ",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "ADDRESS",
+      "value": "102 Luna St., Brgy. Sumapang Matanda, Malolos City, Bulacan 3000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "PHONE",
+      "value": "0919 503 3336",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "EMAIL",
+      "value": "bryan.marquez51@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "DOB",
+      "value": "October 11, 1989",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "SSS",
+      "value": "23-0403286-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "TIN",
+      "value": "414-289-952-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "PHILHEALTH",
+      "value": "03-677406926-4",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "PAGIBIG",
+      "value": "1072-2086-9650",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "Bryan C. Marquez",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "Ms. Rachelle Manalo",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "PHONE",
+      "value": "0947 473 6398",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "Mr. Alvin Gutierrez",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "PHONE",
+      "value": "0991 802 7240",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/BryanMarquez_Resume_2026.pdf",
+      "type": "NAME",
+      "value": "BRYAN C. MARQUEZ",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Resumes/Evangelista_Francis_Resume.pdf",
+      "type": "NAME",
+      "value": "Francis Evangelista",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Evangelista_Francis_Resume.pdf",
+      "type": "PHONE",
+      "value": "0939 916 8439",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Evangelista_Francis_Resume.pdf",
+      "type": "EMAIL",
+      "value": "francis.evangelista22@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Evangelista_Francis_Resume.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 3 Lot 4, Burgos St., Brgy. Banilad, Mandaue City, Cebu 6014",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Evangelista_Francis_Resume.pdf",
+      "type": "DOB",
+      "value": "November 11, 1998",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Evangelista_Francis_Resume.pdf",
+      "type": "SSS",
+      "value": "24-7714195-9",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Evangelista_Francis_Resume.pdf",
+      "type": "TIN",
+      "value": "472-059-145-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Evangelista_Francis_Resume.pdf",
+      "type": "PHILHEALTH",
+      "value": "12-498051232-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Resumes/Evangelista_Francis_Resume.pdf",
+      "type": "PAGIBIG",
+      "value": "1388-5607-8840",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "NAME",
+      "value": "SALDANA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "NAME",
+      "value": "JONALYN",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "NAME",
+      "value": "ABAD",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "DOB",
+      "value": "08/08/1982",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 19 Lot 30, Rizal St., Brgy. Carmen, Cagayan de Oro City, Misamis Oriental 9000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 12 Lot 25, Del Pilar St., Brgy. Tipolo, Mandaue City, Cebu 6014",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "PHONE",
+      "value": "0906 989 9683",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "EMAIL",
+      "value": "jonalyn.saldana@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "SSS",
+      "value": "31-4981310-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "TIN",
+      "value": "438-797-860-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "PHILHEALTH",
+      "value": "08-410315748-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "PAGIBIG",
+      "value": "1888-5685-2957",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "SALARY",
+      "value": "₱18,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "247-5691-60576",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "NAME",
+      "value": "Aileen Saldana",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "PHONE",
+      "value": "0939 008 7474",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0988_Saldana_Jonalyn.pdf",
+      "type": "NAME",
+      "value": "Jonalyn A. Saldana",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "NAME",
+      "value": "TORRES",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "NAME",
+      "value": "RACHELLE",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "NAME",
+      "value": "SORIANO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "DOB",
+      "value": "01/04/1985",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 29 Lot 27, Waling-Waling St., Brgy. Pinagbuhatan, Pasig City, Metro Manila 1602",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "ADDRESS",
+      "value": "37 Dahlia St., Brgy. Dolores, City of San Fernando, Pampanga 2000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "PHONE",
+      "value": "+63 929 113 3921",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "EMAIL",
+      "value": "rachelle.torres53@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "SSS",
+      "value": "26-0427846-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "TIN",
+      "value": "269-317-400-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "PHILHEALTH",
+      "value": "19-171657075-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "PAGIBIG",
+      "value": "1021-6186-4683",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "SALARY",
+      "value": "₱18,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "351-6957-71986",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "NAME",
+      "value": "Bryan Torres",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "DOB",
+      "value": "05/22/1984",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "NAME",
+      "value": "Andrea Torres",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "DOB",
+      "value": "02/23/2020",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "NAME",
+      "value": "Ana Torres",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "DOB",
+      "value": "04/15/2020",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "PHONE",
+      "value": "0927 403 0782",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2024-0122_Torres_Rachelle.pdf",
+      "type": "NAME",
+      "value": "Rachelle S. Torres",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "NAME",
+      "value": "JAVIER",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "NAME",
+      "value": "LIZA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "NAME",
+      "value": "MAGBANUA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "DOB",
+      "value": "10/13/1984",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "ADDRESS",
+      "value": "Unit 5A, Molave Residences, 10 Katipunan St., Brgy. Plainview, Mandaluyong City, Metro Manila 1550",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "PHONE",
+      "value": "+63 951 612 3427",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "EMAIL",
+      "value": "liza.javier87@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "SSS",
+      "value": "09-8748040-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "TIN",
+      "value": "453-388-297-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "PHILHEALTH",
+      "value": "01-590974279-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "PAGIBIG",
+      "value": "1726-7381-5625",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "SALARY",
+      "value": "₱27,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "526-6844-9221",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "NAME",
+      "value": "Angelica Javier",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "PHONE",
+      "value": "0905 908 5143",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0404_Javier_Liza.pdf",
+      "type": "NAME",
+      "value": "Liza M. Javier",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "NAME",
+      "value": "FLORES",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "NAME",
+      "value": "PATRICIA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "NAME",
+      "value": "RAMOS",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "DOB",
+      "value": "07/28/1988",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "ADDRESS",
+      "value": "163 Magsaysay Ave., Brgy. Parian, Calamba City, Laguna 4027",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "ADDRESS",
+      "value": "4 Narra St., Brgy. Pio del Pilar, Makati City, Metro Manila 1230",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "PHONE",
+      "value": "0915 506 0133",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "EMAIL",
+      "value": "patricia.flores65@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "SSS",
+      "value": "32-3468163-4",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "TIN",
+      "value": "376-059-374-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "PHILHEALTH",
+      "value": "08-380832452-1",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "PAGIBIG",
+      "value": "1921-5793-9099",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "SALARY",
+      "value": "₱35,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "418-9775-66004",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "NAME",
+      "value": "Jonalyn Flores",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "PHONE",
+      "value": "+63 912 620 7282",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0392_Flores_Patricia.pdf",
+      "type": "NAME",
+      "value": "Patricia R. Flores",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "NAME",
+      "value": "IGNACIO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "NAME",
+      "value": "MIGUEL",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "NAME",
+      "value": "LIM",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "DOB",
+      "value": "09/19/1990",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 32 Lot 5, Bonifacio Ave., Brgy. Niog, Bacoor City, Cavite 4102",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "PHONE",
+      "value": "0999 460 9264",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "EMAIL",
+      "value": "miguel.ignacio@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "SSS",
+      "value": "12-3302996-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "TIN",
+      "value": "346-986-973-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "PHILHEALTH",
+      "value": "12-580940406-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "PAGIBIG",
+      "value": "1723-6207-6064",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "SALARY",
+      "value": "₱65,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "207-7171-8218",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "NAME",
+      "value": "Jonalyn Ignacio",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "PHONE",
+      "value": "0947 380 1643",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0225_Ignacio_Miguel.pdf",
+      "type": "NAME",
+      "value": "Miguel L. Ignacio",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "NAME",
+      "value": "ZAMORA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "NAME",
+      "value": "CHRISTIAN",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "NAME",
+      "value": "BAUTISTA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "DOB",
+      "value": "11/02/1995",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "ADDRESS",
+      "value": "142 Luna St., Brgy. Aurora Hill, Baguio City, Benguet 2600",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "ADDRESS",
+      "value": "101 Rizal St., Brgy. Rosario, Pasig City, Metro Manila 1609",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "PHONE",
+      "value": "0999 571 0022",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "EMAIL",
+      "value": "christian.zamora@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "SSS",
+      "value": "14-4368170-9",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "TIN",
+      "value": "110-613-379-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "PHILHEALTH",
+      "value": "08-844342578-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "PAGIBIG",
+      "value": "1422-2007-5958",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "SALARY",
+      "value": "₱34,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "886-0258-988",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "NAME",
+      "value": "Lorna Zamora",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "PHONE",
+      "value": "0995 745 1426",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0294_Zamora_Christian.pdf",
+      "type": "NAME",
+      "value": "Christian B. Zamora",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "NAME",
+      "value": "VELASCO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "NAME",
+      "value": "CARLO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "NAME",
+      "value": "MARQUEZ",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "DOB",
+      "value": "06/18/1989",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "ADDRESS",
+      "value": "147 Mabini St., Brgy. Sampaloc I, Dasmariñas City, Cavite 4114",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "PHONE",
+      "value": "0935 670 4410",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "EMAIL",
+      "value": "carlo.velasco@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "SSS",
+      "value": "04-4989449-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "TIN",
+      "value": "120-629-110-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "PHILHEALTH",
+      "value": "01-464611415-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "PAGIBIG",
+      "value": "1430-2880-7080",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "SALARY",
+      "value": "₱29,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "359-5913-067",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "NAME",
+      "value": "Liza Velasco",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "DOB",
+      "value": "02/06/1989",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "NAME",
+      "value": "Jennifer Velasco",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "DOB",
+      "value": "06/30/2016",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "NAME",
+      "value": "Sheila Velasco",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "DOB",
+      "value": "11/06/2014",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "PHONE",
+      "value": "0965 531 6763",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2023-0365_Velasco_Carlo.pdf",
+      "type": "NAME",
+      "value": "Carlo M. Velasco",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "NAME",
+      "value": "PASCUAL",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "NAME",
+      "value": "ERLINDA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "NAME",
+      "value": "MERCADO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "DOB",
+      "value": "02/23/2000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "ADDRESS",
+      "value": "96 Burgos St., Brgy. Balibago, Santa Rosa City, Laguna 4026",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "PHONE",
+      "value": "0955 170 9368",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "EMAIL",
+      "value": "erlinda.pascual@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "SSS",
+      "value": "29-0640101-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "TIN",
+      "value": "185-970-627-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "PHILHEALTH",
+      "value": "02-623363760-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "PAGIBIG",
+      "value": "1063-5626-2704",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "SALARY",
+      "value": "₱25,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "834-3096-8787",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "NAME",
+      "value": "Noel Pascual",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "DOB",
+      "value": "06/01/2000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "NAME",
+      "value": "Alvin Pascual",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "DOB",
+      "value": "09/22/2022",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "PHONE",
+      "value": "0993 043 5815",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0222_Pascual_Erlinda.pdf",
+      "type": "NAME",
+      "value": "Erlinda M. Pascual",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "NAME",
+      "value": "FERRER",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "NAME",
+      "value": "KENNETH",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "NAME",
+      "value": "CASTILLO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "DOB",
+      "value": "10/13/1999",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 34 Lot 6, Burgos St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 26 Lot 7, Narra St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "PHONE",
+      "value": "+63 935 508 2071",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "EMAIL",
+      "value": "kenneth.ferrer@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "SSS",
+      "value": "21-4358180-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "TIN",
+      "value": "214-250-953-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "PHILHEALTH",
+      "value": "08-721733004-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "PAGIBIG",
+      "value": "1554-8902-6037",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "SALARY",
+      "value": "₱28,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "349-7731-59594",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "NAME",
+      "value": "Lorna Ferrer",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "DOB",
+      "value": "03/12/1998",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "NAME",
+      "value": "Rafael Ferrer",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "DOB",
+      "value": "10/15/2021",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "PHONE",
+      "value": "0998 236 6345",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0838_Ferrer_Kenneth.pdf",
+      "type": "NAME",
+      "value": "Kenneth C. Ferrer",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "NAME",
+      "value": "BERNARDO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "NAME",
+      "value": "GILBERT",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "NAME",
+      "value": "MERCADO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "DOB",
+      "value": "11/11/1994",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 37 Lot 22, Ilang-Ilang St., Brgy. Sampaloc I, Dasmariñas City, Cavite 4114",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "ADDRESS",
+      "value": "266 Mabini St., Brgy. Barangka Ilaya, Mandaluyong City, Metro Manila 1550",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "PHONE",
+      "value": "0905 550 0206",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "EMAIL",
+      "value": "gilbert.bernardo@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "SSS",
+      "value": "21-6284067-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "TIN",
+      "value": "310-279-074-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "PHILHEALTH",
+      "value": "01-564500018-1",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "PAGIBIG",
+      "value": "1809-2199-0427",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "SALARY",
+      "value": "₱28,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "878-9789-073",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "NAME",
+      "value": "Princess Bernardo",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "PHONE",
+      "value": "+63 991 437 2813",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2022-0815_Bernardo_Gilbert.pdf",
+      "type": "NAME",
+      "value": "Gilbert M. Bernardo",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "NAME",
+      "value": "SAMONTE",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "NAME",
+      "value": "AILEEN",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "NAME",
+      "value": "EVANGELISTA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "DOB",
+      "value": "05/03/1984",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "ADDRESS",
+      "value": "285 Burgos St., Brgy. Tandang Sora, Quezon City, Metro Manila 1116",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "PHONE",
+      "value": "0953 402 1913",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "EMAIL",
+      "value": "aileen.samonte51@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "SSS",
+      "value": "31-3346297-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "TIN",
+      "value": "486-751-672-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "PHILHEALTH",
+      "value": "19-895307394-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "PAGIBIG",
+      "value": "1412-7873-7184",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "SALARY",
+      "value": "₱30,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "283-7914-836",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "NAME",
+      "value": "Maria Samonte",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "PHONE",
+      "value": "+63 997 097 8819",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2026-0234_Samonte_Aileen.pdf",
+      "type": "NAME",
+      "value": "Aileen E. Samonte",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "NAME",
+      "value": "ROBLES",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "NAME",
+      "value": "CARLO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "NAME",
+      "value": "MACARAEG",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "DOB",
+      "value": "03/16/1989",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "ADDRESS",
+      "value": "45 Luna St., Brgy. Carmen, Cagayan de Oro City, Misamis Oriental 9000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "PHONE",
+      "value": "0977 078 3016",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "EMAIL",
+      "value": "carlo.robles75@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "SSS",
+      "value": "28-9171821-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "TIN",
+      "value": "210-620-218-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "PHILHEALTH",
+      "value": "02-165242627-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "PAGIBIG",
+      "value": "1583-7275-9591",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "SALARY",
+      "value": "₱30,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "780-1797-04635",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "NAME",
+      "value": "Marites Robles",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "DOB",
+      "value": "03/20/1991",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "NAME",
+      "value": "Nicole Robles",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "DOB",
+      "value": "01/21/2021",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "NAME",
+      "value": "Dennis Robles",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "DOB",
+      "value": "06/04/2013",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "PHONE",
+      "value": "0908 531 4022",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2016-0805_Robles_Carlo.pdf",
+      "type": "NAME",
+      "value": "Carlo M. Robles",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "NAME",
+      "value": "MERCADO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "NAME",
+      "value": "CARLO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "NAME",
+      "value": "IGNACIO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "DOB",
+      "value": "09/06/1997",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "ADDRESS",
+      "value": "Unit 3F, Sampaguita Residences, 27 Aguinaldo St., Brgy. Tagapo, Santa Rosa City, Laguna 4026",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 26 Lot 14, Rizal St., Brgy. Western Bicutan, Taguig City, Metro Manila 1630",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "PHONE",
+      "value": "+63 999 679 0812",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "EMAIL",
+      "value": "carlo.mercado17@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "SSS",
+      "value": "29-9749198-4",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "TIN",
+      "value": "331-692-547-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "PHILHEALTH",
+      "value": "02-291030834-5",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "PAGIBIG",
+      "value": "1453-4705-3254",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "SALARY",
+      "value": "₱22,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "188-8239-98478",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "NAME",
+      "value": "Lorna Mercado",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "PHONE",
+      "value": "0995 886 9702",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2017-0853_Mercado_Carlo.pdf",
+      "type": "NAME",
+      "value": "Carlo I. Mercado",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "NAME",
+      "value": "DOMINGO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "NAME",
+      "value": "LIZA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "NAME",
+      "value": "VILLANUEVA",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "DOB",
+      "value": "04/10/1998",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 6 Lot 15, Everlasting St., Brgy. Barangka Ilaya, Mandaluyong City, Metro Manila 1550",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "PHONE",
+      "value": "0927 175 6321",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "EMAIL",
+      "value": "liza.domingo51@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "SSS",
+      "value": "12-6093289-9",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "TIN",
+      "value": "470-777-902-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "PHILHEALTH",
+      "value": "19-745707193-0",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "PAGIBIG",
+      "value": "1597-8122-8434",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "SALARY",
+      "value": "₱24,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "406-9940-83591",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "NAME",
+      "value": "Ronaldo Domingo",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "DOB",
+      "value": "08/26/2001",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "NAME",
+      "value": "Paolo Domingo",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "DOB",
+      "value": "06/01/2020",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "PHONE",
+      "value": "0918 259 2422",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2015-0621_Domingo_Liza.pdf",
+      "type": "NAME",
+      "value": "Liza V. Domingo",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "NAME",
+      "value": "PEREZ",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "NAME",
+      "value": "JUAN CARLO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "NAME",
+      "value": "PANGANIBAN",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "DOB",
+      "value": "02/03/1997",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "ADDRESS",
+      "value": "59 Ilang-Ilang St., Brgy. Jaro, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "ADDRESS",
+      "value": "33 Bonifacio Ave., Brgy. Dela Paz, Antipolo City, Rizal 1870",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "PHONE",
+      "value": "0929 219 3253",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "EMAIL",
+      "value": "juan.perez@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "SSS",
+      "value": "11-9702178-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "TIN",
+      "value": "310-258-306-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "PHILHEALTH",
+      "value": "01-990429743-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "PAGIBIG",
+      "value": "1937-2363-3535",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "SALARY",
+      "value": "₱22,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "264-3264-049",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "NAME",
+      "value": "Charisse Perez",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "PHONE",
+      "value": "0966 805 0845",
+      "page": 1
+    },
+    {
+      "file": "HR Files/201 Files/201_BOC-2019-0625_Perez_Juan.pdf",
+      "type": "NAME",
+      "value": "Juan Carlo P. Perez",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "NAME",
+      "value": "SALDANA, Jonalyn A.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "TIN",
+      "value": "438-797-860-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "SSS",
+      "value": "31-4981310-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "PHILHEALTH",
+      "value": "08-410315748-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "PAGIBIG",
+      "value": "1888-5685-2957",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "SALARY",
+      "value": "₱18,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "247-5691-60576",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "SALARY",
+      "value": "₱9,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "SALARY",
+      "value": "₱10,258.62",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2017-0988_Saldana.pdf",
+      "type": "SALARY",
+      "value": "₱8,400.29",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "NAME",
+      "value": "TORRES, Rachelle S.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "TIN",
+      "value": "269-317-400-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "SSS",
+      "value": "26-0427846-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "PHILHEALTH",
+      "value": "19-171657075-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "PAGIBIG",
+      "value": "1021-6186-4683",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "SALARY",
+      "value": "₱18,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "351-6957-71986",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "SALARY",
+      "value": "₱9,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "SALARY",
+      "value": "₱10,775.86",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2024-0122_Torres.pdf",
+      "type": "SALARY",
+      "value": "₱9,125.86",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "NAME",
+      "value": "JAVIER, Liza M.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "TIN",
+      "value": "453-388-297-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "SSS",
+      "value": "09-8748040-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "PHILHEALTH",
+      "value": "01-590974279-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "PAGIBIG",
+      "value": "1726-7381-5625",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "SALARY",
+      "value": "₱27,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "526-6844-9221",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "SALARY",
+      "value": "₱13,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "SALARY",
+      "value": "₱17,075.87",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2015-0404_Javier.pdf",
+      "type": "SALARY",
+      "value": "₱15,281.41",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "NAME",
+      "value": "FLORES, Patricia R.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "TIN",
+      "value": "376-059-374-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "SSS",
+      "value": "32-3468163-4",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "PHILHEALTH",
+      "value": "08-380832452-1",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "PAGIBIG",
+      "value": "1921-5793-9099",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "SALARY",
+      "value": "₱35,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "418-9775-66004",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "SALARY",
+      "value": "₱17,750.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "SALARY",
+      "value": "₱20,586.20",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0392_Flores.pdf",
+      "type": "SALARY",
+      "value": "₱17,929.86",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "NAME",
+      "value": "IGNACIO, Miguel L.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "TIN",
+      "value": "346-986-973-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "SSS",
+      "value": "12-3302996-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "PHILHEALTH",
+      "value": "12-580940406-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "PAGIBIG",
+      "value": "1723-6207-6064",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "SALARY",
+      "value": "₱65,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "207-7171-8218",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "SALARY",
+      "value": "₱32,750.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "SALARY",
+      "value": "₱34,691.09",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2016-0225_Ignacio.pdf",
+      "type": "SALARY",
+      "value": "₱28,913.77",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "NAME",
+      "value": "ZAMORA, Christian B.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "TIN",
+      "value": "110-613-379-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "SSS",
+      "value": "14-4368170-9",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "PHILHEALTH",
+      "value": "08-844342578-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "PAGIBIG",
+      "value": "1422-2007-5958",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "SALARY",
+      "value": "₱34,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "886-0258-988",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "SALARY",
+      "value": "₱17,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "SALARY",
+      "value": "₱18,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0294_Zamora.pdf",
+      "type": "SALARY",
+      "value": "₱15,843.80",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "NAME",
+      "value": "VELASCO, Carlo M.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "TIN",
+      "value": "120-629-110-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "SSS",
+      "value": "04-4989449-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "PHILHEALTH",
+      "value": "01-464611415-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "PAGIBIG",
+      "value": "1430-2880-7080",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "SALARY",
+      "value": "₱29,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "359-5913-067",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "SALARY",
+      "value": "₱14,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "SALARY",
+      "value": "₱16,750.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2023-0365_Velasco.pdf",
+      "type": "SALARY",
+      "value": "₱14,940.68",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "NAME",
+      "value": "PASCUAL, Erlinda M.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "TIN",
+      "value": "185-970-627-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "SSS",
+      "value": "29-0640101-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "PHILHEALTH",
+      "value": "02-623363760-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "PAGIBIG",
+      "value": "1063-5626-2704",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "SALARY",
+      "value": "₱25,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "834-3096-8787",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "SALARY",
+      "value": "₱12,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "SALARY",
+      "value": "₱14,218.39",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0222_Pascual.pdf",
+      "type": "SALARY",
+      "value": "₱12,916.31",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "NAME",
+      "value": "FERRER, Kenneth C.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "TIN",
+      "value": "214-250-953-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "SSS",
+      "value": "21-4358180-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "PHILHEALTH",
+      "value": "08-721733004-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "PAGIBIG",
+      "value": "1554-8902-6037",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "SALARY",
+      "value": "₱28,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "349-7731-59594",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "SALARY",
+      "value": "₱14,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "SALARY",
+      "value": "₱15,402.30",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2019-0838_Ferrer.pdf",
+      "type": "SALARY",
+      "value": "₱13,827.01",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "NAME",
+      "value": "BERNARDO, Gilbert M.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "TIN",
+      "value": "310-279-074-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "SSS",
+      "value": "21-6284067-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "PHILHEALTH",
+      "value": "01-564500018-1",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "PAGIBIG",
+      "value": "1809-2199-0427",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "SALARY",
+      "value": "₱28,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "878-9789-073",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "SALARY",
+      "value": "₱14,250.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "SALARY",
+      "value": "₱16,068.97",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Payslips/Payslip_2026-09-30_BOC-2022-0815_Bernardo.pdf",
+      "type": "SALARY",
+      "value": "₱14,377.74",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "NAME",
+      "value": "Liza T. Buenaventura",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "NAME",
+      "value": "AILEEN EVANGELISTA SAMONTE",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "ADDRESS",
+      "value": "285 Burgos St., Brgy. Tandang Sora, Quezon City, Metro Manila 1116",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "SSS",
+      "value": "31-3346297-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "TIN",
+      "value": "486-751-672-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "SALARY",
+      "value": "₱30,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "BANK_ACCOUNT",
+      "value": "283-7914-836",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "NAME",
+      "value": "Aileen E. Samonte",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "PHONE",
+      "value": "0953 402 1913",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Employment_Contract_Samonte_Aileen.docx",
+      "type": "NAME",
+      "value": "Charisse Lim",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "NAME",
+      "value": "MS. KRISTINE JOY M. REYES",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "ADDRESS",
+      "value": "101 Sampaguita St., Brgy. Dela Paz, Antipolo City, Rizal 1870",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "EMAIL",
+      "value": "kristine.reyes@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "PHONE",
+      "value": "0966 174 4548",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "SALARY",
+      "value": "₱45,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "SSS",
+      "value": "25-6708763-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "TIN",
+      "value": "320-398-458-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "PHILHEALTH",
+      "value": "03-376137895-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "PAGIBIG",
+      "value": "1861-6116-9066",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "NAME",
+      "value": "Liza T. Buenaventura",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/Offer_Letter_Reyes_Kristine.docx",
+      "type": "NAME",
+      "value": "Kristine Joy M. Reyes",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "NAME",
+      "value": "Liza T. Buenaventura",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "NAME",
+      "value": "Javier, Liza M.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "SSS",
+      "value": "09-8748040-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "PHILHEALTH",
+      "value": "01-590974279-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "NAME",
+      "value": "Zamora, Christian B.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "SSS",
+      "value": "14-4368170-9",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "PHILHEALTH",
+      "value": "08-844342578-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "NAME",
+      "value": "Robles, Carlo M.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "SSS",
+      "value": "28-9171821-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "PHILHEALTH",
+      "value": "02-165242627-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "NAME",
+      "value": "Samonte, Aileen E.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "SSS",
+      "value": "31-3346297-3",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Contracts/HR_Memo_2026-014_Government_Numbers.docx",
+      "type": "PHILHEALTH",
+      "value": "19-895307394-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "NAME",
+      "value": "SALDANA, Jonalyn A.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "TIN",
+      "value": "438-797-860-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "SSS",
+      "value": "31-4981310-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "PHILHEALTH",
+      "value": "08-410315748-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "PAGIBIG",
+      "value": "1888-5685-2957",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "SALARY",
+      "value": "₱18,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "BANK_ACCOUNT",
+      "value": "247-5691-60576",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "SALARY",
+      "value": "₱9,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "SALARY",
+      "value": "₱10,258.62",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191204.jpg",
+      "type": "SALARY",
+      "value": "₱8,400.29",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "NAME",
+      "value": "FLORES, Patricia R.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "TIN",
+      "value": "376-059-374-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "SSS",
+      "value": "32-3468163-4",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "PHILHEALTH",
+      "value": "08-380832452-1",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "PAGIBIG",
+      "value": "1921-5793-9099",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "SALARY",
+      "value": "₱35,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "BANK_ACCOUNT",
+      "value": "418-9775-66004",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "SALARY",
+      "value": "₱17,750.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "SALARY",
+      "value": "₱20,586.20",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260930_191322.jpg",
+      "type": "SALARY",
+      "value": "₱17,929.86",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "NAME",
+      "value": "VELASCO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "NAME",
+      "value": "CARLO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "NAME",
+      "value": "MARQUEZ",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "DOB",
+      "value": "06/18/1989",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "ADDRESS",
+      "value": "147 Mabini St., Brgy. Sampaloc I, Dasmariñas City, Cavite 4114",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "PHONE",
+      "value": "0935 670 4410",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "EMAIL",
+      "value": "carlo.velasco@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "SSS",
+      "value": "04-4989449-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "TIN",
+      "value": "120-629-110-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "PHILHEALTH",
+      "value": "01-464611415-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "PAGIBIG",
+      "value": "1430-2880-7080",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "SALARY",
+      "value": "₱29,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "BANK_ACCOUNT",
+      "value": "359-5913-067",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "NAME",
+      "value": "Liza Velasco",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "DOB",
+      "value": "02/06/1989",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "NAME",
+      "value": "Jennifer Velasco",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "DOB",
+      "value": "06/30/2016",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "NAME",
+      "value": "Sheila Velasco",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "DOB",
+      "value": "11/06/2014",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "PHONE",
+      "value": "0965 531 6763",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093415.jpg",
+      "type": "NAME",
+      "value": "Carlo M. Velasco",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "NAME",
+      "value": "FERRER",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "NAME",
+      "value": "KENNETH",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "NAME",
+      "value": "CASTILLO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "DOB",
+      "value": "10/13/1999",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "ADDRESS",
+      "value": "Blk 34 Lot 6, Burgos St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "ADDRESS",
+      "value": "Blk 26 Lot 7, Narra St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "PHONE",
+      "value": "+63 935 508 2071",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "EMAIL",
+      "value": "kenneth.ferrer@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "SSS",
+      "value": "21-4358180-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "TIN",
+      "value": "214-250-953-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "PHILHEALTH",
+      "value": "08-721733004-2",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "PAGIBIG",
+      "value": "1554-8902-6037",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "SALARY",
+      "value": "₱28,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "BANK_ACCOUNT",
+      "value": "349-7731-59594",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "NAME",
+      "value": "Lorna Ferrer",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "DOB",
+      "value": "03/12/1998",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "NAME",
+      "value": "Rafael Ferrer",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "DOB",
+      "value": "10/15/2021",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "PHONE",
+      "value": "0998 236 6345",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260912_093502.jpg",
+      "type": "NAME",
+      "value": "Kenneth C. Ferrer",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260918_141027.jpg",
+      "type": "NAME",
+      "value": "Katrina Cabrera",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260918_141027.jpg",
+      "type": "PHONE",
+      "value": "+63 955 569 2517",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260918_141027.jpg",
+      "type": "EMAIL",
+      "value": "katrina.cabrera@sulat.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260918_141027.jpg",
+      "type": "ADDRESS",
+      "value": "237 Narra St., Brgy. San Andres, Cainta, Rizal 1900",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260918_141027.jpg",
+      "type": "DOB",
+      "value": "October 29, 1989",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/IMG_20260918_141027.jpg",
+      "type": "SALARY",
+      "value": "₱25,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "NAME",
+      "value": "PAOLO S. TAN",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "ADDRESS",
+      "value": "Unit 13D, Anahaw Residences, 134 Sampaguita St., Brgy. Plainview, Mandaluyong City, Metro Manila 1550",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "PHONE",
+      "value": "0949 421 2171",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "EMAIL",
+      "value": "paolo.tan@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "DOB",
+      "value": "September 5, 1987",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "SSS",
+      "value": "11-6791574-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "TIN",
+      "value": "292-939-341-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "PHILHEALTH",
+      "value": "03-285513794-5",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "PAGIBIG",
+      "value": "1436-0149-0636",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.12.pdf",
+      "type": "SALARY",
+      "value": "₱28,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "NAME",
+      "value": "JEROME GALANG AGUILAR",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "ADDRESS",
+      "value": "249 Kamagong St., Brgy. Talamban, Cebu City, Cebu 6000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "PHONE",
+      "value": "0912 871 3243",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "EMAIL",
+      "value": "jerome.aguilar16@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "DOB",
+      "value": "July 8, 2000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "SSS",
+      "value": "33-9618512-8",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "TIN",
+      "value": "167-342-408-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "PHILHEALTH",
+      "value": "19-544251074-4",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "PAGIBIG",
+      "value": "1196-7523-7135",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "SALARY",
+      "value": "₱32,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "NAME",
+      "value": "Jerome G. Aguilar",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "NAME",
+      "value": "Mr. Ronaldo Gutierrez",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "PHONE",
+      "value": "0927 758 7095",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "NAME",
+      "value": "Ms. Aileen Domingo",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "PHONE",
+      "value": "0998 980 3361",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-18 14.15.pdf",
+      "type": "NAME",
+      "value": "JEROME G. AGUILAR",
+      "page": 2
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "NAME",
+      "value": "MERCADO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "NAME",
+      "value": "CARLO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "NAME",
+      "value": "IGNACIO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "DOB",
+      "value": "09/06/1997",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "ADDRESS",
+      "value": "Unit 3F, Sampaguita Residences, 27 Aguinaldo St., Brgy. Tagapo, Santa Rosa City, Laguna 4026",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 26 Lot 14, Rizal St., Brgy. Western Bicutan, Taguig City, Metro Manila 1630",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "PHONE",
+      "value": "+63 999 679 0812",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "EMAIL",
+      "value": "carlo.mercado17@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "SSS",
+      "value": "29-9749198-4",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "TIN",
+      "value": "331-692-547-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "PHILHEALTH",
+      "value": "02-291030834-5",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "PAGIBIG",
+      "value": "1453-4705-3254",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "SALARY",
+      "value": "₱22,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "188-8239-98478",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "NAME",
+      "value": "Lorna Mercado",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "PHONE",
+      "value": "0995 886 9702",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.40.pdf",
+      "type": "NAME",
+      "value": "Carlo I. Mercado",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "NAME",
+      "value": "PEREZ",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "NAME",
+      "value": "JUAN CARLO",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "NAME",
+      "value": "PANGANIBAN",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "DOB",
+      "value": "02/03/1997",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "ADDRESS",
+      "value": "59 Ilang-Ilang St., Brgy. Jaro, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "ADDRESS",
+      "value": "33 Bonifacio Ave., Brgy. Dela Paz, Antipolo City, Rizal 1870",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "PHONE",
+      "value": "0929 219 3253",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "EMAIL",
+      "value": "juan.perez@pinoymail.example",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "SSS",
+      "value": "11-9702178-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "TIN",
+      "value": "310-258-306-000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "PHILHEALTH",
+      "value": "01-990429743-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "PAGIBIG",
+      "value": "1937-2363-3535",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "SALARY",
+      "value": "₱22,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "264-3264-049",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "NAME",
+      "value": "Charisse Perez",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "PHONE",
+      "value": "0966 805 0845",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-09-12 09.43.pdf",
+      "type": "NAME",
+      "value": "Juan Carlo P. Perez",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "NAME",
+      "value": "PASCUAL, Erlinda M.",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "TIN",
+      "value": "185-970-627-00000",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "SSS",
+      "value": "29-0640101-6",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "PHILHEALTH",
+      "value": "02-623363760-7",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "PAGIBIG",
+      "value": "1063-5626-2704",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "SALARY",
+      "value": "₱25,000.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "834-3096-8787",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "SALARY",
+      "value": "₱12,500.00",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "SALARY",
+      "value": "₱14,218.39",
+      "page": 1
+    },
+    {
+      "file": "HR Files/Scans/Scan 2026-10-01 08.05.pdf",
+      "type": "SALARY",
+      "value": "₱12,916.31",
+      "page": 1
+    },
+    {
+      "file": "Personal/bank_statement.pdf",
+      "type": "NAME",
+      "value": "CAMILLE ESGUERRA VILLAFUERTE",
+      "page": 1
+    },
+    {
+      "file": "Personal/bank_statement.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 19 Lot 9, Sampaguita St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "Personal/bank_statement.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "784-2081-645",
+      "page": 1
+    },
+    {
+      "file": "Personal/bank_statement.pdf",
+      "type": "CARD",
+      "value": "4000 6442 9970 5662",
+      "page": 1
+    },
+    {
+      "file": "Personal/bank_statement.pdf",
+      "type": "SALARY",
+      "value": "29,250.00",
+      "page": 1
+    },
+    {
+      "file": "Personal/bank_statement.pdf",
+      "type": "GCASH",
+      "value": "0927 708 7404",
+      "page": 1
+    },
+    {
+      "file": "Personal/bank_statement.pdf",
+      "type": "CARD",
+      "value": "5200 4578 9005 9982",
+      "page": 1
+    },
+    {
+      "file": "Personal/bank_statement.pdf",
+      "type": "SALARY",
+      "value": "₱58,500.00",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "NAME",
+      "value": "VILLAFUERTE",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "DOB",
+      "value": "February 14, 1993",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "PASSPORT",
+      "value": "P7125384X",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 19 Lot 9, Sampaguita St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "PHONE",
+      "value": "0907 169 1627",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "EMAIL",
+      "value": "camille.villafuerte@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "SALARY",
+      "value": "₱58,500.00",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "NAME",
+      "value": "Divina Villafuerte",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "PHONE",
+      "value": "+63 917 482 0391",
+      "page": 1
+    },
+    {
+      "file": "Personal/passport_details.pdf",
+      "type": "NAME",
+      "value": "Camille Esguerra Villafuerte",
+      "page": 1
+    },
+    {
+      "file": "Personal/drivers_license_details.pdf",
+      "type": "NAME",
+      "value": "VILLAFUERTE, Camille Esguerra",
+      "page": 1
+    },
+    {
+      "file": "Personal/drivers_license_details.pdf",
+      "type": "DOB",
+      "value": "02/14/1993",
+      "page": 1
+    },
+    {
+      "file": "Personal/drivers_license_details.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 19 Lot 9, Sampaguita St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "Personal/drivers_license_details.pdf",
+      "type": "DRIVERS_LICENSE",
+      "value": "B11-12-230736",
+      "page": 1
+    },
+    {
+      "file": "Personal/drivers_license_details.pdf",
+      "type": "PHONE",
+      "value": "0907 169 1627",
+      "page": 1
+    },
+    {
+      "file": "Personal/drivers_license_details.pdf",
+      "type": "EMAIL",
+      "value": "camille.villafuerte@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "NAME",
+      "value": "Camille Esguerra Villafuerte",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "DOB",
+      "value": "February 14, 1993",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "PHILSYS",
+      "value": "7210-8205-0992-6562",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "TIN",
+      "value": "289-474-893-000",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "SSS",
+      "value": "03-5981999-2",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 19 Lot 9, Sampaguita St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "PHONE",
+      "value": "0907 169 1627",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "GCASH",
+      "value": "0927 708 7404",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "EMAIL",
+      "value": "camille.villafuerte@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "SALARY",
+      "value": "₱58,500.00",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details.pdf",
+      "type": "BANK_ACCOUNT",
+      "value": "784-2081-645",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate.pdf",
+      "type": "NAME",
+      "value": "CAMILLE ESGUERRA VILLAFUERTE",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate.pdf",
+      "type": "ADDRESS",
+      "value": "Blk 19 Lot 9, Sampaguita St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate.pdf",
+      "type": "DOB",
+      "value": "February 14, 1993",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate.pdf",
+      "type": "PHILHEALTH",
+      "value": "12-263049040-2",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate.pdf",
+      "type": "NAME",
+      "value": "Dr. Reynaldo M. Abad, MD",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate_scan.jpg",
+      "type": "NAME",
+      "value": "CAMILLE ESGUERRA VILLAFUERTE",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate_scan.jpg",
+      "type": "ADDRESS",
+      "value": "Blk 19 Lot 9, Sampaguita St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate_scan.jpg",
+      "type": "DOB",
+      "value": "February 14, 1993",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate_scan.jpg",
+      "type": "PHILHEALTH",
+      "value": "12-263049040-2",
+      "page": 1
+    },
+    {
+      "file": "Personal/medical_certificate_scan.jpg",
+      "type": "NAME",
+      "value": "Dr. Reynaldo M. Abad, MD",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "NAME",
+      "value": "Camille Esguerra Villafuerte",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "DOB",
+      "value": "February 14, 1993",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "PHILSYS",
+      "value": "7210-8205-0992-6562",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "TIN",
+      "value": "289-474-893-000",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "SSS",
+      "value": "03-5981999-2",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "ADDRESS",
+      "value": "Blk 19 Lot 9, Sampaguita St., Brgy. Mandurriao, Iloilo City, Iloilo 5000",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "PHONE",
+      "value": "0907 169 1627",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "GCASH",
+      "value": "0927 708 7404",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "EMAIL",
+      "value": "camille.villafuerte@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "SALARY",
+      "value": "₱58,500.00",
+      "page": 1
+    },
+    {
+      "file": "Personal/philsys_details_scan.jpg",
+      "type": "BANK_ACCOUNT",
+      "value": "784-2081-645",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "NAME",
+      "value": "Miguel Lim Ignacio",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "DOB",
+      "value": "September 19, 1990",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "ADDRESS",
+      "value": "Blk 32 Lot 5, Bonifacio Ave., Brgy. Niog, Bacoor City, Cavite 4102",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "SSS",
+      "value": "12-3302996-3",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "TIN",
+      "value": "346-986-973-000",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "PHILHEALTH",
+      "value": "12-580940406-2",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "PAGIBIG",
+      "value": "1723-6207-6064",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "SALARY",
+      "value": "₱65,500.00",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "BANK_ACCOUNT",
+      "value": "207-7171-8218",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "PHONE",
+      "value": "0999 460 9264",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/employee_record.txt",
+      "type": "EMAIL",
+      "value": "miguel.ignacio@inbox-demo.ph",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/resume_snippet.txt",
+      "type": "NAME",
+      "value": "Rodel A. Santos",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/resume_snippet.txt",
+      "type": "ADDRESS",
+      "value": "Unit 16A, Molave Residences, 68 Sampaguita St., Brgy. Longos, Malolos City, Bulacan 3000",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/resume_snippet.txt",
+      "type": "PHONE",
+      "value": "0936 544 7827",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/resume_snippet.txt",
+      "type": "EMAIL",
+      "value": "rodel.santos77@example-mail.ph",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/resume_snippet.txt",
+      "type": "DOB",
+      "value": "November 2, 1988",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/passport_bank_snippet.txt",
+      "type": "NAME",
+      "value": "Camille Esguerra Villafuerte",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/passport_bank_snippet.txt",
+      "type": "PASSPORT",
+      "value": "P7125384X",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/passport_bank_snippet.txt",
+      "type": "DOB",
+      "value": "February 14, 1993",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/passport_bank_snippet.txt",
+      "type": "BANK_ACCOUNT",
+      "value": "784-2081-645",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/passport_bank_snippet.txt",
+      "type": "GCASH",
+      "value": "0927 708 7404",
+      "page": 1
+    },
+    {
+      "file": "clipboard-samples/passport_bank_snippet.txt",
+      "type": "CARD",
+      "value": "5200 4578 9005 9982",
+      "page": 1
+    }
+  ]
+}

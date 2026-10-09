@@ -1,0 +1,68 @@
+{
+  "id": "hr",
+  "name": "HR",
+  "description": "Philippine government IDs, salaries and payroll accounts in 201 files, resumes and payslips.",
+  "audience": "Work",
+  "types": [
+    {
+      "id": "PHILSYS",
+      "label": "PhilSys number",
+      "category": "government ID",
+      "pattern": "(?<!\\d)\\d{4}-\\d{4}-\\d{4}-\\d{4}(?!\\d)"
+    },
+    {
+      "id": "SSS",
+      "label": "SSS number",
+      "category": "government ID",
+      "pattern": "(?<![\\d-])\\d{2}-\\d{7}-\\d(?![\\d-])"
+    },
+    {
+      "id": "PHILHEALTH",
+      "label": "PhilHealth number",
+      "category": "government ID",
+      "pattern": "(?<![\\d-])\\d{2}-\\d{9}-\\d(?![\\d-])"
+    },
+    {
+      "id": "TIN",
+      "label": "TIN",
+      "category": "government ID",
+      "pattern": "(?<![\\d-])\\d{3}-\\d{3}-\\d{3}(?:-\\d{3,5})?(?![\\d-])"
+    },
+    {
+      "id": "PAGIBIG",
+      "label": "Pag-IBIG number",
+      "category": "government ID",
+      "pattern": "(?<![\\d-])\\d{4}-\\d{4}-\\d{4}(?![\\d-])"
+    },
+    {
+      "id": "SALARY",
+      "label": "salary",
+      "category": "salary",
+      "pattern": "(?:₱|PHP|Php)\\s?\\d{1,3}(?:,\\d{3})+(?:\\.\\d{2})?|(?:₱|PHP|Php)\\s?\\d{4,}(?:\\.\\d{2})?"
+    },
+    {
+      "id": "BANK_ACCOUNT",
+      "label": "bank account",
+      "category": "bank account",
+      "group": 1,
+      "pattern": "(?i)(?:account|acct\\.?)\\s*(?:no\\.?|number|#)?\\s*[:\\-]?\\s*(\\d[\\d -]{8,18}\\d)"
+    },
+    {
+      "id": "SALARY",
+      "label": "salary",
+      "category": "salary",
+      "pattern": "(?<![A-Za-z0-9])P\\s?\\d{1,3}(?:[.,]\\d{3})+[.,]\\d{2}(?!\\d)"
+    },
+    {
+      "id": "BANK_ACCOUNT",
+      "label": "bank account",
+      "category": "bank account",
+      "pattern": "(?<![\\d-])\\d{3}-\\d{4}-\\d{3,5}(?![\\d-])"
+    }
+  ],
+  "sampleQuestions": [
+    "Sino sa applicants ang may 5+ years sa payroll?",
+    "Ano ang basic salary ni Reyes?",
+    "Which employees joined in 2023?"
+  ]
+}

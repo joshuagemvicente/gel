@@ -1,0 +1,17 @@
+{
+  "id": "core",
+  "name": "Core",
+  "description": "Contact details, dates of birth and addresses. Always on.",
+  "alwaysOn": true,
+  "types": [
+    { "id": "EMAIL", "label": "email address", "category": "contact", "pattern": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}" },
+    { "id": "PHONE", "label": "phone number", "category": "contact", "pattern": "(?:\\+63[\\s-]?|(?<!\\d)0)9\\d{2}[\\s-]?\\d{3}[\\s-]?\\d{4}(?!\\d)" },
+    { "id": "DOB", "label": "date of birth", "category": "date of birth", "group": 1,
+      "pattern": "(?i)(?:date of birth|birth ?date|birthday|d\\.?o\\.?b\\.?|kapanganakan|petsa ng kapanganakan|born(?: on)?)\\s*[:\\-]?\\s*((?:\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})|(?:\\d{4}-\\d{2}-\\d{2})|(?:[A-Z][a-z]+\\.? \\d{1,2},? \\d{4})|(?:\\d{1,2} [A-Z][a-z]+\\.? \\d{4}))" },
+    { "id": "ADDRESS", "label": "home address", "category": "address", "group": 1,
+      "pattern": "(?i)(?:home address|present address|permanent address|address|tirahan)\\s*[:\\-]\\s*([^\\n]{8,140})" },
+    { "id": "ADDRESS", "label": "home address", "category": "address",
+      "pattern": "(?i)\\b(?:Brgy\\.?|Barangay)\\s+[A-Za-z0-9 .'-]{2,40}(?:,[^\\n,]{2,40}){0,3}" }
+  ],
+  "sampleQuestions": []
+}
