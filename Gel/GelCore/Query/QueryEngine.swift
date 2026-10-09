@@ -187,7 +187,7 @@ public final class QueryEngine {
     /// The cloud gate: no file names (they often contain people's names), then strict redaction (Q2).
     public static func cloudGate(_ content: String) throws -> Redactor.TextResult {
         let anonymized = content.replacingOccurrences(of: " file=\"[^\"]*\"", with: "", options: .regularExpression)
-        return try Redactor.cloudSafeWithMapping(anonymized, strict: true)
+        return try Redactor.cloudGate(anonymized)
     }
 
     /// Exactly what a cloud fallback would send for this question (for testing; nothing is sent).

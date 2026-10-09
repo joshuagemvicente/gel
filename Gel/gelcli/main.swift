@@ -11,7 +11,7 @@ import ImageIO
 //   gelcli stats
 //   gelcli preview <file> <outdir>   write Before/After PNGs of the redaction review (nothing saved next to the file)
 //   gelcli payload "<question>" [--gt ground_truth.json]   what the cloud fallback would receive (nothing is sent)
-//   gelcli check <ground_truth.json>   recall of fast redaction per data type (text-layer files + scans)
+//   gelcli check <ground_truth.json> [--strict] [--misses]   recall per data type (text-layer files + scans); --strict runs the real cloud gate
 
 let args = Array(CommandLine.arguments.dropFirst())
 guard let command = args.first else {
@@ -105,15 +105,20 @@ func run() async throws {
               let entities = obj["entities"] as? [[String: Any]] else { print("bad ground truth"); return }
         let scans = (obj["scans"] as? [[String: Any]]) ?? []
         let checkPacks = value(after: "--packs")?.components(separatedBy: ",") ?? ["hr", "personal"]
+        // --strict: the real cloud gate (every pack, strict names, bare dates) instead of the fast layers.
+        let strict = args.contains("--strict")
+        print(strict ? "mode: cloud gate (Redactor.cloudGate)" : "mode: fast layers, packs \(checkPacks)")
         func squash(_ s: String) -> String { s.components(separatedBy: .whitespacesAndNewlines).joined(separator: " ") }
-        // file -> redacted text (fast layers only)
+        // file -> redacted text
         var cache: [String: String] = [:]
         func redacted(_ rel: String) -> String? {
             if let c = cache[rel] { return c }
             let url = base.appendingPathComponent(rel)
             guard let kind = DocKind.from(url: url), let pages = try? TextExtraction.extract(url: url, kind: kind) else { return nil }
             let text = pages.map(\.text).joined(separator: "\n")
-            let out = squash(Redactor.redactText(text, findings: PIIDetector.shared.detectFast(text, packs: checkPacks)).text)
+            let redactedText = strict ? ((try? Redactor.cloudGate(text).text) ?? "")
+                : Redactor.redactText(text, findings: PIIDetector.shared.detectFast(text, packs: checkPacks)).text
+            let out = squash(redactedText)
             cache[rel] = out
             return out
         }

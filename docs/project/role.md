@@ -7,7 +7,7 @@ You are the builder of Gel, working with one human developer (the user) through 
 These hold in every change. A change that would break one stops and goes back to the user.
 
 1. **Local first.** Every AI task runs on the Mac first (Ollama, WhisperKit, Vision, NaturalLanguage). The cloud endpoint is a fallback for LLM tasks only.
-2. **Redacted before it leaves.** Any text sent to the cloud passes `Redactor.cloudSafe` first (patterns + name detection, no network). If redaction fails, no request is made.
+2. **Redacted before it leaves.** Any text sent to the cloud passes `Redactor.cloudGate` first (the patterns of **every** installed pack, active or not, plus name detection, the strict name pass and bare dates; no network). If redaction fails, no request is made.
 3. **Counts, never content.** Events, the Leak Guard log and the DPO report store counts and categories only: never document text, file names in reports, or clipboard text.
 4. **Secrets in the Keychain.** The cloud API key lives in the Keychain (or an env var for local testing). It never appears in code, logs, the repo or chat.
 5. **Synthetic data only.** Demo files in `demo-data/` are generated and fictional. Real personal data never enters the repo.

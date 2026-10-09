@@ -19,7 +19,7 @@
 - **No mid-answer switching:** if local already streamed tokens and then fails, keep the partial answer and report the error.
 - **Cooldown:** after a fallback, stay on cloud for **60 s**, then try local again.
 - **Health and warm-up:** `GET {local}/api/version` at launch and every 30 s; `POST /api/generate` with an empty prompt and `keep_alive: 60m` at launch, so the first question is fast.
-- **Redaction gate (hard rule):** every user and assistant message goes through `Redactor.cloudSafe` **in one pass with one placeholder numbering**, so `[NAME_1]` means exactly one value across the whole request; if that throws, or the messages can't be split back, no request is made (`LLMError.redactionFailed`). System messages are sent as written: they are built only from Gel's own constant text (plus a number), never from file text or the question, and redacting them garbled the instructions ([D-069](../../project/decisions.md)). Citations are computed locally, so they always point at real local files.
+- **Redaction gate (hard rule):** every user and assistant message goes through `Redactor.cloudGate` **in one pass with one placeholder numbering**, so `[NAME_1]` means exactly one value across the whole request; if that throws, or the messages can't be split back, no request is made (`LLMError.redactionFailed`). System messages are sent as written: they are built only from Gel's own constant text (plus a number), never from file text or the question, and redacting them garbled the instructions ([D-069](../../project/decisions.md)). Citations are computed locally, so they always point at real local files.
 - **No cloud configured / disabled by policy:** no fallback; the UI shows "Local model unavailable" with Retry.
 - **Cloud timeouts:** 20 s first token, 60 s total.
 
@@ -57,6 +57,10 @@ Text sent to the cloud is held to a stricter standard than local use:
 
 - Cloud prompts label sources `Source n` with **no file names** (file names often contain people's names). Citations still map to the local files.
 - The gate runs the fast layers **plus** a strict name pass: any run of 2–4 Capitalized or ALL-CAPS words (or "SURNAME, First") that isn't a known heading/label is replaced with `[NAME_n]`. It over-redacts on purpose.
+- **Every pack, always (D-072).** The gate runs the patterns of every installed pack, whatever is active in Settings. A Personal-only user's payslip still loses its SSS, TIN, PhilHealth and Pag-IBIG numbers before anything leaves the Mac. `Redactor.cloudGate` takes no pack argument, so no call site can narrow it.
+- **Overlapping names join (D-072).** Name findings that overlap become one `[NAME_n]` before the longest-wins merge, so "Buenaventura, HR Director" can't drop "Liza T. Buenaventura" and leave "Liza T." behind. Other categories keep the normal merge rules.
+- **Bare dates (D-072).** Any `dd/mm/yyyy`, `yyyy-mm-dd` or "Month d, yyyy" token is replaced with `[DATE_n]`, labelled or not, because scanned forms put the label on another OCR line (Q4). Year ranges (`2017–2024`) are kept so experience sums still work.
+- Verify with `gelcli check demo-data/ground_truth.json --strict --misses`: every ID type, salary, address, phone and email at 100%, dates at 100% on text-layer files.
 
 ## Health means the models are installed (Q5)
 

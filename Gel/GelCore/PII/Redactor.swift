@@ -37,19 +37,20 @@ public enum Redactor {
         return TextResult(text: ns as String, mapping: mapping, counts: counts)
     }
 
-    /// The gate in front of every cloud call: pattern + name detection (no LLM, no network), then placeholders.
-    public static func cloudSafe(_ text: String, packs: [String] = GelSettings.shared.activePacks) throws -> String {
-        try cloudSafeWithMapping(text, packs: packs, strict: true).text
+    /// The gate in front of every cloud call (no LLM, no network). It takes no pack argument on purpose: text that
+    /// leaves the Mac is screened by **every** installed pack, not the active ones, plus the fast name layer, the
+    /// strict name pass and bare dates (D-072). Returns the placeholder → value mapping too, so a cloud answer can
+    /// be shown with real values locally; the mapping never leaves the Mac.
+    public static func cloudGate(_ text: String) throws -> TextResult {
+        let detector = PIIDetector.shared
+        let fast = detector.detectFast(text, packs: detector.packStore.allPackIds)
+        let strict = detector.strictNameFindings(text) + detector.strictDateFindings(text)
+        return redactText(text, findings: PIIDetector.mergeStrict(fast + strict, in: text))
     }
 
-    /// Same gate, also returning the placeholder → value mapping so a cloud answer can be shown with real values
-    /// locally. The mapping never leaves the Mac.
-    public static func cloudSafeWithMapping(_ text: String, packs: [String] = GelSettings.shared.activePacks,
-                                            strict: Bool = false) throws -> TextResult {
-        var findings = PIIDetector.shared.detectFast(text, packs: packs)
-        // Strict mode (cloud gate): also redact anything that looks like a name, even at the cost of over-redacting.
-        if strict { findings = PIIDetector.merge(findings + PIIDetector.shared.strictNameFindings(text)) }
-        return redactText(text, findings: findings)
+    /// `cloudGate` without the mapping.
+    public static func cloudSafe(_ text: String) throws -> String {
+        try cloudGate(text).text
     }
 
     /// Swaps placeholders back to real values (longest tokens first so [NAME_12] isn't hit by [NAME_1]).

@@ -23,7 +23,7 @@
 
 - Bundled packs: `GelCore/Resources/pack_core.json` (always on), `pack_hr.json`, `pack_personal.json`.
 - Extra packs: any `*.json` in `Application Support/Gel/Packs/` (a new pack needs no code change). Same id overrides the bundled pack.
-- Active packs: `GelSettings.activePacks` (default `["hr"]`), union of their types plus the always-on packs. The policy's `requiredPacks` are forced on and locked ([policy-dpo-report](../policy-dpo-report/spec.md)).
+- Active packs: `GelSettings.activePacks` (default `["hr"]`), union of their types plus the always-on packs. The policy's `requiredPacks` are forced on and locked ([policy-dpo-report](../policy-dpo-report/spec.md)). Active packs scope Leak Guard and file redaction only: the cloud gate always runs every installed pack (D-072).
 
 ## UI
 

@@ -57,6 +57,9 @@ public final class PackStore {
 
     public var selectablePacks: [Pack] { packs.filter { $0.alwaysOn != true } }
 
+    /// Every installed pack, active or not: what the cloud gate runs (D-072).
+    public var allPackIds: [String] { packs.map(\.id) }
+
     public func types(active: [String]) -> [PIIType] {
         let chosen = packs.filter { $0.alwaysOn == true || active.contains($0.id) }
         var seen = Set<String>()
@@ -235,6 +238,46 @@ public final class PIIDetector {
         return out
     }
 
+    /// Any date-shaped token, labelled or not: `02/06/1989`, `2026-09-30`, `September 29, 2026`, `29 Sept 2026`.
+    /// Scanned forms put "DATE OF BIRTH" and its value on different OCR lines, so the labelled DOB pattern misses
+    /// them (Q4); the cloud gate over-redacts every date instead (D-072). Year ranges like 2017–2024 are untouched.
+    public func strictDateFindings(_ text: String) -> [Finding] {
+        let months = "(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\.?"
+        let patterns = [
+            "(?<![\\d/-])(?:\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}|\\d{4}-\\d{2}-\\d{2})(?![\\d/-])",
+            "(?i)\\b\(months)[ \\t]+\\d{1,2},?[ \\t]+\\d{4}\\b",
+            "(?i)\\b\\d{1,2}[ \\t]+\(months),?[ \\t]+\\d{4}\\b",
+        ]
+        let ns = text as NSString
+        var out: [Finding] = []
+        for p in patterns {
+            guard let re = regex(p) else { continue }
+            for m in re.matches(in: text, range: NSRange(location: 0, length: ns.length)) {
+                out.append(Finding(type: "DATE", label: "date", category: "date of birth", text: ns.substring(with: m.range),
+                                   range: m.range, layer: 2))
+            }
+        }
+        return out
+    }
+
+    /// `merge` for the cloud gate: name findings that overlap are first joined into one span, so a longer
+    /// "Surname, Title" match can't throw away the real name it overlaps ("Liza T. Buenaventura" + "Buenaventura, HR
+    /// Director" → one NAME). Other categories keep the longest-wins rule and the government-ID carve-out (D-072).
+    public static func mergeStrict(_ input: [Finding], in text: String) -> [Finding] {
+        let ns = text as NSString
+        var names: [Finding] = []
+        for f in input.filter({ $0.category == "name" }).sorted(by: { $0.range.location < $1.range.location }) {
+            if let last = names.last, NSMaxRange(last.range) > f.range.location {
+                let union = NSUnionRange(last.range, f.range)
+                names[names.count - 1] = Finding(type: "NAME", label: "name", category: "name", text: ns.substring(with: union),
+                                                 range: union, layer: min(last.layer, f.layer))
+            } else {
+                names.append(f)
+            }
+        }
+        return merge(input.filter { $0.category != "name" } + names)
+    }
+
     // MARK: Layer 3 — LLM
 
     public struct FullResult {
@@ -275,9 +318,7 @@ public final class PIIDetector {
         a [TOKEN] in square brackets. Do not include company names, job titles or section headings. If none, return {"items":[]}.
         """
         let messages: [ChatMessage] = [.system(system), .user(text)]
-        let result = try await ModelRouter.shared.completeJSON(messages) { content in
-            try Redactor.cloudSafeWithMapping(content, packs: packs, strict: true)
-        }
+        let result = try await ModelRouter.shared.completeJSON(messages, redactForCloud: Redactor.cloudGate)
         let json = Self.extractJSON(result.text)
         struct Wrapper: Decodable { var items: [LLMItem] }
         let items = (try? JSONDecoder().decode(Wrapper.self, from: Data(json.utf8)).items) ?? []

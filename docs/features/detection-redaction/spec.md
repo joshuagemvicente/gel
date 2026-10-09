@@ -18,7 +18,7 @@
 ## Redaction outputs
 
 - **Placeholder text:** `Redactor.redactText` replaces each finding with a consistent token per value (`[SSS_1]` every time the same SSS number appears). The token → value mapping stays in memory only.
-- **Cloud gate:** `Redactor.cloudSafe(text)` = `detectFast` + placeholders. Used for every cloud request.
+- **Cloud gate:** `Redactor.cloudGate(text)` = `detectFast` over **every installed pack** (not the active ones) + strict names + bare dates + placeholders. Takes no pack argument on purpose. Used for every cloud request, including the layer-3 fallback ([model-fallback](../model-fallback/spec.md) → Strict cloud gate, D-072).
 - **Burned-in PDF:** every page rendered at 2×; boxes found via PDFKit selections (text pages) or Vision word boxes (`VNRecognizedText.boundingBox(for:)`, scans); black boxes (3 pt padding) flattened; written as a new **image-only** PDF to `<source folder>/Redacted/<name>_REDACTED.pdf`. Images → same, as a one-page PDF. DOCX/TXT → `<name>_REDACTED.txt` with placeholders that keep each finding's type (`[SSS_1]`, not `[OTHER_1]`).
 - **Preview first:** the app shows findings grouped by category with checkboxes before writing; unticked values are kept (`keep:` set, matched case-insensitively).
 - Each redaction logs a `redaction` event plus `redaction_item` counts per category, and a `redactions` row (source, output, counts).

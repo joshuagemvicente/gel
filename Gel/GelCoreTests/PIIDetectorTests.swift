@@ -54,8 +54,45 @@ final class PIIDetectorTests: XCTestCase {
 
     func testCloudSafeRemovesIDs() throws {
         let raw = "Employee: Maria Santos, SSS 34-5678901-2, salary ₱28,500.00, account no. 1234-5678-90"
-        let safe = try Redactor.cloudSafe(raw, packs: ["hr"])
+        let safe = try Redactor.cloudSafe(raw)
         for value in ["34-5678901-2", "₱28,500.00", "1234-5678-90"] { XCTAssertFalse(safe.contains(value), value) }
+    }
+
+    /// D-072: the gate ignores which packs are active. A Personal-only user's payslip still loses its HR-pack IDs.
+    func testCloudGateCoversInactivePacks() throws {
+        let raw = "SSS NO. 04-4989449-2 TIN 120-629-110-00000 PHILHEALTH 01-464611415-8 PAG-IBIG 1430-2880-7080 Passport P1234567A"
+        let gated = try Redactor.cloudGate(raw)
+        for value in ["04-4989449-2", "120-629-110-00000", "01-464611415-8", "1430-2880-7080", "P1234567A"] {
+            XCTAssertFalse(gated.text.contains(value), value)
+        }
+        XCTAssertEqual(gated.mapping["[SSS_1]"], "04-4989449-2")
+        XCTAssertTrue(PIIDetector.shared.packStore.allPackIds.contains("hr"))
+        XCTAssertTrue(PIIDetector.shared.packStore.allPackIds.contains("personal"))
+    }
+
+    /// D-072: a longer "Surname, Title" span must not throw away the real name it overlaps.
+    func testCloudGateUnionsOverlappingNames() throws {
+        for (raw, leak) in [("FROM\nLiza T. Buenaventura, HR Director\nDATE", "Liza"),
+                            ("Approved by Jerome Q. Ramos, Finance Manager on 2026-09-01", "Jerome"),
+                            ("Prepared by: Kristine Joy Reyes, Payroll Specialist", "Joy")] {
+            let safe = try Redactor.cloudSafe(raw)
+            XCTAssertFalse(safe.contains(leak), safe)
+        }
+        let safe = try Redactor.cloudSafe("FROM\nLiza T. Buenaventura, HR Director\nDATE")
+        XCTAssertEqual(safe, "FROM\n[NAME_1]\nDATE")
+    }
+
+    /// D-072: dates are redacted for the cloud even when their label sits on another OCR line (Q4).
+    func testCloudGateRedactsBareDates() throws {
+        let raw = "NAME\nRELATIONSHIP\nDATE OF BIRTH\nLiza Velasco\nSpouse\n02/06/1989\nHired 2026-09-30, memo of September 29, 2026\nPayroll 2017–2024"
+        let safe = try Redactor.cloudSafe(raw)
+        for value in ["02/06/1989", "2026-09-30", "September 29, 2026"] { XCTAssertFalse(safe.contains(value), safe) }
+        XCTAssertTrue(safe.contains("2017–2024"), safe)
+        // IDs keep their own type; a date pattern must not bite into them.
+        let ids = try Redactor.cloudGate("TIN 120-629-110-00000 SSS 04-4989449-2 born 06/18/1989")
+        XCTAssertEqual(ids.mapping["[TIN_1]"], "120-629-110-00000")
+        XCTAssertEqual(ids.mapping["[SSS_1]"], "04-4989449-2")
+        XCTAssertFalse(ids.text.contains("06/18/1989"))
     }
 
     func testSummary() {
@@ -82,7 +119,7 @@ final class PIIDetectorTests: XCTestCase {
 final class CloudGateTests: XCTestCase {
     func testMappingAndRehydrate() throws {
         let raw = "Applicant Kristine Joy Reyes, SSS 25-6708763-7, expected salary ₱45,000.00"
-        let r = try Redactor.cloudSafeWithMapping(raw, packs: ["hr"])
+        let r = try Redactor.cloudGate(raw)
         XCTAssertFalse(r.text.contains("25-6708763-7"))
         XCTAssertFalse(r.text.contains("₱45,000.00"))
         // A cloud answer using the placeholders is shown with the real values locally.
