@@ -1,21 +1,25 @@
 import type { Metadata, Viewport } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { JetBrains_Mono } from "next/font/google"
+import localFont from "next/font/local"
 
 import { Providers } from "@/components/providers"
 import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// rsms's own Inter build (inter-ui): Google Fonts' Inter drops the cv01, ss03 and zero features the design uses (D-074, D-081).
+const inter = localFont({
+  src: "../node_modules/inter-ui/variable-latin/InterVariable-subset.woff2",
+  variable: "--font-inter",
+  weight: "100 900",
+  display: "swap",
 })
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 })
 
 const description =
-  "Gel answers questions about your own files with citations, redacts personal data, and keeps it out of cloud AI. Runs on your Mac."
+  "Gel warns you before personal data is pasted into an AI chat, and blacks it out of files before you upload them. Runs on your Mac."
 
 // NEXT_PUBLIC_SITE_URL wins; on Vercel the production domain is used; locally, localhost.
 const siteUrl =
@@ -26,22 +30,20 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Gel: private AI for your Mac",
+  title: "Gel: use AI without leaking personal data",
   description,
-  openGraph: { title: "Gel: private AI for your Mac", description, type: "website" },
-  twitter: { card: "summary_large_image", title: "Gel: private AI for your Mac", description },
+  openGraph: { title: "Gel: use AI without leaking personal data", description, type: "website" },
+  twitter: { card: "summary_large_image", title: "Gel: use AI without leaking personal data", description },
 }
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f5f0" },
-    { media: "(prefers-color-scheme: dark)", color: "#1e1d1b" },
-  ],
+  themeColor: "#08090a",
+  colorScheme: "dark",
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable} antialiased`}>
       <body className="min-h-dvh">
         <Providers>{children}</Providers>
       </body>

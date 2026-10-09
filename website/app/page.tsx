@@ -1,3 +1,4 @@
+import { Ask } from "@/components/sections/ask"
 import { Claims } from "@/components/sections/claims"
 import { Faq } from "@/components/sections/faq"
 import { Footer } from "@/components/sections/footer"
@@ -6,6 +7,8 @@ import { HowItWorks } from "@/components/sections/how-it-works"
 import { Install } from "@/components/sections/install"
 import { Nav } from "@/components/sections/nav"
 import { Privacy } from "@/components/sections/privacy"
+import { Research } from "@/components/sections/research"
+import { Uses } from "@/components/sections/uses"
 
 export default function Home() {
   return (
@@ -19,9 +22,12 @@ export default function Home() {
       <Nav />
       <main id="main">
         <Hero />
+        <Research />
         <Claims />
+        <Uses />
         <HowItWorks />
         <Privacy />
+        <Ask />
         <Install />
         <Faq />
       </main>

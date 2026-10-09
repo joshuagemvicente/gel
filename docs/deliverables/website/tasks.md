@@ -16,6 +16,15 @@ Legend: `[x]` done and verified · `[~]` done, not verified · `[ ]` not started
 - [x] **T4b Bundle the DMG.** _(D-063. Copied from `dist/`, byte-identical. Guard fails on a missing or altered file and is skipped with an override URL. Browser download from the production build: hash matches, `hdiutil verify` valid, mounts, `Gel.app` strict-signed.)_ [Claude] Serve the DMG from `website/public/` as the default download. **Verify:** as in the spec's download criteria.
 - [ ] **T11 Deploy.** [user] Set the Vercel root directory to `website/` and deploy (commit `website/public/Gel-macOS-arm64.dmg` first if Vercel deploys from Git). **Verify:** download from the live site, check `shasum -a 256`, and open on a Mac that has never run Gel.
 
+### v2 redesign
+
+- [x] **V1 Agree the v2 spec.** _(Approved Oct 10.)_ [user] Read [design.md](design.md) and spec.md → Acceptance criteria → v2. **Verify:** the user says yes.
+- [x] **V2 Tokens, fonts, dark only.** _(Inter from `inter-ui` (D-074); weights remapped (D-075); next-themes and the toggle removed. Greps pass.)_ [Claude] Rewrite `globals.css` tokens and type classes; Inter + JetBrains Mono in `layout.tsx`; fix `dark` on `<html>`; remove `next-themes`, `ThemeToggle` and the dot field; restyle `ui/button`, badge, accordion, table, sonner. **Verify:** the token, weight and radius greps pass.
+- [x] **V3 Brand and product pieces.** _(Lime Download, white nav pill, showcase frame with hero floor; launcher and leak overlay on `--app-*`.)_ [Claude] Download button (lime), nav pill, window frame, showcase frame and hero floor; launcher and leak overlay on `--app-*` colours. **Verify:** screenshot comparison with design.md.
+- [x] **V4 Sections and layout.** _(All sections + Runs-on strip; screenshots at 1440 and 375 px; scrollWidth 375 at 375.)_ [Claude] Hero, Runs-on strip, claims rows, how-it-works pairs, privacy, install with sticky heading, FAQ, footer, OG image. **Verify:** screenshots at 1440 and 375 px; no horizontal scroll.
+- [x] **V5 Behaviour and accessibility re-check.** _(3 Download links → bundled DMG, SHA-256 matches; copy buttons copy exact text with toasts (D-076); reduced motion: finished launcher, complete terminal, still drop (headless Chrome); focus rings seen on nav, pill, Download, copy, FAQ, links.)_ [Claude] Downloads, copy buttons, terminal, reduced motion, keyboard, contrast. **Verify:** each v1 behaviour criterion observed again.
+- [x] **V6 Production check.** _(Lighthouse desktop, production: 99 / 97 / 100 / 100 (perf / a11y / best practices / SEO); D-076.)_ [Claude] `npm run build && npm start`, Lighthouse desktop. **Verify:** 95+ on the three scores.
+
 Done when: all [spec.md](spec.md) acceptance criteria hold.
 
 ## T9 truth pass

@@ -12,6 +12,11 @@ The [demo download](../demo-download/) produced `dist/Gel-macOS-arm64.dmg`, and 
 | Scope | One page: landing and download together. |
 | Visual direction | Gel's brand (canvas `#F7F5F0`, green `#1F7A4D`, the drop), refined with patterns from styles.refero.design. Light and dark modes. |
 | Download link | Read from `NEXT_PUBLIC_DMG_URL`; the user sets it after uploading the DMG. SHA-256, size and build live in one config file. |
+| v2 visual direction (later Oct 10) | Redesign to the user's Linear style reference ("midnight precision instrument"): near-black canvas, Inter at tight tracking, hairline borders, 6/12 px radii. Supersedes the "warm paper" direction above. |
+| v2 accent | Acid lime `#e4f222` only on the Download button; the green Gel drop stays as the logo; everything else greyscale. Product recreations keep the app's own colours. |
+| v2 theme | Dark only; the light theme and toggle go. |
+| v2 scope | Restyle plus the reference's layout (left-aligned hero, showcase frame, text-left/visual-right pairs, no 3-column grids). Content and copy stay. |
+| v2 logo strip | A "Runs on your Mac with" strip of the on-device components (text, not logos) instead of customer logos, which Gel doesn't have. |
 
 ## Inputs
 
@@ -32,6 +37,8 @@ The [demo download](../demo-download/) produced `dist/Gel-macOS-arm64.dmg`, and 
 - **Code freeze.** Deliverables rule 5: no commits after 10:00 AM on Oct 10. Website work after that stays uncommitted unless the user says otherwise.
 
 ## Current state
+
+**v2 (Oct 10):** the dark "midnight instrument" redesign is built and verified locally, uncommitted. Every v2 criterion in [spec.md](spec.md) passed; Lighthouse desktop on the production build: 99 / 97 / 100 / 100 (D-076). Deviations: D-073 to D-076. The v1 notes below still apply except where v2 replaced them (fonts, theme, layout).
 
 Built in `website/` and verified locally on Oct 10; uncommitted, as the user asked. Every acceptance criterion in [spec.md](spec.md) passed, including the bundled-download criteria added the same day; evidence is in [tasks.md](tasks.md).
 

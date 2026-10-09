@@ -1,90 +1,125 @@
-import { FolderIcon } from "lucide-react"
+import { CheckIcon, FileTextIcon, FolderIcon } from "lucide-react"
 
-import { GelDrop } from "@/components/gel-drop"
+import { RedactReviewDemo } from "@/components/redact-review-demo"
 import { Reveal, Section } from "@/components/section"
+import { cn } from "@/lib/utils"
 
-const FOLDERS = ["201 Files", "Contracts", "Payslips", "Resumes", "Scans"]
+// The redact flow (docs/features/redactions-module/spec.md), with the app's own labels and synthetic sample files.
+const RESUMES = [
+  { name: "Resume_REYES.pdf", picked: true },
+  { name: "Santos_Rodel_Resume.pdf", picked: true },
+  { name: "CV - Patricia Anne Cruz.pdf", picked: true },
+  { name: "CV - Rommel Valdez.pdf", picked: false },
+]
 
-function FoldersVisual() {
+const FINDINGS = [
+  { value: "25-6708763-7", label: "SSS", keep: false },
+  { value: "0966 174 4548", label: "Phone", keep: true },
+  { value: "₱45,000.00", label: "Salary", keep: false },
+  { value: "April 18, 1991", label: "Birth date", keep: false },
+]
+
+const COPIES = ["Resume_REYES_REDACTED.pdf", "Santos_Rodel_Resume_REDACTED.pdf", "CV - Patricia Anne Cruz_REDACTED.pdf"]
+
+function Card({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <div className={cn("rounded-xl border bg-card p-4 text-small", className)}>{children}</div>
+}
+
+function Box({ on }: { on: boolean }) {
   return (
-    <div className="rounded-xl border bg-card p-3 text-sm">
-      <p className="px-1 pb-2 text-xs text-muted-foreground">Gel Sample Files / HR Files</p>
-      <ul className="space-y-0.5">
-        {FOLDERS.map((f) => (
-          <li key={f} className="flex items-center gap-2 rounded-md px-1 py-1">
-            <FolderIcon className="size-4 text-accent-foreground" aria-hidden />
-            {f}
+    <span
+      className={cn(
+        "flex size-4 shrink-0 items-center justify-center rounded-sm border",
+        on ? "border-body bg-body text-background" : "border-faint",
+      )}
+      aria-hidden
+    >
+      {on && <CheckIcon className="size-3" strokeWidth={3} />}
+    </span>
+  )
+}
+
+function SelectVisual() {
+  return (
+    <Card>
+      <p className="px-1 pb-2 text-[13px] text-muted-foreground">Library · HR Files / Resumes</p>
+      <ul className="space-y-0.5 text-body">
+        {RESUMES.map((r) => (
+          <li key={r.name} className="flex items-center gap-2.5 rounded-md px-1 py-1.5">
+            <Box on={r.picked} />
+            <FileTextIcon className="size-4 text-muted-foreground" aria-hidden />
+            <span className="truncate">{r.name}</span>
           </li>
         ))}
       </ul>
-      <p className="mt-2 flex items-center gap-2 border-t px-1 pt-2.5 text-xs text-muted-foreground">
-        <span className="size-1.5 rounded-full bg-primary" aria-hidden />
-        58 files ready
+      <div className="mt-2 flex justify-end border-t pt-3">
+        <span className="inline-flex h-8 items-center rounded-md border px-3 text-[13px] text-foreground">
+          Redact 3 files
+        </span>
+      </div>
+    </Card>
+  )
+}
+
+function ReviewVisual() {
+  return (
+    <Card>
+      <p className="px-1 pb-2 text-[13px] text-body">
+        Gel will black out <span className="font-medium text-foreground">15 of 16</span> items in 1 file.
       </p>
-    </div>
+      <ul className="divide-y text-body">
+        {FINDINGS.map((f) => (
+          <li key={f.value} className="flex items-center gap-2.5 px-1 py-2">
+            <Box on={!f.keep} />
+            <span className={cn("font-mono text-[13px] tracking-[-0.013em]", f.keep && "text-muted-foreground line-through")}>
+              {f.value}
+            </span>
+            <span className="text-[13px] text-muted-foreground">{f.label}</span>
+            {f.keep && (
+              <span className="ml-auto rounded-sm bg-accent px-1.5 text-xs text-muted-foreground">kept</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Card>
   )
 }
 
-function Key({ children, wide = false }: { children: React.ReactNode; wide?: boolean }) {
+function SaveVisual() {
   return (
-    <kbd
-      className={`inline-flex h-12 items-center justify-center rounded-lg border border-b-[3px] bg-card font-sans text-lg text-foreground ${wide ? "w-36" : "w-12"}`}
-    >
-      {children}
-    </kbd>
-  )
-}
-
-function AskVisual() {
-  return (
-    <div className="flex h-full min-h-[184px] flex-col items-center justify-center gap-4 rounded-xl border bg-card p-4">
-      <div className="flex items-center gap-2" aria-hidden>
-        <Key>⌥</Key>
-        <Key wide>Space</Key>
-      </div>
-      <div className="flex w-full max-w-60 items-center gap-2 rounded-lg border bg-background px-3 py-2 text-xs text-muted-foreground">
-        <GelDrop className="size-3.5" />
-        Ask your files…
-      </div>
-    </div>
-  )
-}
-
-function PassageVisual() {
-  return (
-    <div className="flex h-full min-h-[184px] flex-col rounded-xl border bg-card p-4">
-      <div className="space-y-2" aria-hidden>
-        <div className="h-2 w-3/4 rounded-full bg-border" />
-        <div className="h-2 w-full rounded-full bg-border" />
-        <div className="-mx-1 space-y-2 rounded-md bg-accent px-1 py-1.5 ring-1 ring-primary/40">
-          <div className="h-2 w-full rounded-full bg-primary/35" />
-          <div className="h-2 w-5/6 rounded-full bg-primary/35" />
-        </div>
-        <div className="h-2 w-11/12 rounded-full bg-border" />
-        <div className="h-2 w-2/3 rounded-full bg-border" />
-      </div>
-      <p className="mt-auto inline-flex w-fit items-center gap-1.5 rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
-        Cited passage · Resume_REYES.pdf, page 2
+    <Card>
+      <p className="px-1 pb-2 text-[13px] text-muted-foreground">HR Files / Resumes / Redacted</p>
+      <ul className="space-y-0.5 text-body">
+        {COPIES.map((c) => (
+          <li key={c} className="flex items-center gap-2.5 rounded-md px-1 py-1.5">
+            <FileTextIcon className="size-4 text-muted-foreground" aria-hidden />
+            <span className="truncate">{c}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-2 flex items-center gap-2 border-t px-1 pt-3 text-[13px] text-muted-foreground">
+        <FolderIcon className="size-4" aria-hidden />
+        Saved 3 redacted files. Originals are unchanged.
       </p>
-    </div>
+    </Card>
   )
 }
 
 const STEPS = [
   {
-    title: "Choose a folder",
-    body: "Point Gel at a folder of documents. It reads PDFs, scanned pages, images and Word files, using on-device OCR for scans, and keeps the index on your Mac.",
-    visual: <FoldersVisual />,
+    title: "Select the files",
+    body: "In Gel's Library, select one file or several and click Redact. Gel checks every page on your Mac, scans included.",
+    visual: <SelectVisual />,
   },
   {
-    title: "Ask from anywhere",
-    body: "Press ⌥Space and a launcher opens at the top of the screen. Type a question; the answer streams in with numbered sources.",
-    visual: <AskVisual />,
+    title: "Review Before and After",
+    body: "Each page shows side by side: your original with every finding outlined, and exactly what the saved copy will look like. Untick anything you want to keep visible.",
+    visual: <ReviewVisual />,
   },
   {
-    title: "Open the cited passage",
-    body: "Click a citation and Gel opens the document at that page, with the passage it used highlighted.",
-    visual: <PassageVisual />,
+    title: "Save the redacted copies",
+    body: "Gel saves a new file for each one in a Redacted folder next to the originals. Originals are never changed, and an earlier copy is never overwritten.",
+    visual: <SaveVisual />,
   },
 ]
 
@@ -92,19 +127,26 @@ export function HowItWorks() {
   return (
     <Section
       id="how-it-works"
-      band
       eyebrow="How it works"
-      title="From a folder to an answer you can check."
-      intro="Every answer points back to your own documents, so you can see where it came from."
+      title="Uploading the file itself? Send a redacted copy."
+      intro="You check every item before anything is saved. The example below redacts résumés from Gel's HR sample files."
     >
-      <ol className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-6">
+      <Reveal className="mb-14 sm:mb-20">
+        <RedactReviewDemo />
+        <p className="mt-3 text-center text-[13px] text-muted-foreground">
+          Gel&apos;s review screen, recreated with a synthetic résumé from the sample files.
+        </p>
+      </Reveal>
+      <ol className="space-y-14 sm:space-y-20">
         {STEPS.map((s, i) => (
           <li key={s.title}>
-            <Reveal delay={i * 0.035} className="flex h-full flex-col">
+            <Reveal className="grid grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-16">
+              <div className="max-w-md">
+                <p className="font-mono text-xs tracking-[-0.013em] text-muted-foreground">0{i + 1}</p>
+                <h3 className="mt-2 text-h3">{s.title}</h3>
+                <p className="mt-2 text-small text-pretty text-body">{s.body}</p>
+              </div>
               {s.visual}
-              <p className="mt-5 font-mono text-xs text-muted-foreground">0{i + 1}</p>
-              <h3 className="mt-1 text-h3">{s.title}</h3>
-              <p className="mt-2 text-[15px] leading-6 text-pretty text-muted-foreground">{s.body}</p>
             </Reveal>
           </li>
         ))}

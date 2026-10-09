@@ -4,16 +4,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Gel tokens: converted from Gel/Gel/App/Theme.swift (see docs/deliverables/website/design.md). */
+/* v2 "midnight instrument" tokens (docs/deliverables/website/design.md). Dark only: <html> always has .dark. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-heading: var(--font-inter);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
@@ -27,71 +28,79 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --color-band: var(--band);
+  --color-body: var(--body);
+  --color-faint: var(--faint);
   --color-drop-top: var(--drop-top);
   --color-drop-bottom: var(--drop-bottom);
-  --shadow-float: var(--shadow-float);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* Product frames only: Gel's dark appearance from Theme.swift. */
+  --color-app-canvas: var(--app-canvas);
+  --color-app-card: var(--app-card);
+  --color-app-hairline: var(--app-hairline);
+  --color-app-text: var(--app-text);
+  --color-app-text-secondary: var(--app-text-secondary);
+  --color-app-accent: var(--app-accent);
+  --color-app-accent-soft: var(--app-accent-soft);
+  --color-app-accent-fill: var(--app-accent-fill);
+  --color-app-danger: var(--app-danger);
+  --color-app-danger-soft: var(--app-danger-soft);
+  --color-app-page: var(--app-page);
+  --color-app-ink: var(--app-ink);
+  --color-app-ink-soft: var(--app-ink-soft);
+  --shadow-cta: var(--shadow-cta);
+  --shadow-frame: var(--shadow-frame);
+  /* Weights 400 / 510 / 590 only: medium and semibold map onto the style's 510 and 590. */
+  --font-weight-medium: 510;
+  --font-weight-semibold: 590;
+  /* Radii: 4 badges, 6 buttons and inputs, 12 cards. Pills use rounded-full. */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 6px;
+  --radius-xl: 12px;
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.970 0.007 88.6);
-  --foreground: oklch(0.232 0.006 78.2);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.232 0.006 78.2);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.232 0.006 78.2);
-  --primary: oklch(0.515 0.110 156.8);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.944 0.009 84.6);
-  --secondary-foreground: oklch(0.232 0.006 78.2);
-  --muted: oklch(0.944 0.009 84.6);
-  --muted-foreground: oklch(0.526 0.015 82.4);
-  --accent: oklch(0.515 0.110 156.8 / 0.12);
-  --accent-foreground: oklch(0.515 0.110 156.8);
-  --destructive: oklch(0.530 0.153 31.4);
-  --border: oklch(0.916 0.013 86.8);
-  --input: oklch(0.916 0.013 86.8);
-  --ring: oklch(0.515 0.110 156.8 / 0.5);
-  --band: oklch(0.944 0.009 84.6);
-  --drop-top: #5bd195;
-  --drop-bottom: #1a6b43;
-  --shadow-float: 0 0 1px rgb(58 47 30 / 0.4), 0 1px 1px rgb(58 47 30 / 0.04),
-    0 12px 32px -8px rgb(58 47 30 / 0.1);
-}
-
-.dark {
-  --background: oklch(0.231 0.004 84.6);
-  --foreground: oklch(0.953 0.009 84.6);
-  --card: oklch(0.270 0.005 67.6);
-  --card-foreground: oklch(0.953 0.009 84.6);
-  --popover: oklch(0.270 0.005 67.6);
-  --popover-foreground: oklch(0.953 0.009 84.6);
-  --primary: oklch(0.531 0.113 157.1);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.270 0.005 67.6);
-  --secondary-foreground: oklch(0.953 0.009 84.6);
-  --muted: oklch(0.270 0.005 67.6);
-  --muted-foreground: oklch(0.714 0.018 84.6);
-  --accent: oklch(0.684 0.133 158.4 / 0.12);
-  --accent-foreground: oklch(0.684 0.133 158.4);
-  --destructive: oklch(0.672 0.144 31.6);
-  --border: oklch(0.338 0.008 75.3);
-  --input: oklch(0.338 0.008 75.3);
-  --ring: oklch(0.684 0.133 158.4 / 0.5);
-  --band: oklch(0.205 0.004 84.6);
+  --radius: 6px;
+  --background: #08090a;
+  --foreground: #ffffff;
+  --card: #0f1011;
+  --card-foreground: #ffffff;
+  --popover: #161718;
+  --popover-foreground: #ffffff;
+  --primary: #e4f222;
+  --primary-foreground: #08090a;
+  --secondary: #161718;
+  --secondary-foreground: #d0d6e0;
+  --muted: #161718;
+  --muted-foreground: #8a8f98;
+  --accent: rgb(255 255 255 / 0.05);
+  --accent-foreground: #d0d6e0;
+  --destructive: #eb5757;
+  --border: #23252a;
+  --border-strong: #383b3f;
+  --input: #23252a;
+  --ring: #d0d6e0;
+  --body: #d0d6e0;
+  --faint: #62666d;
   --drop-top: #6adda3;
   --drop-bottom: #24885a;
-  --shadow-float: 0 0 1px rgb(0 0 0 / 0.6), 0 1px 1px rgb(0 0 0 / 0.2),
-    0 16px 40px -8px rgb(0 0 0 / 0.35);
+  --app-canvas: #1e1d1b;
+  --app-card: #282624;
+  --app-hairline: #3a3733;
+  --app-text: #f2efe9;
+  --app-text-secondary: #a8a296;
+  --app-accent: #3fb27a;
+  --app-accent-soft: rgb(63 178 122 / 0.18);
+  --app-accent-fill: #217f51;
+  --app-danger: #e0705c;
+  --app-danger-soft: rgb(224 112 92 / 0.18);
+  /* A document page inside a product frame (white paper, as PDFs render in the app). */
+  --app-page: #ffffff;
+  --app-ink: #1f1d1a;
+  --app-ink-soft: #6f6a61;
+  --shadow-cta: inset 0 5px 2px rgb(0 0 0 / 0.01), inset 0 3px 2px rgb(0 0 0 / 0.04),
+    inset 0 1px 1px rgb(0 0 0 / 0.07), inset 0 0 1px rgb(0 0 0 / 0.08);
+  --shadow-frame: 0 4px 32px rgb(8 9 10 / 0.6);
 }
 
 @layer base {
@@ -100,12 +109,13 @@
   }
   html {
     @apply font-sans;
+    color-scheme: dark;
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
   }
   body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "ss01", "cv11";
+    @apply bg-background text-body;
+    font-feature-settings: "cv01", "ss03", "zero";
     -webkit-font-smoothing: antialiased;
   }
   button:not(:disabled),
@@ -113,62 +123,73 @@
     cursor: pointer;
   }
   ::selection {
-    background: var(--accent);
+    background: color-mix(in srgb, var(--body) 28%, transparent);
+    color: var(--foreground);
   }
 }
 
 @layer components {
   /* Type scale from design.md → Type. */
   .text-hero {
+    color: var(--foreground);
     font-size: 2.5rem;
     line-height: 2.75rem;
-    font-weight: 600;
-    letter-spacing: -0.03em;
+    font-weight: 510;
+    letter-spacing: -0.022em;
   }
   .text-h2 {
-    font-size: 1.75rem;
-    line-height: 2.125rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
+    color: var(--foreground);
+    font-size: 2rem;
+    line-height: 2.25rem;
+    font-weight: 510;
+    letter-spacing: -0.022em;
   }
   @media (min-width: 640px) {
     .text-hero {
-      font-size: 3.5rem;
-      line-height: 3.75rem;
+      font-size: 3rem;
+      line-height: 3.125rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .text-hero {
+      font-size: 4rem;
+      line-height: 4rem;
     }
     .text-h2 {
-      font-size: 2.25rem;
-      line-height: 2.625rem;
+      font-size: 3rem;
+      line-height: 3rem;
     }
   }
   .text-h3 {
+    color: var(--foreground);
     font-size: 1.25rem;
-    line-height: 1.75rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    line-height: 1.6875rem;
+    font-weight: 590;
+    letter-spacing: -0.012em;
   }
   .text-body {
-    font-size: 1.0625rem;
-    line-height: 1.625rem;
-    letter-spacing: -0.01em;
+    color: var(--body);
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  .text-small {
+    font-size: 0.9375rem;
+    line-height: 1.5rem;
+    letter-spacing: -0.011em;
   }
   .eyebrow {
-    @apply font-mono text-accent-foreground;
-    font-size: 0.6875rem;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
     line-height: 1rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-weight: 510;
   }
-  /* Quiet hero texture: CSS dots instead of one SVG node per dot (D-060). */
-  .dot-field {
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      color-mix(in oklch, var(--muted-foreground) 35%, transparent) 1px,
-      transparent 0
+  /* The hero floor: Void at 10% to Mist at 100%, laid at 8% so the frame stays dark. The page's only gradient. */
+  .hero-floor {
+    background: linear-gradient(
+      180deg,
+      var(--card) 10%,
+      color-mix(in srgb, var(--body) 8%, var(--card)) 100%
     );
-    background-size: 18px 18px;
-    mask-image: radial-gradient(ellipse 70% 60% at 60% 40%, black 30%, transparent 75%);
   }
 }
 

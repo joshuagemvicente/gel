@@ -1,115 +1,163 @@
-# S9 · Website — Design
+# S9 · Website — Design (v2, "midnight instrument")
 
-"Warm paper, one green." Gel's own tokens, laid out the way the calm, warm-paper systems in Refero Styles are: Cursor's button pair, window frame and code block; Perplexity's single accent and citation-first tone; Intercom's tone bands and mono eyebrows; Vercel's CLI panel with green ticks ([research §1.1](research.md#11-refero-styles-stylesreferodesign)). No glows, beams, particles or dark hero. The green drop is the only art.
+Status: **approved and built Oct 10 2026.** Replaces v1 "Warm paper, one green" (in Git history at `cb14cad`). Direction is the user's Linear style reference, with four user choices (see [context.md](context.md) → Decisions): acid-lime CTA with the green Gel drop as the logo, dark only, restyle plus layout, and a "Runs on" strip instead of customer logos.
+
+Near-black canvas, white type at tight tracking, hairline borders instead of shadows, one acid-lime button per view. The product recreations (launcher, leak overlay) are the only colour and texture on the page.
+
+## Two palettes, one rule
+
+- **Site chrome** (nav, type, sections, buttons, cards, tables, footer) uses only the greys below and acid lime.
+- **Product frames** (the launcher and leak-overlay recreations) use **Gel's own dark appearance** from `Theme.swift`: green citation dots, green "Paste redacted", the danger edge. They show the real app, so they look like it. These colours never appear outside a product frame.
 
 ## Tokens
 
-shadcn variables in `app/globals.css`, converted from `Theme.swift` (research §5, contrast checked to WCAG AA).
+Written as shadcn variables in `app/globals.css`, so the existing components keep working. The `dark` class is fixed on `<html>`; there is no light theme.
 
-| Variable | Light | Dark | Gel token |
+| Variable | Value | Style name | Used for |
 | --- | --- | --- | --- |
-| `--background` | `oklch(0.970 0.007 88.6)` | `oklch(0.231 0.004 84.6)` | canvas |
-| `--foreground` | `oklch(0.232 0.006 78.2)` | `oklch(0.953 0.009 84.6)` | textPrimary |
-| `--card`, `--popover` | `oklch(1 0 0)` | `oklch(0.270 0.005 67.6)` | card |
-| `--primary` | `oklch(0.515 0.110 156.8)` | `oklch(0.531 0.113 157.1)` | accent / accentFill |
-| `--primary-foreground` | `oklch(1 0 0)` | `oklch(1 0 0)` | white |
-| `--secondary`, `--muted` | `oklch(0.944 0.009 84.6)` | `oklch(0.270 0.005 67.6)` | viewerBackground (band) |
-| `--muted-foreground` | `oklch(0.526 0.015 82.4)` | `oklch(0.714 0.018 84.6)` | textSecondary |
-| `--accent` | `oklch(0.515 0.110 156.8 / 0.12)` | `oklch(0.684 0.133 158.4 / 0.12)` | accentSoft (dark 0.12, not the app's 0.18, for 4.5:1 text; D-061) |
-| `--accent-foreground` | `oklch(0.515 0.110 156.8)` | `oklch(0.684 0.133 158.4)` | accent text and links |
-| `--destructive` | `oklch(0.530 0.153 31.4)` | `oklch(0.672 0.144 31.6)` | danger |
-| `--border`, `--input` | `oklch(0.916 0.013 86.8)` | `oklch(0.338 0.008 75.3)` | hairline |
-| `--ring` | `oklch(0.515 0.110 156.8 / 0.5)` | `oklch(0.684 0.133 158.4 / 0.5)` | accent 50% |
-| `--band` | `oklch(0.944 0.009 84.6)` | `oklch(0.205 0.004 84.6)` | viewerBackground; dark is a step below the canvas (D-061) |
-| `--drop-top` → `--drop-bottom` | `#5BD195 → #1A6B43` | `#6ADDA3 → #24885A` | drop gradient, from `Brand.swift` (D-061) |
-| `--shadow-float` | `0 0 1px #3A2F1E66, 0 1px 1px #3A2F1E0A, 0 12px 32px -8px #3A2F1E1A` | same in black at 35% | shadow (ElevenLabs whisper stack, warm) |
+| `--background` | `#08090a` | Void | Page canvas |
+| `--card` | `#0f1011` | Carbon | Cards, showcase frame, nav when scrolled |
+| `--popover`, `--muted`, `--secondary` | `#161718` | Obsidian | Elevated panels, table header, snippet header |
+| `--border`, `--input` | `#23252a` | Graphite | Hairlines, card edges, ghost button outline |
+| `--border-strong` | `#383b3f` | Smoke | Section separators |
+| `--foreground` | `#ffffff` | Paper | Headings, emphasis |
+| `--body` | `#d0d6e0` | Mist | Body copy, nav links, ghost button text |
+| `--muted-foreground` | `#8a8f98` | Fog | Secondary text, captions, icons |
+| `--faint` | `#62666d` | Ash | Decoration only (dividers, inactive dots). Fails 4.5:1, so never for text |
+| `--primary` | `#e4f222` | Acid Lime | The Download button, and nothing else |
+| `--primary-foreground` | `#08090a` | Void | Text on lime |
+| `--accent` | `rgb(255 255 255 / 0.05)` | | Pill and badge fill, hover fill, selection |
+| `--accent-foreground` | `#d0d6e0` | Mist | Text on that fill |
+| `--ring` | `rgb(208 214 224 / 0.5)` | Mist 50% | Focus ring |
+| `--destructive` | `#eb5757` | Coral | Error toasts only |
+| `--app-accent`, `--app-accent-soft`, `--app-danger`, `--app-card`, `--app-hairline` | Theme.swift dark values | | Product frames only |
+| `--drop-top` → `--drop-bottom` | `#6ADDA3 → #24885A` | | The Gel drop (Brand.swift dark) |
 
-**Radius:** `--radius: 0.625rem` → buttons 8 px (`md`), code blocks and inputs 10 px (`lg`), cards 14 px (`xl`), window frames 18 px (`2xl`). No pill buttons.
+**Radii:** 4 px badges, 6 px buttons, inputs and snippets, 12 px cards and window frames, 9999 px pills. Nothing larger than 12 px.
 
-**Depth:** hairline borders first. `--shadow-float` only on the floating window recreations.
+**Depth:** a 1 px Graphite border, or `inset 0 0 0 1px #23252a`, separates surfaces. No drop shadows on cards. The only shadows: the lime button's inset stack (`0 5px 2px / 0 3px 2px / 0 1px 1px`, black at 1–8%) and `0 4px 32px rgb(8 9 10 / 0.6)` under product frames on the hero floor. The style guide's 0.5 px hairlines render as 1 px here: 0.5 px disappears on 1× screens.
 
 ## Type
 
-Geist Sans for everything except commands, hashes and eyebrows, which use Geist Mono.
+**Font is Inter (D-081).** A brief switch to Manrope (D-080) was reverted the same day; Inter from `inter-ui` with `cv01`, `ss03` and `zero`, as described below, is the site font.
 
-| Role | Size / line height | Weight | Tracking |
-| --- | --- | --- | --- |
-| Hero | 56/60, 40/44 under 640 px | 600 | −0.03em |
-| H2 | 36/42, 28/34 under 640 px | 600 | −0.02em |
-| H3 | 20/28 | 600 | −0.01em |
-| Body | 17/26 | 400 | −0.01em |
-| Small, meta | 14/20 | 400 | 0 |
-| Eyebrow | 11 px mono, uppercase | 500 | +0.08em, accent |
+**Inter** (variable, rsms's `inter-ui` build through `next/font/local`; Google's copy lacks these features, D-074) for everything, with `font-feature-settings: "cv01", "ss03", "zero"`. **JetBrains Mono** only for commands, the hash, the build line, step numbers and keyboard shortcuts. (The style guide names Berkeley Mono, which is a paid font; JetBrains Mono is its listed substitute.) Weights are 400, 510 and 590 only; nothing at 600 or bolder. Tailwind's `font-medium` and `font-semibold` are remapped to 510 and 590 (D-075).
+
+| Role | Size / line height | Weight | Tracking | Colour |
+| --- | --- | --- | --- | --- |
+| Hero | 64/64 (≥1024 px), 48/50 (≥640), 40/44 | 510 | −0.022em | Paper |
+| H2 | 48/48 (≥1024), 32/36 | 510 | −0.022em | Paper |
+| H3 | 20/27 | 590 | −0.012em | Paper |
+| Body | 16/24 | 400 | 0 | Mist |
+| Body small | 15/24 | 400 | −0.011em | Mist or Fog |
+| Caption, nav | 13/16 | 400 | 0 | Fog / Mist |
+| Label (eyebrow) | 13/16, sentence case | 510 | 0 | Fog |
+| Mono | 13/22 | 400 | −0.013em | Mist |
+
+The v1 uppercase green mono eyebrows go: eyebrows become plain 13 px Fog labels.
 
 ## Layout
 
-- Content max width 1120 px, 24 px side padding (16 px under 640 px).
-- Section gap 96 px on desktop, 64 px on mobile.
-- Sections alternate canvas and the `--muted` band instead of using divider lines (Intercom).
-- Every section starts with a mono eyebrow, then the H2, then content.
+- Max width 1200 px. Side padding 24 px, 16 px under 640 px.
+- Sections 96 px apart on desktop, 64 px on mobile, each opened by a 1 px Smoke rule. No alternating bands: every section sits on Void.
+- No three-column card grids. Sections are text-left/visual-right pairs or single columns.
+- The nav is fixed: transparent on Void at the top, Carbon at 85% with a backdrop blur and a Graphite bottom border once scrolled.
 
 ```
-┌───────────────────────────────────────────────────────────────┐
-│ ◆ Gel     How it works  Privacy  Install  FAQ     ◐ [Download]│ nav, 64 px
-├───────────────────────────────────────────────────────────────┤
-│ PRIVATE AI FOR YOUR MAC                                       │
-│ Ask your files.            ┌──────────────────────────────┐   │
-│ Keep them on your Mac.     │ ◆ Sino sa applicants ang may…│   │ launcher
-│                            │ Cruz, Santos and Reyes have… │   │ recreation
-│ Cited answers from your    │ [1 Resume_CRUZ] [2 …] [3 …]  │   │ (window frame,
-│ own documents. Nothing     │                    ⌂ Local   │   │ float shadow,
-│ leaves without redaction.  └──────────────────────────────┘   │ dot pattern
-│ [↓ Download for Mac] [Install guide]                          │ behind)
-│ Demo build · 14.4 MB · macOS 15+ · Apple silicon              │
-├───────────────────────────────────────────────────────────────┤
-│ claim · claim · claim                                          │ 3 columns → stack
-├────────────────────── band ───────────────────────────────────┤
-│ HOW IT WORKS  1 Choose folders  2 Ask  3 Open the passage      │
-├───────────────────────────────────────────────────────────────┤
-│ PRIVACY   "What leaves your Mac" table  +  leak overlay        │
-├────────────────────── band ───────────────────────────────────┤
-│ INSTALL   ① verify  ② drag  ③ Open Anyway  ④ Ollama terminal  │ numbered rail
-├───────────────────────────────────────────────────────────────┤
-│ REQUIREMENTS card          FAQ accordion                       │
-├───────────────────────────────────────────────────────────────┤
-│ footer: build · sha · AppBuildersPH 2026 · source · disclosures│
-└───────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│ ◆ Gel        How it works  Privacy  Install  FAQ   (Download)    │ nav 56 px, white pill
+├──────────────────────────────────────────────────────────────────┤
+│ Private AI for your Mac                                          │ label
+│ Ask your files.                                                  │ hero 64, left
+│ Keep them on your Mac.                                           │
+│ Gel answers questions about…            [↓ Download for Mac]     │ subcopy left,
+│                                          Install guide →         │ CTAs right (stack <1024)
+│ Demo build · 14.4 MB · macOS 15+ · Apple silicon                 │ mono meta
+│ ┌──────────────────────────────────────────────────────────────┐ │
+│ │░░░░░░░░░░░░ showcase frame, gradient floor ░░░░░░░░░░░░░░░░░│ │ up to 1280 px,
+│ │        ┌──────────── launcher (product frame) ──────────┐    │ │ bleeds past 1200
+│ │        └────────────────────────────────────────────────┘    │ │
+│ └──────────────────────────────────────────────────────────────┘ │
+│ Runs on your Mac with  Ollama  Qwen3 4B  BGE-M3  Apple Vision …  │ strip, one row
+├──────────────────────── Smoke rule ──────────────────────────────┤
+│ What Gel does.            │ ▸ Answers with sources.              │ text-left /
+│                           │ ─────────────────────────────────    │ stacked rows
+│                           │ ▸ Personal data stays here.          │
+│                           │ ─────────────────────────────────    │
+│                           │ ▸ Leaks caught before you paste.     │
+├──────────────────────────────────────────────────────────────────┤
+│ How it works / From a folder to an answer you can check.         │
+│ 01 Choose a folder   text          │  [folders card]             │ three pairs,
+│ 02 Ask from anywhere text          │  [⌥ Space card]             │ text left,
+│ 03 Open the passage  text          │  [passage card]             │ visual right
+├──────────────────────────────────────────────────────────────────┤
+│ Privacy / Your files never leave your Mac.  │ [leak overlay]     │ pair
+│ intro · two notes                           │                    │
+│ [What runs where table, full width]                              │
+├──────────────────────────────────────────────────────────────────┤
+│ Install            │ ① Download and check it                     │ sticky heading
+│ Four steps to a    │ ② Drag Gel to Applications                  │ left (≥1024),
+│ working install.   │ ③ Open it the first time                    │ numbered rail
+│                    │ ④ Install Ollama and the models             │ right
+├──────────────────────────────────────────────────────────────────┤
+│ Requirements card                │ FAQ accordion                 │
+├──────────────────────────────────────────────────────────────────┤
+│ footer: drop · team line · disclosures │ mono build · sha · source│
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ## Components
 
-| Piece | Built from | Notes |
-| --- | --- | --- |
-| Gel drop | Hand-built SVG of the `GelDrop` path, filled with `--gel-drop`, with a 45% white highlight | Breathes in the hero only (scale 0.98 → 1.06, 0.9 s, ease-in-out, alternate). |
-| Buttons | shadcn `button` | Primary: green fill, white 14 px/500, 8 px radius, 40 px tall in the hero. Secondary: card fill and hairline border. Press scales to 0.97. |
-| Window frame | Hand-built after Cursor's mockup | Card fill, hairline border, 18 px radius, three grey traffic lights, 13 px centred title, float shadow. |
-| Launcher recreation | Hand-built inside the window frame | Demo question, three-line answer, citation chips (`1` in a 16 px green circle plus the file name) and a `cpu` **Local** badge, all as in the polish design. A one-time sequence: the question appears, a Text Shimmer "Thinking…", the answer fades in, then the chips arrive 35 ms apart. |
-| Leak overlay recreation | Hand-built | 380 px card with a 3 px danger leading edge: "Gel caught a leak · Chrome", "This would leak: 2 names, 1 TIN, 1 phone", **Paste redacted ⌥⌘V** and Ignore. Uses only the demo sample's categories. |
-| Commands, checksum | `@kibo-ui/snippet` | Mono 13 px, `$` prompt in muted text, copy button with a Sonner "Copied" toast. |
-| Ollama walkthrough | `@cult-ui/terminal-animation` | Two tabs, "Install Ollama" and "Pull models", typed once when scrolled into view, with green `✓` lines (Vercel CLI panel). Never loops. |
-| Install steps | Hand-built numbered rail | 28 px numbered circles on a 1 px hairline rail, one card per step. |
-| What leaves your Mac | shadcn table styles in a card | Columns: Task · On your Mac · Internet. A green tick marks local work and muted text marks "Only as a fallback, redacted". |
-| FAQ | shadcn `accordion` | |
-| Section entrances | `@magicui/blur-fade` | 8 px rise and fade, about 400 ms, once, on view; children stagger 35 ms up to 8. |
-| Hero texture | `@magicui/dot-pattern` | Hairline colour at 40% opacity, masked to fade out at the edges. |
+| Piece | Spec |
+| --- | --- |
+| **Download (primary)** | Lime fill, Void text, 6 px radius, 10 × 16 px padding, 14 px/510, −0.011em, the lime inset shadow stack. Hover: 90% lime. Press: scale 0.98. Used in the hero and install step 1, never twice in one screen. |
+| **Nav Download** | White pill: Paper fill, Void text, 9999 px radius, 8 × 16 px padding, 13 px/510. |
+| **Ghost button / link** | "Install guide →": Mist text, 14 px, no fill, arrow nudges 2 px on hover. Outline variant: Graphite 1 px border, 6 px radius, 8 × 12 px padding, 13 px. |
+| **Nav links** | 13 px/400 Mist, 8 × 12 px padding, Paper on hover. |
+| **Logo** | Green Gel drop (unchanged SVG) and "Gel" at 16 px/510 Paper. |
+| **Showcase frame** | Carbon, 12 px radius, inset Graphite hairline, 24 px padding (16 px mobile). Behind it, the **hero floor**: a linear gradient from Void at 10% to Mist at 100%, laid over the frame at low opacity (tuned so the frame's edge stays visible; target ~6–10%). It's the only gradient on the page. |
+| **Window frame** | Carbon, 12 px radius, Graphite border, three Ash traffic-light dots, 13 px Fog title. No shadow. |
+| **Launcher recreation** | Same content and sequence as v1. Uses product-frame colours: green citation dots, `--app-card` fill. The "Local · qwen3 4B" badge becomes a 4 px-radius badge (`rgb(255 255 255 / 0.05)`, Fog text, mono 12 px). |
+| **Leak overlay recreation** | Same content as v1, product-frame colours, 12 px radius. |
+| **Runs-on strip** | Label "Runs on your Mac with" (13 px Fog), then the names as text, 15 px/510 Fog, 48 px gaps, wrapping to two rows on mobile: Ollama · Qwen3 4B · BGE-M3 · Apple Vision · NaturalLanguage · SQLite FTS5. Text, not logos (no third-party marks to license, nothing implying endorsement). WhisperKit is left out: voice isn't verified, so the site doesn't mention it. |
+| **Claim rows** | 16 px Fog line icon, H3 title, Body text; rows separated by Graphite hairlines, 24 px vertical padding. |
+| **Step visuals** | Cards: Carbon, Graphite border, 12 px radius. Folder icons and the "58 files ready" dot in Fog/Mist (not green: they're site chrome, not a product frame). The passage highlight uses `--accent` with a Mist outline. |
+| **Table** | In a Carbon card. Header row Obsidian, 13 px/510 Fog. Rows 15 px, Graphite hairlines. The tick is Mist, not green. |
+| **Install rail** | 24 px circles: Obsidian fill, Graphite border, mono 12 px Mist. 1 px Graphite rail. |
+| **Snippet / terminal** | Carbon body, Obsidian header, 6 px radius, Graphite border. `$` prompt and comments in Fog, `✓` in Mist. Tabs are pills: `rgb(255 255 255 / 0.05)` when selected, 9999 px radius, 12 px. |
+| **Accordion** | Carbon card, Graphite row hairlines, 15 px/510 Paper questions, Mist answers. |
+| **Badges** | 4 px radius, `rgb(255 255 255 / 0.05)`, 12 px Fog, 0 × 6 px padding. |
+| **Toasts** | Sonner on Obsidian with a Graphite border, Paper text. |
+| **Focus** | 2 px Mist ring at 50%, 2 px offset, on every interactive element. |
 
 ## Motion
 
-- Hover and colour changes: 150 ms `cubic-bezier(0.4, 0, 0.2, 1)`, in CSS.
-- Entrances: once, on view. Nothing auto-loops except the hero drop.
-- `prefers-reduced-motion: reduce`: opacity-only 150 ms fades, the terminal renders complete, the launcher shows its finished state, and the drop is still.
+Unchanged from v1 except the dot field is removed. Entrances: 8 px rise and fade, 400 ms, once. Hover: 150 ms `cubic-bezier(0.4, 0, 0.2, 1)`. The drop breathes only while the launcher is "thinking". `prefers-reduced-motion`: opacity only, finished states shown.
 
 ## Copy
 
-Plain, short, and specific. No hype words. Headline and subcopy are a starting draft for the user to edit:
+**AI-leak messaging backed by Cyberhaven research (user, Oct 10, D-079).** Supersedes the hero and claims wording below. Title "Gel: use AI without leaking personal data"; eyebrow "For everyone who pastes work into AI"; H1 "Use AI without leaking personal data."; hero visual = Leak Guard over a generic AI chat (`paste-catch-demo.tsx`, warning only, not the paste outcome). New **Research** section after the hero ("Most leaks into AI aren't malicious. They're copy and paste."): 39.7% of AI interactions involve sensitive data; on average every 3 days; personal accounts ChatGPT 32.3% / Claude 58.2% / Perplexity 60.9%; 82% of the top 100 AI apps medium to critical risk; quote "AI-related threats are almost always unintentional." Each figure is footnoted to the Cyberhaven page it was checked on. Claims lead with "Caught before you paste."; How it works becomes "Uploading the file itself? Send a redacted copy." with the redaction review recreation; the Leak Guard overlay leaves the Privacy section (it's in the hero).
 
-- **Hero:** "Ask your files. Keep them on your Mac." / "Gel answers questions about your own documents with citations, redacts personal data, and catches it before you paste it into a cloud AI."
-- **Claims:** "Answers with sources." / "Personal data stays here." / "Leaks caught before you paste."
-- **Privacy H2:** "Your files never leave your Mac." Then the table.
-- **Not notarized note:** "This is an ad-hoc-signed demo build, not a notarized release. macOS will ask you to confirm the first time you open it."
+**General positioning, HR as the example (user, Oct 10, D-078).** Supersedes the HR-only wording below: title "Gel: auto-redaction on your Mac"; eyebrow "Auto-redaction on your Mac"; H1 "Share files without the personal data."; subcopy lists "ID numbers, bank and card details, salaries, addresses and names"; a new "For anyone who sends documents." section (Work: HR and admin teams, tagged "The example on this page" · Personal: your own documents) after the claims; How it works and the hero caption name the HR résumés as the example; the FAQ lists both rule sets (Work: HR, Personal). Install keeps Work: HR for the sample files.
+
+**Redaction-first positioning (user, Oct 10, D-077).** The page sells Gel as auto-redaction for HR teams; search is a supporting section.
+
+- **Metadata:** title "Gel: auto-redaction for HR files on your Mac"; OG headline "Share HR files without the personal data."
+- **Hero:** eyebrow "Auto-redaction for HR files"; H1 "Share HR files without the personal data."; subcopy "Gel finds government ID numbers, salaries, bank accounts and addresses in your PDFs, scans and photos, then saves a copy with them blacked out. You review every item before it's saved, and it all runs on your Mac."; visual: the redaction review recreation (`redact-review-demo.tsx`, Resume_REYES.pdf page 1 from `ground_truth.json`, the app's own strings).
+- **What Gel does:** "Finds the personal data for you." · "Blacked out for good." · "Caught at the paste, too."
+- **How it works:** "From a folder of HR files to copies you can share." Select the files ("Redact 3 files") → Review Before and After (untick to keep) → Save the redacted copies ("Saved 3 redacted files. Originals are unchanged.").
+- **Privacy intro:** "…Gel finds and blacks them out on your Mac, so a file never has to be uploaded to be redacted." Table rows lead with detection and redaction.
+- **Also in Gel (new, after Privacy):** "Ask your files, and see the page it came from." with the launcher demo.
+- **Install step 4:** first try is Library → select three résumés → **Redact 3 files**; questions second.
+- **FAQ:** adds "What does Gel find?", "Does it catch everything?" (synthetic test set: every ID, card, phone, email, address, bank account and salary value; names about 73% before the AI pass; D-036) and "Can someone remove the black boxes?" (no text layer; OCR finds none of the values; D-036).
+
+The earlier copy below is kept for reference.
+
+
+All v1 copy stays. Two additions: the claims section gets a visible H2, "What Gel does." (it was screen-reader only), and the strip label "Runs on your Mac with". Eyebrows keep their words but lose the uppercase.
 
 ## Assets
 
-- `public/dmg-window.png`: the mounted-window screenshot (`dist/dmg-window-dark.png`), used in both themes because the DMG itself stays light (D-061).
-- `app/icon.png` from the app icon at 512 px (`Gel/Gel/Assets.xcassets/AppIcon.appiconset`).
-- `app/opengraph-image.tsx`: 1200 × 630, the canvas, the app icon and the hero headline, prerendered at build (D-062).
+- `public/dmg-window.png` unchanged (the DMG is light; it sits in a Graphite-bordered 12 px frame).
+- `app/opengraph-image.tsx`: Void background, Paper headline at weight 510, Fog subline, the app icon.
+- `theme-color` meta: `#08090a`.
