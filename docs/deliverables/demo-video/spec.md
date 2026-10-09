@@ -47,8 +47,8 @@ A beat whose feature fails at recording time is dropped and re-timed, never fake
 ## Acceptance criteria
 
 - [ ] Every app moment is a recording of the real app; no placeholder slot is left; the website never appears.
-- [ ] Wi-Fi visibly turns off in the real menu bar before the first answer.
-- [ ] The question is spoken and transcribed on screen by Gel.
+- [ ] ~~Wi-Fi visibly turns off~~ dropped in v3 (D-085): needs the user to record it.
+- [ ] ~~The question is spoken~~ dropped in v3 (D-085): typed instead; a spoken take needs the user's own voice.
 - [ ] Narration covers every beat; subtitles match it word for word and are on screen ≥ 1.2 s each.
 - [ ] The target user and the why-local reason are each said once.
 - [ ] Callouts sit on the element they name (checked on export frames).

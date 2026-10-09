@@ -3,8 +3,31 @@ export type SpeedSpan = { from: number; to: number; speed: number };
 export type Clip = { file: string; seconds?: number; aspect?: number; speedSpans?: SpeedSpan[]; marks?: Record<string, number> } | null;
 export const clips: Record<string, Clip> = {
   "R1-wifi": null,
-  "R2-ask": null,
-  "R3-verify": null,
-  "R4-redact": null,
-  "R5-leak": null
+  "R2-ask": {
+    "file": "captures/R2-ask.mp4",
+    "aspect": 1.7778,
+    "seconds": 14
+  },
+  "R3-verify": {
+    "file": "captures/R3-verify.mp4",
+    "aspect": 1.3221,
+    "seconds": 6
+  },
+  "R4-redact": {
+    "file": "captures/R4-redact.mp4",
+    "aspect": 1.3855,
+    "seconds": 10.333,
+    "speedSpans": [
+      {
+        "from": 0,
+        "to": 3.84,
+        "speed": 10
+      }
+    ]
+  },
+  "R5-leak": {
+    "file": "captures/R5-leak.mp4",
+    "aspect": 1.7778,
+    "seconds": 11.667
+  }
 };

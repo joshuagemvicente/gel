@@ -12,7 +12,8 @@ Legend: `[x]` done and verified · `[~]` done, not verified · `[ ]` not started
 
 - [x] **T8 v1 review.** _(Oct 10: [review-v1.md](review-v1.md); v2 spec approved with changes: compact Samantha voice, Claude records.)_
 - [x] **T9 Narration + v2 shell.** _(Oct 10: `npm run vo` → 9 lines, 41.9 s; v2 draft `media/out/gel-demo-v2.mp4` 61.1 s, −16.1 LUFS, synced subtitles, push transitions; recording slots remain.)_
-- [ ] **T10 Record session.** [user drives, Claude records] R1–R5 in one take. **Verify:** each segment found on a contact sheet.
-- [ ] **T11 Cut + callouts.** [Claude] Cut R1–R5, sped spans tagged, callouts at measured positions, render v3. **Verify:** spec acceptance criteria.
+- [x] **T10 Record.** _(Oct 10 06:05–06:20: Claude drove the Debug app via hooks and recorded R2–R5 (D-085); R1 Wi-Fi and the spoken question dropped. An earlier 19-min session recording held none of the takes and was deleted.)_
+- [x] **T11 Cut + callouts.** _(Oct 10: `media/out/gel-demo-v3.mp4`, 63.9 s, H.264/AAC 1920×1080 30 fps, −16.1 LUFS; callouts measured on frames; 10× tag on scanning; contact sheet checked: only demo data, chatgpt.com signed out.)_
+- [ ] **T12 User review of v3.** [user] **Verify:** user approves or sends notes.
 
 Done when: all [spec.md](spec.md) acceptance criteria hold.
